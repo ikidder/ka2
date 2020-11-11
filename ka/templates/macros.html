@@ -1,0 +1,440 @@
+{% macro view_score_title(title, path) %}
+        <a class="title" href="{{ url_for('scores.score', score_path=path) }}">
+            <span>{{ title|e }}</span>
+        </a>
+{% endmacro %}
+
+
+{% macro view_composer_name(composer) %}
+        <a class="composer" href="{{ url_for('users.user_scores', user_path=composer.path) }}">by {{ composer.name|e }}</a>
+{% endmacro %}
+
+
+{% macro view_for_players(for_whom) %}
+    <a class="for-players" href="{{ url_for('scores.scores_for_players', for_whom=for_whom.value.replace(' ', '-')) }}">{{ for_whom.value }}</a>
+{% endmacro %}
+
+
+{% macro view_measure(measure, prev_measure=None, next_measure=None, current_user=None) %}
+    <div class="container-md" id="{{ measure.path }}">
+    <div class="card shadow">
+        <div class="p text-center">
+            <a href="{{ url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path) }}" class="measure-title">{{ measure.name }}</a>
+        </div>
+        <div class="p">
+            <span class="measure-tempo-and-dynamic">{{ measure.tempo.value }}, {{ measure.dynamic.value }}</span>
+        </div>
+        <div class="p content">{{ measure.text|markdown }}</div>
+        {{ view_measure_item_menu(measure, current_user) }}
+        <div class="p duration font-heading text-center">{{ measure.formatted_duration }}</div>
+        {% if prev_measure or next_measure %}
+            <hr />
+            <div class="page-controls">
+                    {% if prev_measure %}
+                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=prev_measure.path, autoplay='true'), "fa-step-backward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+            <div id="play">
+                    {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path), "fa-play") }}
+            </div>
+                    {% if next_measure %}
+                        <div id="next-measure">
+                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=next_measure.path, autoplay='true'), "fa-step-forward") }}
+                        </div>
+                    {% else %}
+                        <div id="next-measure">
+                        {{ view_control(url_for('scores.ending', score_path=measure.score.path), "fa-step-forward") }}
+                        </div>
+                    {% endif %}
+                </div>
+        {% endif %}
+    </div>
+    </div>
+{% endmacro %}
+
+
+{% macro edit_measure(form) %}
+<div class="container-md" id="editing">
+<div class="card shadow">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="p form-group">
+                {{ form.name.label(class="form-control-label") }}
+                {% if form.name.errors %}
+                    {{ form.name(class="form-control form-control-lg is-invalid content", autofocus=True) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.name(class="form-control form-control-lg content", autofocus=True) }}
+                {% endif %}
+            </div>
+            <div class="p form-group">
+                {{ form.tempo.label(class="form-control-label") }}
+                {% if form.tempo.errors %}
+                    {{ form.tempo(class="form-control form-control-lg is-invalid content") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.tempo.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.tempo(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="p form-group">
+                {{ form.dynamic.label(class="form-control-label") }}
+                {% if form.dynamic.errors %}
+                    {{ form.dynamic(class="form-control form-control-lg is-invalid content") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.duration.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.dynamic(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="p form-group">
+                {{ form.text.label(class="form-control-label") }}
+                {% if form.text.errors %}
+                    {{ form.text(class="form-control form-control-lg is-invalid", rows="8") }}
+                    {{ view_formatting_help('text-right') }}
+                    <div class="invalid-feedback">
+                        {% for error in form.text.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.text(class="form-control form-control-lg", rows="8") }}
+                    {{ view_formatting_help('text-right') }}
+                {% endif %}
+            </div>
+            <div class="p form-group">
+                {{ form.duration.label(class="form-control-label") }}
+                {% if form.duration.errors %}
+                    {{ form.duration(class="form-control form-control-lg is-invalid content") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.duration.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.duration(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="p form-group float-right">
+                    {{ view_submit_button('fa-save') }}
+        </div>
+    </form>
+</div>
+</div>
+{% endmacro %}
+
+
+{%  macro view_score_header(score, current_user) -%}
+    <div class="container-md">
+        <div class="card shadow">
+            <div class="p font-heading">
+                {{  view_score_title(score.name, score.path) }}
+            </div>
+            <div class="p byline">
+                {{ view_composer_name(score.composer) }}{{ view_for_players(score.for_players) }}
+            </div>
+            <div class="p content">{{ score.text|markdown }}</div>
+            <div class="p duration font-heading text-center"><span>{{ score.formatted_duration }}</span></div>
+            {{ view_score_item_menu(score, current_user) }}
+            <div class="p metadata row">
+                <div class="col">
+                    <p class="text-center">plays: {{ score.count_plays|e }}</p>
+                </div>
+                <div class="col">
+                    <p class="text-center">favorites: {{ score.count_favorites|e }}</p>
+                </div>
+                <div class="col">
+                    <p class="text-center">created: {{ score.created.strftime("%d %B %Y") }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endmacro %}
+
+
+{%  macro view_score_header_row(score) -%}
+    <div class="container-md">
+        <div class="card shadow">
+            <div class="p score-header-row">
+                {{  view_score_title(score.name, score.path) }}
+                {{ view_composer_name(score.composer) }}
+                {{ view_for_players(score.for_players) }}
+                <span class="duration">{{ score.formatted_duration }}</span>
+{#                <div class="metadata">#}
+{#                    plays: {{ score.count_plays|e }}#}
+{#                    favorites: {{ score.count_favorites|e }}#}
+{#                    created: {{ score.created.strftime("%d %B %Y") }}#}
+{#                </div>#}
+            </div>
+        </div>
+    </div>
+{%- endmacro %}
+
+
+{%  macro view_score_header_with_controls(score, current_user) -%}
+    <div class="container-md">
+        <div class="card shadow">
+            <div class="p font-heading">
+                {{  view_score_title(score.name, score.path) }}
+            </div>
+            <div class="p byline">
+                {{ view_composer_name(score.composer) }}{{ view_for_players(score.for_players) }}
+            </div>
+            <div class="p content">{{ score.text|markdown }}</div>
+            <div class="p duration font-heading text-center">{{ score.formatted_duration }}</div>
+            <div class="p metadata row">
+                <div class="col">
+                    <p class="text-center">plays: {{ score.count_plays|e }}</p>
+                </div>
+                <div class="col">
+                    <p class="text-center">favorites: {{ score.count_favorites|e }}</p>
+                </div>
+                <div class="col">
+                    <p class="text-center">created: {{ score.created.strftime("%d %B %Y") }}</p>
+                </div>
+            </div>
+            <hr />
+            <div class="page-controls mx-auto">
+                {{ view_control(url_for('users.favorites'), "fa-star") }}
+                {% if score.measures|length > 0 %}
+                        {{ view_control(url_for('scores.measure', score_path=score.path, measure_path=score.measures.0.path, autoplay='true'), "fa-play") }}
+                {% else %}
+                {{ view_empty_control() }}
+                {% endif %}
+                {% if score.composer == current_user %}
+                    {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pen-fancy") }}
+                {% else %}
+                    {{ view_control(url_for('scores.copy_score', score_path=score.path), "fa-copy") }}
+                {% endif %}
+            </div>
+            {{ view_score_item_menu(score, current_user) }}
+        </div>
+    </div>
+{%- endmacro %}
+
+
+{% macro view_user_summary(user) %}
+    <div class="container-md">
+        <div class="card shadow">
+            <div class="p row justify-content-space-around">
+                <div class="col text-center user-summary">
+                    <a class="composer" href="{{ url_for('users.user_scores', user_path=user.path) }}">
+                        {{ user.name|e }}
+                    </a>
+                </div>
+                <div class="col text-center user-summary">
+                    <a class="scores" href="{{ url_for('users.user_scores', user_path=user.path) }}">
+                        Scores: {{ user.scores|length }}
+                    </a>
+                </div>
+                <div class="col text-center user-summary">
+                    <a class="posts" href="{{ url_for('users.user_posts', user_path=user.path) }}">
+                        Posts: {{ user.posts|length }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% macro view_post_title(title, post_path) %}
+        <a href="{{ url_for('posts.post', post_path=post.path) }}" class="title">
+            <span>{{ title|e }}</span>
+        </a>
+{% endmacro %}
+
+
+{% macro view_author_name(user) %}
+        <a class="composer" href="{{ url_for('users.user_posts', user_path=user.path) }}">
+            by {{ user.name|e }}
+        </a>
+{% endmacro %}
+
+
+{%  macro view_post(post, current_user) %}
+    <div class="container-md">
+        <div class="card shadow">
+            <div class="p font-heading">{{  view_post_title(post.name, post.path) }}</div>
+            <div class="p byline">
+                {{ view_author_name(post.composer) }}
+            </div>
+            <div class="p content">{{ post.text|markdown }}</div>
+            <div class="p metadata row">
+                <div class="col">
+                    <p class="text-center">views: 0</p>
+                </div>
+                <div class="col">
+                    <p class="text-center">favorites: 0</p>
+                </div>
+                <div class="col">
+                    <p class="text-center">created: {{ post.created.strftime("%d %B %Y") }}</p>
+                </div>
+            </div>
+            {{ view_post_item_menu(post, current_user) }}
+        </div>
+    </div>
+{% endmacro %}
+
+
+{%  macro view_post_row(post, current_user) %}
+    <div class="container-md">
+        <div class="card shadow">
+            <div class="score-header-row">
+                {{ view_post_title(post.name, post.path) }}
+                {{ view_author_name(post.composer.name) }}
+                {{ view_for_players(score.for_players) }}
+                <span class="">{{ post.created.strftime("%d %B %Y") }}</span>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% macro view_control(href, icon_class) %}
+    <a class="page-control" href="{{ href }}"><i class="fas fa-fw {{ icon_class }}"></i></a>
+{% endmacro %}
+
+
+{% macro view_empty_control() %}
+    <div class="empty-control"></div>
+{% endmacro %}
+
+
+{% macro view_submit_button(icon_class) %}
+    <button type="submit" class="btn page-control"><i class="fas fa-fw {{ icon_class }}"></i></button>
+{% endmacro %}
+
+
+{% macro view_score_item_menu(score, current_user) %}
+    <div class="btn-group dropleft item-menu">
+      <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v"></i>
+      </button>
+      <div class="dropdown-menu">
+        <div class="page-controls mx-auto ">
+            {% if score.measures|length > 0 %}
+                    {{ view_control(url_for('scores.measure', score_path=score.path, measure_path=score.measures.0.path, autoplay='true'), "fa-play") }}
+            {% endif %}
+                {{ view_control(url_for('users.favorites'), "fa-star") }}
+            {% if score.composer == current_user %}
+                {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pen-fancy") }}
+            {% endif %}
+                {{ view_control(url_for('scores.copy_score', score_path=score.path), "fa-copy") }}
+            {% if score.composer == current_user %}
+                    {{ view_control(url_for('scores.delete_score', score_path=score.path), "fa-times") }}
+            {% endif %}
+        </div>
+      </div>
+    </div>
+{% endmacro %}
+
+
+{% macro view_measure_item_menu(measure, current_user) %}
+    <div class="btn-group dropleft item-menu">
+      <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v"></i>
+      </button>
+      <div class="dropdown-menu">
+        <div class="page-controls mx-auto ">
+                {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path, autoplay='true'), "fa-play") }}
+                {{ view_control(url_for('users.favorites'), "fa-star") }}
+            {% if measure.score.composer == current_user %}
+                {{ view_control(url_for('scores.update_measure', score_path=measure.score.path, measure_path=measure.path), "fa-pen-fancy") }}
+            {% endif %}
+            {% if measure.score.composer == current_user %}
+                    {{ view_control(url_for('scores.new_measure_before', score_path=measure.score.path, measure_path=measure.path), "fa-arrow-left") }}
+                    {{ view_control(url_for('scores.delete_measure', score_path=measure.score.path, measure_path=measure.path), "fa-times") }}
+            {% endif %}
+         </div>
+      </div>
+    </div>
+{% endmacro %}
+
+
+{% macro view_post_item_menu(post, current_user) %}
+    <div class="btn-group dropleft item-menu">
+      <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v"></i>
+      </button>
+      <div class="dropdown-menu">
+        <div class="page-controls mx-auto ">
+                {{ view_control(url_for('posts.post', post_path=post.path), "fa-play") }}
+                {{ view_control(url_for('users.favorites'), "fa-star") }}
+            {% if post.user_id == current_user.id %}
+                    {{ view_control(url_for('posts.update_post', post_path=post.path), "fa-pen-fancy") }}
+                    {{ view_control(url_for('posts.delete_post', post_path=post.path), "fa-times") }}
+            {% endif %}
+         </div>
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro view_formatting_help(link_class) %}
+    <div class="{{ link_class }}">
+        <a class="help-text-link" data-toggle="collapse" href="#formattingHelp" role="button" aria-expanded="false" aria-controls="formattingHelp">
+            Formatting
+        </a>
+    </div>
+    <div class="collapse" id="formattingHelp">
+      <div class="content">
+          <table class="table">
+              <thead>
+              <tr>
+                  <th>to see</th><th>type</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td>{{ 'An [example](http://example.com/) link.'|markdown }}</td><td>An [example](http://example.com) link.</td>
+              </tr>
+              <tr>
+                  <td>{{ "*italics*"|markdown }}</td><td>*italics*</td>
+              </tr>
+              <tr>
+                  <td>{{ "**bold**"|markdown }}</td><td>**bold**</td>
+              </tr>
+              <tr>
+                  <td>{{ "### Header"|markdown }}</td><td>### Header</td>
+              </tr>
+              <tr>
+                  <td>{{ "> blockquote"|markdown }}</td><td>> blockquote</td>
+              </tr>
+              <tr>
+                  <td>
+{{ "* first
+* second
+* third"|markdown }}</td><td>* first<br/>* second<br/>* third</td>
+              </tr>
+              <tr>
+                  <td>
+{{ "1. first
+2. second
+3. third"|markdown }}</td><td>1. first<br/>2. second<br/>3. third</td>
+              </tr>
+              <tr>
+                  <td>{{ "Three or more underscores on their own line
+___
+to create a horizontal rule"|markdown }}</td><td>Three or more underscores on their own line<br/>
+___<br/>
+to create a horizontal rule</td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+    </div>
+{% endmacro %}
+

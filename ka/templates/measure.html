@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_measure %}
+{% from 'macros.html' import view_button %}
+{% from 'macros.html' import view_score_title %}
+{% from 'macros.html' import view_composer_name %}
+{% from 'macros.html' import view_for_players %}
+
+{% block content %}
+    {{ view_measure(measure, prev_measure, next_measure, current_user) }}
+
+    <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+            <div>from</div>
+            <div class="p font-heading">
+                {{  view_score_title(score.name, score.path) }}
+            </div>
+            <div class="byline">
+                {{ view_composer_name(score.composer.name) }}{{ view_for_players(score.for_players) }}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

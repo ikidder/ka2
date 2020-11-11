@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_post %}
+{% from 'macros.html' import view_control %}
+{% from 'macros.html' import view_submit_button %}
+{% from 'macros.html' import view_score_header_row %}
+
+{% block content %}
+<div class="container-md">
+    <div class="card shadow">
+        <form method="GET" action="">
+{#            {{ form.hidden_tag() }}#}
+            <div class="search-form">
+                        <input
+                                id="query"
+                                class="form-control form-control-lg"
+                                name="query"
+                                type="text"
+                                value="{{ query }}"
+                                autofocus>
+                <div class="form-group float-right">
+                    <div class="page-controls">
+                            {{ view_submit_button('fa-search') }}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% for score in scores %}
+            {{ view_score_header_row(score) }}
+{% endfor %}
+{% endblock content %}

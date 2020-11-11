@@ -1,0 +1,285 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
+    <script defer src="https://use.fontawesome.com/releases/v5.6.0/js/all.js"></script>
+
+    <link rel="shortcut icon" type="image/x-icon" sizes="32x32"
+          href="{{ url_for('static', filename='tie_favicon.png') }}">
+
+    <title>
+        {% if title %}
+            {{ title }} -
+        {% endif %}
+        kamagapē
+    </title>
+</head>
+<body>
+<header class="">
+    <div class="container-md">
+        <nav class="navbar mx-auto">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
+                    aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                <svg width="0" height="0">
+                    <linearGradient id="rg" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop stop-color="rgba(146,237,254,.8)" offset=".1"/>
+                        <stop stop-color="rgba(112,238,254,.8)" offset="0.25"/>
+                        <stop stop-color="rgba(73,210,249,.8)" offset="0.4"/>
+                        <stop stop-color="rgba(73,210,249,.8)" offset="0.45"/>
+                        <stop stop-color="rgba(73,210,249,.8)" offset="0.5"/>
+                        <stop stop-color="rgba(40,172,251,.8)" offset="0.76"/>
+                        <stop stop-color="rgba(48,143,210,.8)" offset="0.85"/>
+                    </linearGradient>
+                </svg>
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="30" height="29.93"
+                     viewBox="0 0 30 29.93">
+                    <title>tie_2_small_merged</title>
+                    <path d="M30.69,23.1c.67,1.88-.77,4.12-3.24,5a5.11,5.11,0,0,1-4.68-.4,8.6,8.6,0,0,1-3,2.49,10,10,0,0,1-9,0,8.56,8.56,0,0,1-3-2.48,5.62,5.62,0,0,1-.86.39c-2.48.9-5,.11-5.72-1.77s.77-4.13,3.24-5a5.76,5.76,0,0,1,3.2-.25L7.45,1.35,10.61,2l-.5,21,0,.05c.56,1.54-.32,3.34-2,4.43a23.33,23.33,0,0,0,3.26,1.12,15.66,15.66,0,0,0,3.88.47,16.18,16.18,0,0,0,3.89-.48,23.76,23.76,0,0,0,3.35-1.15,2.79,2.79,0,0,1-.76-1.12c-.68-1.88.77-4.14,3.24-5A5.75,5.75,0,0,1,28,21L27.84,1.35,31,2l-.31,21.06Z"
+                          transform="translate(-1 -1.35)"/>
+                </svg>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('scores.scores') }}"><span>kamagapē</span></a>
+
+            <div class="nav-content collapse navbar-collapse" id="navbarTogglerDemo03">
+            <div class="">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item nav-primary">
+                        <a class="nav-link" href="{{ url_for('scores.scores') }}">
+                            <span>
+                                Scores
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-primary">
+                        <a class="nav-link" href="{{ url_for('posts.posts') }}">
+                            <span>
+                                Posts
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-primary">
+                        <a class="nav-link" href="{{ url_for('users.users') }}">
+                            <span>
+                                Composers
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-primary">
+                        <a class="nav-link" href="{{ url_for('users.favorites') }}">
+                            <span>
+                                Favorites
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link " href="{{ url_for('search.search') }}"><span>Search</span></a>
+                    </li>
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link" href="{{ url_for('posts.post', post_path=4) }}"><span>Getting Started</span></a>
+                    </li>
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link" href="{{ url_for('posts.post', post_path=3) }}"><span>How To</span></a>
+                    </li>
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link" href="{{ url_for('posts.post', post_path=5) }}"><span>FAQ</span></a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link" href="{{ url_for('scores.new_score') }}"><span>New Score</span></a>
+                    </li>
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link" href="{{ url_for('posts.new_post') }}"><span>New Post</span></a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('users.user_scores', user_path=current_user.path) }}"><span>My Scores</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('users.user_posts', user_path=current_user.path) }}"><span>My Posts</span></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link" href="{{ url_for('scores.scores') }}"><span>Privacy</span></a>
+                    </li>
+                    <li class="nav-item nav-secondary">
+                        <a class="nav-link" href="{{ url_for('posts.post', post_path=2) }}"><span>About Us</span></a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('users.account') }}"><span>Account</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('users.logout') }}"><span>Logout</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('users.login') }}"><span>Login</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('users.register') }}"><span>Sign Up</span></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        </nav>
+    </div>
+</header>
+<main>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="container-md">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show mx-auto">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+<footer></footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script>
+
+    function timeToString(seconds) {
+        minutes = Math.trunc(seconds / 60);
+        secondsRemainder = seconds % 60;
+        minutesString = ('0' + minutes).slice(-2);
+        secondsString = ('0' + secondsRemainder).slice(-2);
+        s = minutesString + ":" + secondsString;
+        return s;
+    }
+
+    function stringToTime(s) {
+        tokens = s.split(':');
+        minutes = Number(tokens[0]);
+        seconds = Number(tokens[1]);
+        total = (minutes * 60) + seconds;
+        return total;
+    }
+
+    var intervalId = -1;
+
+    function tick() {
+        console.log('tick called');
+        let str = $('.duration')[0].firstChild.data;
+        var t = stringToTime(str);
+        console.log(t);
+        if (t === 1) {
+            beep(500, 1);
+        }
+        if (t < 1) {
+            clearInterval(intervalId);
+            let nextLink = $('#next-measure a')[0];
+            if (nextLink) {
+                $('#next-measure a')[0].click();
+            }
+        } else {
+            t = t - 1
+        }
+        let new_str = timeToString(t);
+        $('.duration')[0].firstChild.data = new_str;
+    }
+
+    function setPlay() {
+        let play = $('#play a');
+        console.log(play);
+        play.click(function (event) {
+            event.preventDefault();
+            play.off();
+            console.log('play clicked');
+            play.find('svg').removeClass('fa-play').addClass('fa-pause');
+            intervalId = setInterval(tick, 1000);
+            setPause();
+        });
+        return play;
+    }
+
+    function setPause() {
+        let pause = $('#play a');
+        console.log(pause);
+        pause.click(function (event) {
+            event.preventDefault();
+            console.log('pause clicked');
+            pause.find('svg').removeClass('fa-pause').addClass('fa-play')
+            window.clearInterval(intervalId);
+            setPlay();
+        });
+        return pause;
+    }
+
+    {# source: #}
+    {# https://stackoverflow.com/a/13194087/12917020 #}
+    var beep = (function () {
+        var ctxClass = window.audioContext || window.AudioContext || window.AudioContext || window.webkitAudioContext
+        var ctx = new ctxClass();
+        return function (duration, type, finishedCallback) {
+
+            duration = +duration;
+
+            // Only 0-4 are valid types.
+            type = (type % 5) || 0;
+
+            if (typeof finishedCallback != "function") {
+                finishedCallback = function () {
+                };
+            }
+
+            var osc = ctx.createOscillator();
+
+            osc.type = type;
+            //osc.type = "sine";
+
+            osc.connect(ctx.destination);
+            if (osc.noteOn) osc.noteOn(0);
+            if (osc.start) osc.start();
+
+            setTimeout(function () {
+                if (osc.noteOff) osc.noteOff(0);
+                if (osc.stop) osc.stop();
+                finishedCallback();
+            }, duration);
+
+        };
+    })();
+
+    let play = setPlay();
+    console.log('play set')
+    let searchParams = new URLSearchParams(window.location.search)
+    if (searchParams.has('autoplay') && searchParams.get('autoplay') === 'true') {
+        setTimeout(function () { play.click(); }, 1000);
+    }
+
+</script>
+</body>
+</html>

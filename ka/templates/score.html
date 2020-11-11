@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_score_header_with_controls %}
+{% from 'macros.html' import view_measure %}
+
+
+{% block content %}
+    {{ view_score_header_with_controls(score, current_user) }}
+    {% for measure in measures %}
+        {{ view_measure(measure, current_user=current_user) }}
+    {% endfor %}
+{% endblock content %}

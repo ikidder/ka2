@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_submit_button %}
+{% from 'macros.html' import view_formatting_help %}
+
+{% block content %}
+<div class="container-md">
+<div class="card p-4 mb-4 mx-auto shadow">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="title text-center"><span>{{ legend }}</span></legend>
+            <div class="form-group">
+                {{ form.name.label(class="form-control-label") }}
+                {% if form.name.errors %}
+                    {{ form.name(class="form-control form-control-lg is-invalid content", autofocus=True) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.name(class="form-control form-control-lg content", autofocus=True) }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.for_players.label(class="form-control-label") }}
+                {{ form.for_players(class="form-control form-control-lg") }}
+            </div>
+            <div class="form-group">
+                {{ form.text.label(class="form-control-label") }}
+                {% if form.text.errors %}
+                    {{ form.text(class="form-control form-control-lg is-invalid", rows="20") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.text.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ view_formatting_help('text-left') }}
+                {% else %}
+                    {{ form.text(class="form-control form-control-lg", rows="20") }}
+                    {{ view_formatting_help('text-left') }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group float-right">
+            <div class="page-controls">
+                    {{ view_submit_button('fa-save') }}
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{% endblock content %}

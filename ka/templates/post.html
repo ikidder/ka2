@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_post %}
+
+{% block content %}
+
+{{ view_post(post, current_user) }}
+
+{% endblock content %}

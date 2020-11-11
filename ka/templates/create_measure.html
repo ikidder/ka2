@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_score_header %}
+{% from 'macros.html' import view_measure %}
+{% from 'macros.html' import edit_measure %}
+
+{% block content %}
+    {{ view_score_header(score, current_user=current_user) }}
+    {% for measure in measures %}
+        {% if not append and measure.id == current_measure.id %}
+            {{ edit_measure(form) }}
+        {% else %}
+            {{ view_measure(measure, current_user=current_user) }}
+        {% endif %}
+    {% endfor %}
+    {% if append %}
+        {{ edit_measure(form) }}
+    {% endif %}
+{% endblock content %}

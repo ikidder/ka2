@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_composer_name %}
+{% from 'macros.html' import view_post %}
+{% from 'macros.html' import view_control %}
+{%  from 'macros.html' import view_empty_control %}
+
+{% block content %}
+
+    <div class="container-md">
+        <div class="card shadow">
+            <div class="p font-heading serif">Posts{{ view_composer_name(user.name) }}</div>
+        </div>
+    </div>
+
+    {% for post in result.items %}
+        {{ view_post(post, current_user) }}
+    {% endfor %}
+
+    {% if result.has_prev or result.has_next  %}
+        <div class="container-md">
+        <div class="card shadow">
+            <div class="page-controls">
+                    {% if result.has_prev %}
+                        {{ view_control(url_for('users.user_posts', user_path=user.path, page=result.current_page - 1), "fa-step-backward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+                    {% if result.has_next %}
+                            {{ view_control(url_for('users.user_posts', user_path=user.path, page=result.current_page + 1), "fa-step-forward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+            </div>
+        </div>
+        </div>
+    {% endif %}
+
+{#<div class="container-md">#}
+{#    <div class="card shadow">#}
+{#        <div class="p font-sub-heading serif">Posts{{ view_composer_name(user.username) }}</div>#}
+{#    </div>#}
+{#    {% for post in posts %}#}
+{#        {{ view_post(post, current_user) }}#}
+{#    {% endfor %}#}
+{##}
+{#    {% if posts.has_prev or posts.has_next  %}#}
+{#        <div class="container-md">#}
+{#        <div class="card shadow">#}
+{#            <div class="page-controls  ">#}
+{#                {% if posts.has_prev %}#}
+{#                    {{ view_control(url_for('users.user_posts', username=user.username, page=posts.page - 1), "fa-step-backward") }}#}
+{#                {% else %}#}
+{#                    {{ view_empty_control() }}#}
+{#                {% endif %}#}
+{#                {% if posts.has_next %}#}
+{#                        {{ view_control(url_for('users.user_posts', username=user.username, page=posts.page + 1), "fa-step-forward") }}#}
+{#                {% else %}#}
+{#                    {{ view_empty_control() }}#}
+{#                {% endif %}#}
+{#            </div>#}
+{#        </div>#}
+{#        </div>#}
+{#    {% endif %}#}
+{#</div>#}
+{% endblock content %}
