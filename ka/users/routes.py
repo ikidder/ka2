@@ -87,14 +87,18 @@ def user_posts(user_path):
 @login_required
 def user_scores(user_path):
     page = request.args.get('page', 1, type=int)
-    user = Session.query(User).filter(User.path == user_path).first()
+    user = Session.query(User).filter_by(path=user_path).first()
     if not user:
         abort(404)
+    # page_result = get_page(
+    #     Session.query(Score, User)
+    #         .filter(Score.user_id == User.id)
+    #         .filter(User.id == user.id)
+    #         .order_by(Score.created.desc()),
+    #     page
+    # )
     page_result = get_page(
-        Session.query(Score, User)
-            .filter(Score.user_id == User.id)
-            .filter(User.id == user.id)
-            .order_by(Score.created.desc()),
+        Session.query(Score).filter_by(composer=user).order_by(Score.created.desc()),
         page
     )
     page_result.items = [s for s, u in page_result.items]

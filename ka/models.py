@@ -105,18 +105,6 @@ def before_flush(session, flush_context, instances):
     for instance in session.deleted:
         if isinstance(instance, Post) or isinstance(instance, Score) or isinstance(instance, Measure):
             instance.validate()
-        # if not isinstance(instance, Versioned):
-        #     continue
-        # if not session.is_modified(instance, passive=True):
-        #     continue
-        #
-        # if not attributes.instance_state(instance).has_identity:
-        #     continue
-        #
-        # # make it transient
-        # instance.new_version(session)
-        # # re-add
-        # session.add(instance)
 
 
 # *************************************************
@@ -222,8 +210,8 @@ class Post(KaBase):
         return self._path
 
     def validate(self):
-        assert self.composer
-        assert self._name
+        assert self.composer, "composer is set in post validation"
+        assert self._name, "name is set in post validation"
         self._path = encode(self._name + '__by__' + self.composer.name)
 
     __searchable__ = ['title', 'content', 'date_posted']
@@ -314,9 +302,9 @@ class Measure(KaBase):
         self._ordinal = value
 
     def validate(self):
-        assert self.score
-        assert self._name
-        assert self._ordinal
+        assert self.score, "score is set in measure validation"
+        assert self._name, "name is set in measure validation"
+        assert isinstance(self._ordinal, int), "ordinal is set in measure validation"
         self._path = encode(
             f'{self._name}__number__{self._ordinal:04}__from__{self.score.name}__by__{self.score.composer.name}'
         )
@@ -400,11 +388,12 @@ class Score(KaBase):
         return self._path
 
     def validate(self):
-        assert self.composer
-        assert self._name
+        assert self.composer, "composer is set in score validation"
+        assert self._name, "name is set in score validation"
         self._path = encode(
             f'{self._name}__by__{self.composer.name}'
         )
+        self.duration = sum(m.duration for m in self.measures)
 
     @property
     def formatted_duration(self):
@@ -418,13 +407,6 @@ class Score(KaBase):
 
     def __repr__(self):
         return '<Score -> id: {}, name: {}, composer name: {}>'.format(self.id, self.name, self.composer.name)
-
-    # # init needed because of mutually dependent properties
-    # def __init__(self, name, composer):
-    #     self.duration = 0
-    #     self._name = name
-    #     self.composer = composer
-    #     self._set_path()
 
 
 #*************************************************

@@ -19,6 +19,7 @@ def make_user(username):
     user.password = hashed_password
     return user
 
+
 def make_defaults():
     paul = make_user('Paul')
     irulan = make_user('Irulan')

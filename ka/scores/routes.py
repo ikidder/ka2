@@ -16,9 +16,9 @@ def new_score():
     form = ScoreForm()
     if form.validate_on_submit():
         score = Score(
-            name=form.title.data,
+            name=form.name.data,
             composer=current_user,
-            text=form.description.data,
+            text=form.text.data,
             measures=[],
             count_plays=0,
             count_favorites=0,
@@ -44,13 +44,13 @@ def new_measure(score_path):
     form = MeasureForm()
     if form.validate_on_submit():
         measure = Measure(
-            name=form.title.data,
+            _name=form.name.data,
             tempo=form.tempo.data,
             dynamic=form.dynamic.data,
             text=form.text.data,
             duration=form.duration.data,
             created=datetime.utcnow(),
-            ordinal=max((x.ordinal for x in s.measures)) + 1 if s.measures else 0,
+            _ordinal=max((x.ordinal for x in s.measures)) + 1 if s.measures else 0,
             score=s
         )
         Session.add(measure)
@@ -60,7 +60,7 @@ def new_measure(score_path):
     else:
         ordinal = max((x.ordinal for x in s.measures)) + 1 if s.measures else 0
         title = to_ordinal_string(ordinal) + ' Measure'
-        form.title.data = title
+        form.name.data = title
     return render_template('create_measure.html',
                            title='New Measure',
                            form=form,
@@ -92,13 +92,13 @@ def new_measure_before(score_path, measure_path):
     form = MeasureForm()
     if form.validate_on_submit():
         measure = Measure(
-            name=form.name.data,
+            _name=form.name.data,
             tempo=form.tempo.data,
             dynamic=form.dynamic.data,
             text=form.text.data,
             duration=form.duration.data,
             created=datetime.utcnow(),
-            ordinal=above_this_measure.ordinal,
+            _ordinal=above_this_measure.ordinal,
             score=s
         )
 
@@ -157,7 +157,7 @@ def measure(score_path, measure_path):
     if matches:
         next_measure = matches[0]
 
-    title = m.title + ' from ' + m.score.name
+    title = m.name + ' from ' + m.score.name
     return render_template('measure.html', title=title, score=s, measure=m, prev_measure=prev_measure, next_measure=next_measure)
 
 
