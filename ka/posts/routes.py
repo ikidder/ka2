@@ -1,7 +1,8 @@
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
-from ka.database import Session, get_page
+from ka.database import get_page
+from ka import Session
 from ka.models import Post
 from ka.posts.forms import PostForm, DeletePostForm
 
@@ -14,7 +15,7 @@ posts_app = Blueprint('posts', __name__)
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(name=form.name.data, text=form.content.data, author=current_user)
+        post = Post(name=form.name.data, text=form.text.data, composer=current_user)
         Session.add(post)
         Session.commit()
         flash('Your post has been created!', 'success')
@@ -43,13 +44,13 @@ def update_post(post_path):
     form = PostForm()
     if form.validate_on_submit():
         p.title = form.title.data
-        p.content = form.content.data
+        p.text = form.text.data
         Session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('posts.post', post_id=p.id))
     elif request.method == 'GET':
-        form.title.data = p.title
-        form.content.data = p.content
+        form.name.data = p.title
+        form.text.data = p.content
     return render_template('create_post.html', title='Edit Post',
                            form=form, legend='Edit Post')
 

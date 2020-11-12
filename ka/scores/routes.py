@@ -1,7 +1,8 @@
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
-from ka.database import Session, get_page
+from ka.database import get_page
+from ka import Session
 from ka.models import Score, Measure, to_ordinal_string, ForPlayers
 from ka.scores.forms import ScoreForm, MeasureForm, DeleteMeasureForm, DeleteScoreForm
 from datetime import datetime
@@ -22,13 +23,13 @@ def new_score():
             measures=[],
             count_plays=0,
             count_favorites=0,
-            for_players=form.for_players.data,
+            for_players=ForPlayers[form.for_players.data],
             created=datetime.utcnow()
         )
         Session.add(score)
         Session.commit()
         flash('Your score has been created!', 'success')
-        return redirect(url_for('scores.new_measure', score_path=score.id))
+        return redirect(url_for('scores.new_measure', score_path=score.score_path))
     return render_template('create_score.html', title='New Score',
                            form=form, legend='New Score')
 
@@ -43,7 +44,7 @@ def new_measure(score_path):
         abort(403)
     form = MeasureForm()
     if form.validate_on_submit():
-        measure = Measure(
+        m = Measure(
             _name=form.name.data,
             tempo=form.tempo.data,
             dynamic=form.dynamic.data,
@@ -53,14 +54,19 @@ def new_measure(score_path):
             _ordinal=max((x.ordinal for x in s.measures)) + 1 if s.measures else 0,
             score=s
         )
-        Session.add(measure)
+        Session.add(m)
         Session.commit()
         flash('Your measure has been created!', 'success')
         return redirect(url_for('scores.new_measure', score_path=s.path))
     else:
         ordinal = max((x.ordinal for x in s.measures)) + 1 if s.measures else 0
-        title = to_ordinal_string(ordinal) + ' Measure'
-        form.name.data = title
+        name = to_ordinal_string(ordinal) + ' Measure'
+        form.name.data = name
+        if s.measures:
+            prev_measure = s.measures[-1]
+            form.duration.data = prev_measure.duration
+            form.tempo.data = prev_measure.tempo.value
+            form.dynamic.data = prev_measure.dynamic.value
     return render_template('create_measure.html',
                            title='New Measure',
                            form=form,
@@ -181,8 +187,8 @@ def update_score(score_path):
         else:
             return redirect(url_for('scores.new_measure', score_path=s.path))
     elif request.method == 'GET':
-        form.title.data = s.name
-        form.description.data = s.text
+        form.name.data = s.name
+        form.text.data = s.text
         form.for_players.data = s.for_players.value
     return render_template('create_score.html', title='Edit Score',
                            form=form, legend='Edit Score')
@@ -220,14 +226,14 @@ def update_measure(score_path, measure_path):
         if next_measure:
             return redirect(url_for(
                 'scores.update_measure',
-                score_path=next_measure.score.id,
-                measure_id=next_measure.id,
+                score_path=next_measure.score.path,
+                measure_path=next_measure.path,
                 _anchor='editing'
             ))
         else:
             return redirect(url_for('scores.new_measure', score_path=s.path, _anchor='editing'))
     elif request.method == 'GET':
-        form.title.data = m.title
+        form.name.data = m.name
         form.tempo.data = m.tempo
         form.dynamic.data = m.dynamic
         form.text.data = m.text
@@ -242,7 +248,7 @@ def update_measure(score_path, measure_path):
                            append=False)
 
 
-@scores_app.route("/score/<int:score_path>/delete", methods=['GET','POST'])
+@scores_app.route("/score/<string:score_path>/delete", methods=['GET','POST'])
 @login_required
 def delete_score(score_path):
     s = Session.query(Score).filter_by(path=score_path).first()
@@ -264,15 +270,15 @@ def delete_score(score_path):
 
 
 
-@scores_app.route("/score/<int:score_path>/measure/<int:measure_id>/delete", methods=['GET','POST'])
+@scores_app.route("/score/<string:score_path>/measure/<string:measure_path>/delete", methods=['GET','POST'])
 @login_required
-def delete_measure(score_path, measure_id):
+def delete_measure(score_path, measure_path):
     s = Session.query(Score).filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.user_id != current_user.id:
         abort(403)
-    m = Session.query(Measure).get(measure_id)
+    m = Session.query(Measure).filter_by(path=measure_path).first()
     if not m:
         abort(404)
     if s.id != m.score.id:
@@ -283,7 +289,7 @@ def delete_measure(score_path, measure_id):
         Session.delete(m)
         Session.commit()
         flash('Your measure has been deleted!', 'success')
-        return redirect(url_for('scores.score', score_path=score.path))
+        return redirect(url_for('scores.score', score_path=s.path))
 
     return render_template('delete_measure.html', title='Delete Measure', form=form, score=s, measure=m)
 

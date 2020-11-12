@@ -251,9 +251,9 @@
 {% endmacro %}
 
 
-{% macro view_post_title(title, post_path) %}
-        <a href="{{ url_for('posts.post', post_path=post.path) }}" class="title">
-            <span>{{ title|e }}</span>
+{% macro view_post_title(post_name, post_path) %}
+        <a href="{{ url_for('posts.post', post_path=post_path) }}" class="title">
+            <span>{{ post_name|e }}</span>
         </a>
 {% endmacro %}
 

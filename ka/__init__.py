@@ -2,6 +2,11 @@ from flask import Flask, logging
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
+import os
+
 # Talisman
 # for forcing https
 # https://github.com/GoogleCloudPlatform/flask-talisman
@@ -19,7 +24,11 @@ from flaskext.markdown import Markdown
 # from elasticsearch import Elasticsearch
 
 from .config import Config
-from .database import Session
+#from .database import Session
+
+
+engine = create_engine(os.environ['DATABASE_URL'])
+Session = scoped_session(sessionmaker(bind=engine))
 
 
 bcrypt = Bcrypt()

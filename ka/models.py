@@ -5,7 +5,7 @@ from flask import current_app
 from urllib.parse import quote
 from enum import Enum, unique
 from ka import login_manager
-from database import Session
+from ka import Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, validates

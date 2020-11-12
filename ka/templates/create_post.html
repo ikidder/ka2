@@ -11,30 +11,30 @@
         <fieldset class="form-group">
             <legend class="title text-center"><span>{{ legend }}</span></legend>
             <div class="form-group">
-                {{ form.title.label(class="form-control-label") }}
-                {% if form.title.errors %}
-                    {{ form.title(class="form-control form-control-lg is-invalid content", autofocus=True) }}
+                {{ form.name.label(class="form-control-label") }}
+                {% if form.name.errors %}
+                    {{ form.name(class="form-control form-control-lg is-invalid content", autofocus=True) }}
                     <div class="invalid-feedback">
-                        {% for error in form.title.errors %}
+                        {% for error in form.name.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.title(class="form-control form-control-lg content", autofocus=True) }}
+                    {{ form.name(class="form-control form-control-lg content", autofocus=True) }}
                 {% endif %}
             </div>
             <div class="form-group">
-                {{ form.content.label(class="form-control-label") }}
-                {% if form.content.errors %}
-                    {{ form.content(class="form-control form-control-lg is-invalid", rows="20") }}
+                {{ form.text.label(class="form-control-label") }}
+                {% if form.text.errors %}
+                    {{ form.text(class="form-control form-control-lg is-invalid", rows="20") }}
                     <div class="invalid-feedback">
-                        {% for error in form.content.errors %}
+                        {% for error in form.text.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {{ view_formatting_help('text-left') }}
                 {% else %}
-                    {{ form.content(class="form-control form-control-lg", rows="20") }}
+                    {{ form.text(class="form-control form-control-lg", rows="20") }}
                     {{ view_formatting_help('text-left') }}
                 {% endif %}
             </div>
