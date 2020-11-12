@@ -6,7 +6,7 @@
 
 
 {% macro view_composer_name(composer) %}
-        <a class="composer" href="{{ url_for('users.user_scores', user_path=composer.path) }}">by {{ composer.name|e }}</a>
+        <a class="composer" href="{{ url_for('scores.user_scores', user_path=composer.path) }}">by {{ composer.name|e }}</a>
 {% endmacro %}
 
 
@@ -231,17 +231,17 @@
         <div class="card shadow">
             <div class="p row justify-content-space-around">
                 <div class="col text-center user-summary">
-                    <a class="composer" href="{{ url_for('users.user_scores', user_path=user.path) }}">
+                    <a class="composer" href="{{ url_for('scores.user_scores', user_path=user.path) }}">
                         {{ user.name|e }}
                     </a>
                 </div>
                 <div class="col text-center user-summary">
-                    <a class="scores" href="{{ url_for('users.user_scores', user_path=user.path) }}">
+                    <a class="scores" href="{{ url_for('scores.user_scores', user_path=user.path) }}">
                         Scores: {{ user.scores|length }}
                     </a>
                 </div>
                 <div class="col text-center user-summary">
-                    <a class="posts" href="{{ url_for('users.user_posts', user_path=user.path) }}">
+                    <a class="posts" href="{{ url_for('posts.user_posts', user_path=user.path) }}">
                         Posts: {{ user.posts|length }}
                     </a>
                 </div>
@@ -259,7 +259,7 @@
 
 
 {% macro view_author_name(user) %}
-        <a class="composer" href="{{ url_for('users.user_posts', user_path=user.path) }}">
+        <a class="composer" href="{{ url_for('posts.user_posts', user_path=user.path) }}">
             by {{ user.name|e }}
         </a>
 {% endmacro %}
@@ -351,7 +351,6 @@
       <div class="dropdown-menu">
         <div class="page-controls mx-auto ">
                 {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path, autoplay='true'), "fa-play") }}
-                {{ view_control(url_for('users.favorites'), "fa-star") }}
             {% if measure.score.composer == current_user %}
                 {{ view_control(url_for('scores.update_measure', score_path=measure.score.path, measure_path=measure.path), "fa-pen-fancy") }}
             {% endif %}

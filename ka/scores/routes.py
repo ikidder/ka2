@@ -3,9 +3,10 @@ from flask import (render_template, url_for, flash,
 from flask_login import current_user, login_required
 from ka.database import get_page
 from ka import Session
-from ka.models import Score, Measure, to_ordinal_string, ForPlayers
+from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User
 from ka.scores.forms import ScoreForm, MeasureForm, DeleteMeasureForm, DeleteScoreForm
 from datetime import datetime
+from sqlalchemy import or_
 
 
 scores_app = Blueprint('scores', __name__)
@@ -29,7 +30,7 @@ def new_score():
         Session.add(score)
         Session.commit()
         flash('Your score has been created!', 'success')
-        return redirect(url_for('scores.new_measure', score_path=score.score_path))
+        return redirect(url_for('scores.new_measure', score_path=score.path))
     return render_template('create_score.html', title='New Score',
                            form=form, legend='New Score')
 
@@ -136,6 +137,8 @@ def score(score_path):
     s = Session.query(Score).filter_by(path=score_path).first()
     if not s:
         abort(404)
+    if s.visibility == Visibility.HIDDEN:
+        abort(404)
     title = s.name + ' by ' + s.composer.name
     return render_template('score.html', title=title, score=s, measures=s.measures)
 
@@ -150,6 +153,9 @@ def measure(score_path, measure_path):
     if not matches:
         abort(404)
     m = matches[0]
+
+    if s.visibility == Visibility.HIDDEN:
+        abort(404)
 
     prev_ord = m.ordinal - 1
     matches = list(filter(lambda x: x.ordinal == prev_ord, s.measures))
@@ -298,10 +304,16 @@ def delete_measure(score_path, measure_path):
 @login_required
 def scores():
     page = request.args.get('page', 1, type=int)
-    page_result = get_page(Session.query(Score).order_by(Score.created.desc()), page)
+    page_result = get_page(
+        Session.query(Score)
+            .filter_by(visibility=Visibility.PUBLIC)
+            .order_by(Score.created.desc()),
+        page
+    )
     return render_template(
         'scores.html',
-        result=page_result
+        result=page_result,
+        current_user=current_user
     )
 
 
@@ -314,8 +326,41 @@ def scores_for_players(for_whom):
         fp = ForPlayers(param)
     except:
         abort(404)
-    page_result = get_page(Session.query(Score).filter_by(for_players=fp).order_by(Score.created.desc()), page)
-    return render_template('scores.html', result=page_result)
+    page_result = get_page(
+        Session.query(Score)
+            .filter_by(for_players=fp)
+            .filter_by(visibility=Visibility.PUBLIC)
+            .order_by(Score.created.desc()),
+        page
+    )
+    return render_template(
+        'scores.html', 
+        filtered_on=fp,
+        result=page_result,
+        current_user=current_user
+    )
+
+
+@scores_app.route("/user/<string:user_path>/scores")
+@login_required
+def user_scores(user_path):
+    page = request.args.get('page', 1, type=int)
+    user = Session.query(User).filter_by(path=user_path).first()
+    if not user:
+        abort(404)
+    page_result = get_page(
+        Session.query(Score)
+            .filter(Score.user_id == user.id)
+            .filter(or_(Score.visibility == Visibility.PUBLIC, Score.visibility == Visibility.PRIVATE))
+            .order_by(Score.count_favorites.desc(), Score.created.desc()),
+        page
+    )
+    return render_template(
+        'scores.html',
+        filtered_on=user,
+        result=page_result,
+        current_user=current_user
+    )
 
 
 @scores_app.route("/score/<string:score_path>/copy", methods=['GET', 'POST'])
@@ -366,3 +411,18 @@ def ending(score_path):
         abort(404)
     title = 'End of ' + s.title + ' by ' + s.composer.name
     return render_template('ending.html', title=title, score=s, measures=s.measures)
+
+
+
+# *************************************************
+#  Template Tests
+# *************************************************
+
+
+@scores_app.app_template_test("User")
+def is_user(obj):
+    return isinstance(obj, User)
+
+@scores_app.app_template_test("ForPlayers")
+def is_for_players(obj):
+    return isinstance(obj, ForPlayers)

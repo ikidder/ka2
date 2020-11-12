@@ -3,8 +3,9 @@ from flask import (render_template, url_for, flash,
 from flask_login import current_user, login_required
 from ka.database import get_page
 from ka import Session
-from ka.models import Post
+from ka.models import Post, Visibility, User
 from ka.posts.forms import PostForm, DeletePostForm
+from sqlalchemy import or_
 
 
 posts_app = Blueprint('posts', __name__)
@@ -29,6 +30,8 @@ def new_post():
 def post(post_path):
     p = Session.query(Post).filter_by(path=post_path).first()
     if not p:
+        abort(404)
+    if p.visibility == Visibility.HIDDEN:
         abort(404)
     return render_template('post.html', title=p.name, post=p)
 
@@ -78,5 +81,44 @@ def delete_post(post_path):
 @login_required
 def posts():
     page = request.args.get('page', 1, type=int)
-    page_result = get_page(Session.query(Post).order_by(Post.created.desc()), page)
+    page_result = get_page(
+        Session.query(Post)
+            .filter_by(visibility=Visibility.PUBLIC)
+            .order_by(Post.created.desc()),
+        page
+    )
     return render_template('posts.html', result=page_result)
+
+
+@posts_app.route("/user/<string:user_path>/posts")
+@login_required
+def user_posts(user_path):
+    page = request.args.get('page', 1, type=int)
+    user = Session.query(User).filter_by(path=user_path).first()
+    if not user:
+        abort(404)
+    page_result = get_page(
+        Session.query(Post)
+            .filter(Post.user_id == user.id)
+            .filter(or_(Post.visibility == Visibility.PUBLIC, Post.visibility == Visibility.PRIVATE))
+            .order_by(Post.count_favorites.desc(), Post.created.desc()),
+        page
+    )
+    return render_template(
+        'posts.html',
+        filtered_on=user,
+        result=page_result,
+        current_user=current_user
+    )
+
+
+
+# *************************************************
+#  Template Tests
+# *************************************************
+
+
+@posts_app.app_template_test("User")
+def is_user(o):
+    return isinstance(o, User)
+

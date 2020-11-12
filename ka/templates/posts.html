@@ -2,9 +2,20 @@
 
 {% from 'macros.html' import view_post %}
 {% from 'macros.html' import view_control %}
-{%  from 'macros.html' import view_empty_control %}
+{%  from 'macros.html' import view_empty_control, view_composer_name %}
 
 {% block content %}
+
+    {% if filtered_on %}
+    <div class="container-md">
+        <div class="card shadow">
+            {% if filtered_on is User %}
+                <div class="p font-heading serif">Posts{{ view_composer_name(filtered_on) }}</div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
     {% for post in result.items %}
         {{ view_post(post, current_user) }}
     {% endfor %}

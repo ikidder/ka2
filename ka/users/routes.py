@@ -3,9 +3,11 @@ from flask_login import login_user, current_user, logout_user, login_required
 from ka import bcrypt
 from ka.database import get_page
 from ka import Session
-from ka.models import User, Post, Score
+from ka.models import User, Post, Score, Visibility
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    RequestResetForm, ResetPasswordForm)
+from sqlalchemy import or_
+
 
 
 users_app = Blueprint('users', __name__)
@@ -66,47 +68,16 @@ def account():
     return render_template('account.html', title='Account', form=form)
 
 
-@users_app.route("/user/<string:user_path>/posts")
-@login_required
-def user_posts(user_path):
-    page = request.args.get('page', 1, type=int)
-    user = Session.query(User).filter_by(path=user_path).first()
-    if not user:
-        abort(404)
-    page_result = get_page(
-        Session.query(Post).filter_by(composer=user).order_by(Post.created.desc()),
-        page
-    )
-    return render_template('user_posts.html', result=page_result, user=user)
-
-
-@users_app.route("/user/<string:user_path>/scores")
-@login_required
-def user_scores(user_path):
-    page = request.args.get('page', 1, type=int)
-    user = Session.query(User).filter_by(path=user_path).first()
-    if not user:
-        abort(404)
-    # page_result = get_page(
-    #     Session.query(Score, User)
-    #         .filter(Score.user_id == User.id)
-    #         .filter(User.id == user.id)
-    #         .order_by(Score.created.desc()),
-    #     page
-    # )
-    page_result = get_page(
-        Session.query(Score).filter_by(composer=user).order_by(Score.created.desc()),
-        page
-    )
-    # page_result.items = [s for s, u in page_result.items]
-    return render_template('user_scores.html', result=page_result, user=user)
-
-
 @users_app.route("/users")
 @login_required
 def users():
     page = request.args.get('page', 1, type=int)
-    page_result = get_page(Session.query(User), page)
+    page_result = get_page(
+        Session.query(User)
+            .filter_by(visibility=Visibility.PUBLIC)
+            .order_by(User.count_favorites.desc(), User.created.desc()),
+        page
+    )
     return render_template('users.html', result=page_result)
 
 
@@ -145,3 +116,5 @@ def users():
 @login_required
 def favorites():
     return render_template('base.html')
+
+

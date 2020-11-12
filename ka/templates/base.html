@@ -104,10 +104,10 @@
                     </li>
                     {% if current_user.is_authenticated %}
                         <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('users.user_scores', user_path=current_user.path) }}"><span>My Scores</span></a>
+                            <a class="nav-link" href="{{ url_for('scores.user_scores', user_path=current_user.path) }}"><span>My Scores</span></a>
                         </li>
                         <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('users.user_posts', user_path=current_user.path) }}"><span>My Posts</span></a>
+                            <a class="nav-link" href="{{ url_for('posts.user_posts', user_path=current_user.path) }}"><span>My Posts</span></a>
                         </li>
                     {% endif %}
                 </ul>

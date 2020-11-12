@@ -2,9 +2,22 @@
 
 {% from 'macros.html' import view_score_header %}
 {%  from 'macros.html' import view_control %}
-{%  from 'macros.html' import view_empty_control %}
+{%  from 'macros.html' import view_empty_control, view_composer_name, view_for_players %}
+
 
 {% block content %}
+
+    {% if filtered_on %}
+    <div class="container-md">
+        <div class="card shadow">
+            {% if filtered_on is User %}
+                <div class="p font-heading serif">Scores{{ view_composer_name(filtered_on) }}</div>
+            {% elif filtered_on is ForPlayers %}
+                <div class="p font-heading serif">Scores{{ view_for_players(filtered_on) }}</div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 
     {% for score in result.items %}
         {{ view_score_header(score, current_user) }}

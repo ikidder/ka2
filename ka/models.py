@@ -32,9 +32,9 @@ def encode(s):
 
 @unique
 class Visibility(Enum):
-    PUBLIC = 'PUBLIC'
-    PRIVATE = 'PRIVATE'
-    HIDDEN = 'HIDDEN'
+    PUBLIC = 'PUBLIC'      # appears in general lists and searches
+    PRIVATE = 'PRIVATE'    # can be accessed with a direct link, or through the user's page
+    HIDDEN = 'HIDDEN'      # will not appear on the site at all
 
 
 def pp_duration(seconds: int) -> str:
@@ -147,6 +147,7 @@ class User(KaBase, UserMixin):
     password = Column(String(60), nullable=False)
     visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
     text = Column(Text, nullable=True, default='')
+    count_favorites = Column(Integer, nullable=False, default=0)
 
     @hybrid_property
     def name(self):
@@ -196,6 +197,7 @@ class Post(KaBase):
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     composer = relationship('User', foreign_keys=user_id)
     visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
+    count_favorites = Column(Integer, nullable=False, default=0)
 
     @hybrid_property
     def name(self):
@@ -279,7 +281,7 @@ class Measure(KaBase):
     _ordinal = Column(Integer, nullable=False, default=0)
     score_id = Column(Integer, ForeignKey('score.id'), nullable=False)
     score = relationship('Score', back_populates='measures', foreign_keys=score_id)
-    visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
+    visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC) # ignored
 
     @hybrid_property
     def name(self):
@@ -308,6 +310,7 @@ class Measure(KaBase):
         self._path = encode(
             f'{self._name}__number__{self._ordinal:04}__from__{self.score.name}__by__{self.score.composer.name}'
         )
+        self.score._set_duration()
 
     @property
     def formatted_duration(self):
@@ -393,11 +396,14 @@ class Score(KaBase):
         self._path = encode(
             f'{self._name}__by__{self.composer.name}'
         )
-        self.duration = sum(m.duration for m in self.measures)
+        self._set_duration()
 
     @property
     def formatted_duration(self):
         return pp_duration(self.duration)
+
+    def _set_duration(self):
+        self.duration = sum(m.duration for m in self.measures)
 
     __searchable__ = ['title', 'description']
 
