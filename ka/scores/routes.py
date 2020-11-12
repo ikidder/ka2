@@ -27,6 +27,7 @@ def new_score():
             for_players=ForPlayers[form.for_players.data],
             created=datetime.utcnow()
         )
+        score.composer.count_scores = score.composer.count_scores + 1
         Session.add(score)
         Session.commit()
         flash('Your score has been created!', 'success')
@@ -265,6 +266,7 @@ def delete_score(score_path):
 
     form = DeleteScoreForm()
     if form.validate_on_submit():
+        s.composer.count_scores = s.composer.count_scores - 1
         for m in s.measures:
             Session.delete(m)
         Session.delete(s)

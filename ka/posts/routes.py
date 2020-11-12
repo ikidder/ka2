@@ -17,6 +17,7 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(name=form.name.data, text=form.text.data, composer=current_user)
+        post.composer.count_posts = post.composer.count_posts + 1
         Session.add(post)
         Session.commit()
         flash('Your post has been created!', 'success')
@@ -69,6 +70,7 @@ def delete_post(post_path):
 
     form = DeletePostForm()
     if form.validate_on_submit():
+        p.composer.count_posts = p.composer.count_posts - 1
         Session.delete(p)
         Session.commit()
         flash('Your post has been deleted!', 'success')

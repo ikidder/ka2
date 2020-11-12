@@ -148,6 +148,9 @@ class User(KaBase, UserMixin):
     visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
     text = Column(Text, nullable=True, default='')
     count_favorites = Column(Integer, nullable=False, default=0)
+    count_scores = Column(Integer, nullable=False, default=0)
+    count_posts = Column(Integer, nullable=False, default=0)
+    count_tours = Column(Integer, nullable=False, default=0)
 
     @hybrid_property
     def name(self):
@@ -198,6 +201,7 @@ class Post(KaBase):
     composer = relationship('User', foreign_keys=user_id)
     visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
     count_favorites = Column(Integer, nullable=False, default=0)
+    count_plays = Column(Integer, nullable=False, default=0)
 
     @hybrid_property
     def name(self):
@@ -281,7 +285,6 @@ class Measure(KaBase):
     _ordinal = Column(Integer, nullable=False, default=0)
     score_id = Column(Integer, ForeignKey('score.id'), nullable=False)
     score = relationship('Score', back_populates='measures', foreign_keys=score_id)
-    visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC) # ignored
 
     @hybrid_property
     def name(self):

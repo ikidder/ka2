@@ -237,12 +237,12 @@
                 </div>
                 <div class="col text-center user-summary">
                     <a class="scores" href="{{ url_for('scores.user_scores', user_path=user.path) }}">
-                        Scores: {{ user.scores|length }}
+                        Scores: {{ user.count_scores }}
                     </a>
                 </div>
                 <div class="col text-center user-summary">
                     <a class="posts" href="{{ url_for('posts.user_posts', user_path=user.path) }}">
-                        Posts: {{ user.posts|length }}
+                        Posts: {{ user.count_posts }}
                     </a>
                 </div>
             </div>
