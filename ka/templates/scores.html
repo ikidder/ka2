@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_score_header %}
+{% from 'macros.html' import view_score_header, view_score_header_row %}
 {%  from 'macros.html' import view_control %}
 {%  from 'macros.html' import view_empty_control, view_composer_name, view_for_players %}
 
@@ -11,16 +11,17 @@
     <div class="container-md">
         <div class="card shadow">
             {% if filtered_on is User %}
-                <div class="p font-heading serif">Scores{{ view_composer_name(filtered_on) }}</div>
+                <div class="p font-sub-heading serif">Scores{{ view_composer_name(filtered_on) }}</div>
             {% elif filtered_on is ForPlayers %}
-                <div class="p font-heading serif">Scores{{ view_for_players(filtered_on) }}</div>
+                <div class="p font-sub-heading  serif">Scores{{ view_for_players(filtered_on) }}</div>
             {% endif %}
         </div>
     </div>
     {% endif %}
 
     {% for score in result.items %}
-        {{ view_score_header(score, current_user) }}
+{#        {{ view_score_header(score, current_user) }}#}
+        {{ view_score_header_row(score) }}
     {% endfor %}
 
     {% if result.has_prev or result.has_next %}

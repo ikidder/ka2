@@ -1,23 +1,22 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_post %}
-{% from 'macros.html' import view_control %}
-{%  from 'macros.html' import view_empty_control, view_composer_name %}
+{% from 'macros.html' import view_post, view_score_header, view_control %}
+{%  from 'macros.html' import view_empty_control, view_composer_name, view_user_summary %}
 
 {% block content %}
 
     {% if filtered_on %}
-    <div class="container-md">
-        <div class="card shadow">
             {% if filtered_on is User %}
-                <div class="p font-sub-heading serif">Posts{{ view_composer_name(filtered_on) }}</div>
+                {{ view_user_summary(filtered_on) }}
             {% endif %}
-        </div>
-    </div>
     {% endif %}
 
-    {% for post in result.items %}
-        {{ view_post(post, current_user) }}
+    {% for item in result.items %}
+        {% if item is Score %}
+        {{ view_score_header(item, current_user) }}
+        {% elif item is Post %}
+        {{ view_post(item, current_user) }}
+        {% endif %}
     {% endfor %}
 
     {% if result.has_prev or result.has_next  %}

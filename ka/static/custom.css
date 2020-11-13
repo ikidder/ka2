@@ -68,14 +68,14 @@
 }
 
 .font-sub-heading {
-    font-size: var(--font-regular);
+    font-size: var(--font-large);
     line-height: 1.3em;
     font-weight: var(--font-weight-heading);
 }
 
 .font-heading {
     font-size: var(--font-extra-large);
-    font-weight: 500;
+    font-weight: var(--font-weight-heading);
     line-height: 1.3em;
 }
 
@@ -849,17 +849,17 @@ a.title:hover {
 /*********************************/
 
 .user-summary .composer {
-    font-size: var(--font-extra-large);
+    font-size: var(--font-large);
 }
 
 .user-summary .scores {
-    font-size: var(--font-extra-large);
+    font-size: var(--font-large);
     font-family: var(--font-heading);
     color: var(--accent-1);
 }
 
 .user-summary .posts {
-    font-size: var(--font-extra-large);
+    font-size: var(--font-large);
     font-family: var(--font-heading);
     color: var(--accent-4);
 }

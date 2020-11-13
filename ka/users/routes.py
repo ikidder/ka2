@@ -3,10 +3,11 @@ from flask_login import login_user, current_user, logout_user, login_required
 from ka import bcrypt
 from ka.database import get_page
 from ka import Session
-from ka.models import User, Post, Score, Visibility
+from ka.models import User, Post, Score, Visibility, KaBase
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    RequestResetForm, ResetPasswordForm)
 from sqlalchemy import or_
+from sqlalchemy.orm import with_polymorphic
 
 
 
@@ -118,3 +119,40 @@ def favorites():
     return render_template('base.html')
 
 
+@users_app.route('/user/<string:user_path>')
+def user_content(user_path):
+    page = request.args.get('page', 1, type=int)
+    user = Session.query(User).filter_by(path=user_path).first()
+    if not user or user.visibility == Visibility.HIDDEN:
+        abort(404)
+    content = with_polymorphic(KaBase, [Score, Post])
+    page_result = get_page(
+        Session.query(content)
+            .filter(or_(content.Score.user_id == user.id, content.Post.user_id == user.id))
+            .order_by(content.created.desc()),
+        page
+    )
+    return render_template(
+        'user_content.html',
+        filtered_on=user,
+        result=page_result,
+        current_user=current_user
+    )
+
+
+# *************************************************
+#  Template Tests
+# *************************************************
+
+
+@users_app.app_template_test("User")
+def is_user(obj):
+    return isinstance(obj, User)
+
+@users_app.app_template_test("Score")
+def is_score(obj):
+    return isinstance(obj, Score)
+
+@users_app.app_template_test("Post")
+def is_post(obj):
+    return isinstance(obj, Post)

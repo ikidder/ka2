@@ -11,6 +11,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, validates
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Index, event
 from sqlalchemy import Enum as dbEnum
+from sqlalchemy.orm import with_polymorphic
 from flask_login import UserMixin
 
 
@@ -416,6 +417,27 @@ class Score(KaBase):
 
     def __repr__(self):
         return '<Score -> id: {}, name: {}, composer name: {}>'.format(self.id, self.name, self.composer.name)
+
+
+
+
+
+
+
+# *************************************************
+#  Favorite
+# *************************************************
+
+
+class Favorite(KaBase):
+    __tablename__ = 'favorite'
+
+    id = Column(ForeignKey("kabase.id"), primary_key=True)
+    user_id = Column(ForeignKey('user.id'), nullable=False)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'favorite',
+    }
 
 
 #*************************************************
