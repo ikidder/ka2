@@ -761,6 +761,11 @@ button.navbar-toggler:focus {
     font-size: var(--font-regular);
 }
 
+.score-header-row .created {
+    grid-column: 5 / 7;
+    grid-row: 2;
+    font-size: var(--font-regular);
+}
 
 /*********************************/
 /*  search-form                  */
