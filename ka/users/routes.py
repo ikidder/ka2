@@ -116,7 +116,12 @@ def users():
 @users_app.route('/favorites', methods=['GET'])
 @login_required
 def favorites():
-    return render_template('base.html')
+    favorites = current_user.favorites()
+    return render_template(
+        'favorites.html',
+        favorites=favorites,
+        current_user=current_user,
+    )
 
 
 @users_app.route('/user/<string:user_path>')
