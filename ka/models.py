@@ -8,8 +8,8 @@ from ka import login_manager
 from ka import Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship, backref, validates
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Index, event
+from sqlalchemy.orm import relationship, backref, validates, joinedload
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Index, event, Table
 from sqlalchemy import Enum as dbEnum
 from sqlalchemy.orm import with_polymorphic
 from flask_login import UserMixin
@@ -152,6 +152,12 @@ class User(KaBase, UserMixin):
     count_scores = Column(Integer, nullable=False, default=0)
     count_posts = Column(Integer, nullable=False, default=0)
     count_tours = Column(Integer, nullable=False, default=0)
+    # favorites = relationship(
+    #     'Favorite',
+    #     back_populates='user',
+    #     order_by='Favorite.created.desc()',
+    #     lazy=True
+    # )
 
     @hybrid_property
     def name(self):
@@ -167,6 +173,14 @@ class User(KaBase, UserMixin):
         'polymorphic_identity': 'user',
     }
 
+    def favorites(self):
+        favoritable = with_polymorphic(KaBase, [User, Score, Post], flat=True)
+        favs = Session.query(Favorite)\
+            .options(joinedload(Favorite.content.of_type(favoritable)))\
+            .filter(Favorite.user_id == self.id)\
+            .all()
+        return [fav.content for fav in favs]
+
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
@@ -178,7 +192,7 @@ class User(KaBase, UserMixin):
             user_id = s.loads(token)['user_id']
         except:
             return None
-        return User.query.get(user_id)
+        return Session(User).query.get(user_id)
 
     def __repr__(self):
         return f"<User -> username: {self.name}, email: {self.email}, id: {self.id}, visibility: {self.visibility}>"
@@ -419,11 +433,6 @@ class Score(KaBase):
         return '<Score -> id: {}, name: {}, composer name: {}>'.format(self.id, self.name, self.composer.name)
 
 
-
-
-
-
-
 # *************************************************
 #  Favorite
 # *************************************************
@@ -432,12 +441,26 @@ class Score(KaBase):
 class Favorite(KaBase):
     __tablename__ = 'favorite'
 
-    id = Column(ForeignKey("kabase.id"), primary_key=True)
+    id = Column(ForeignKey('kabase.id'), primary_key=True)
     user_id = Column(ForeignKey('user.id'), nullable=False)
+    user = relationship('User', foreign_keys=[user_id])
+    content_id = Column(ForeignKey('score.id'), nullable=False)
+    content = relationship(
+        'KaBase',
+        foreign_keys=[content_id],
+        primaryjoin="and_(Favorite.content_id==KaBase.id)"
+    )
 
     __mapper_args__ = {
         'polymorphic_identity': 'favorite',
     }
+
+    def __init__(self, user_id, content_id):
+        self._name = f'favorite__{user_id}__{content_id}'
+        self._path = encode(self._name)
+        self.user_id = user_id
+        self.content_id = content_id
+
 
 
 #*************************************************

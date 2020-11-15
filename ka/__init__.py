@@ -27,7 +27,7 @@ from .config import Config
 #from .database import Session
 
 
-engine = create_engine(os.environ['DATABASE_URL'])
+engine = create_engine(os.environ['DATABASE_URL'], echo=True)
 Session = scoped_session(sessionmaker(bind=engine))
 
 
