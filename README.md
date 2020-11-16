@@ -7,6 +7,21 @@ Corey Schafer's flask videos were tremendously helpful: https://www.youtube.com/
 
 ---
 
+### Heroku environments 
+
+#### Setup
+
+heroku create ***-staging
+git remote add staging https://git.heroku.com/***-staging.git
+
+heroku create ***-production
+git remote add staging https://git.heroku.com/***-production.git
+
+#### Releases
+
+git push staging
+git push production
+
 ### Connecting to the Heroku db
 ```
 (.venv) $ heroku run python
@@ -15,7 +30,7 @@ Corey Schafer's flask videos were tremendously helpful: https://www.youtube.com/
 >>> for key in os.environ.keys():
 ...     print(key, os.environ[key])
 ... 
->>> from kamagape import *
+>>> from ka import *
 >>> app = Flask(__name__)
 >>> app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://{username}}:{password}@{server}:5432/{database}'
 ```
@@ -48,3 +63,4 @@ alembic upgrade head
 ### Generating a SECRET_KEY
 
 os.urandom(24).hex()
+
