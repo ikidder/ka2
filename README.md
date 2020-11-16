@@ -22,6 +22,13 @@ git remote add staging https://git.heroku.com/***-production.git
 git push staging
 git push production
 
+#### Maintenance Mode
+
+heroku maintenance:on  
+heroku maintenance:off  
+
+https://devcenter.heroku.com/articles/maintenance-mode)
+
 ### Connecting to the Heroku db
 ```
 (.venv) $ heroku run python
