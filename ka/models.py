@@ -152,12 +152,7 @@ class User(KaBase, UserMixin):
     count_scores = Column(Integer, nullable=False, default=0)
     count_posts = Column(Integer, nullable=False, default=0)
     count_tours = Column(Integer, nullable=False, default=0)
-    # favorites = relationship(
-    #     'Favorite',
-    #     back_populates='user',
-    #     order_by='Favorite.created.desc()',
-    #     lazy=True
-    # )
+    invites_left = Column(Integer, nullable=False, default=5)
 
     @hybrid_property
     def name(self):
