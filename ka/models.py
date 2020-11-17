@@ -9,7 +9,7 @@ from ka import Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, validates, joinedload
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Index, event, Table
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Index, event, and_
 from sqlalchemy import Enum as dbEnum
 from sqlalchemy.orm import with_polymorphic
 from flask_login import UserMixin
@@ -173,8 +173,14 @@ class User(KaBase, UserMixin):
         favs = Session.query(Favorite)\
             .options(joinedload(Favorite.content.of_type(favoritable)))\
             .filter(Favorite.user_id == self.id)\
+            .order_by(Favorite.created.desc())\
             .all()
         return [fav.content for fav in favs]
+
+    def get_favorite(self, kabase_id):
+        return Session.query(Favorite) \
+            .filter(and_(Favorite.user_id == self.id, Favorite.content_id == kabase_id)) \
+            .first()
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
@@ -238,6 +244,7 @@ class Post(KaBase):
 
     def __repr__(self):
         return f"<Post -> id: {self.id}, name: {self.name}, date: {self.created}'>"
+
 
 
 # *************************************************

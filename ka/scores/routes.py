@@ -314,8 +314,7 @@ def scores():
     )
     return render_template(
         'scores.html',
-        result=page_result,
-        current_user=current_user
+        result=page_result
     )
 
 
@@ -338,8 +337,7 @@ def scores_for_players(for_whom):
     return render_template(
         'scores.html', 
         filtered_on=fp,
-        result=page_result,
-        current_user=current_user
+        result=page_result
     )
 
 
@@ -360,8 +358,7 @@ def user_scores(user_path):
     return render_template(
         'scores.html',
         filtered_on=user,
-        result=page_result,
-        current_user=current_user
+        result=page_result
     )
 
 

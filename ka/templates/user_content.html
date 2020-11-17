@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_post, view_score_header, view_control %}
-{%  from 'macros.html' import view_empty_control, view_composer_name, view_user_summary %}
+{% from 'macros.html' import view_post, view_score_header, view_control, view_empty_control, view_composer_name, view_user_summary with context %}
 
 {% block content %}
 
@@ -13,9 +12,9 @@
 
     {% for item in result.items %}
         {% if item is Score %}
-        {{ view_score_header(item, current_user) }}
+        {{ view_score_header(item) }}
         {% elif item is Post %}
-        {{ view_post(item, current_user) }}
+        {{ view_post(item) }}
         {% endif %}
     {% endfor %}
 

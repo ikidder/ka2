@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_score_header, view_score_header_row %}
-{%  from 'macros.html' import view_control %}
-{%  from 'macros.html' import view_empty_control, view_composer_name, view_for_players %}
-
+{% from 'macros.html' import view_score_header, view_score_header_row, view_control, view_empty_control, view_composer_name, view_for_players %}
 
 {% block content %}
 
@@ -20,7 +17,7 @@
     {% endif %}
 
     {% for score in result.items %}
-{#        {{ view_score_header(score, current_user) }}#}
+{#        {{ view_score_header(score) }}#}
         {{ view_score_header_row(score) }}
     {% endfor %}
 

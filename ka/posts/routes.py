@@ -109,8 +109,7 @@ def user_posts(user_path):
     return render_template(
         'posts.html',
         filtered_on=user,
-        result=page_result,
-        current_user=current_user
+        result=page_result
     )
 
 

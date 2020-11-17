@@ -15,7 +15,7 @@
 {% endmacro %}
 
 
-{% macro view_measure(measure, prev_measure=None, next_measure=None, current_user=None) %}
+{% macro view_measure(measure, prev_measure=None, next_measure=None) %}
     <div class="container-md" id="{{ measure.path }}">
     <div class="card shadow">
         <div class="p text-center">
@@ -25,7 +25,7 @@
             <span class="measure-tempo-and-dynamic">{{ measure.tempo.value }}, {{ measure.dynamic.value }}</span>
         </div>
         <div class="p content">{{ measure.text|markdown }}</div>
-        {{ view_measure_item_menu(measure, current_user) }}
+        {{ view_measure_item_menu(measure) }}
         <div class="p duration font-heading text-center">{{ measure.formatted_duration }}</div>
         {% if prev_measure or next_measure %}
             <hr />
@@ -137,7 +137,7 @@
 {% endmacro %}
 
 
-{%  macro view_score_header(score, current_user) -%}
+{%  macro view_score_header(score) -%}
     <div class="container-md">
         <div class="card shadow">
             <div class="p font-heading">
@@ -148,7 +148,7 @@
             </div>
             <div class="p content">{{ score.text|markdown }}</div>
             <div class="p duration font-heading text-center"><span>{{ score.formatted_duration }}</span></div>
-            {{ view_score_item_menu(score, current_user) }}
+            {{ view_score_item_menu(score) }}
             <div class="p metadata row">
                 <div class="col">
                     <p class="text-center">plays: {{ score.count_plays|e }}</p>
@@ -184,7 +184,7 @@
 {%- endmacro %}
 
 
-{%  macro view_score_header_with_controls(score, current_user) -%}
+{%  macro view_score_header_with_controls(score) -%}
     <div class="container-md">
         <div class="card shadow">
             <div class="p font-heading">
@@ -208,7 +208,7 @@
             </div>
             <hr />
             <div class="page-controls mx-auto">
-                {{ view_control(url_for('users.favorites'), "fa-star") }}
+                {{ view_favorite_control(score.id) }}
                 {% if score.measures|length > 0 %}
                         {{ view_control(url_for('scores.measure', score_path=score.path, measure_path=score.measures.0.path, autoplay='true'), "fa-play") }}
                 {% else %}
@@ -220,7 +220,7 @@
                     {{ view_control(url_for('scores.copy_score', score_path=score.path), "fa-copy") }}
                 {% endif %}
             </div>
-            {{ view_score_item_menu(score, current_user) }}
+            {{ view_score_item_menu(score) }}
         </div>
     </div>
 {%- endmacro %}
@@ -258,7 +258,7 @@
 {% endmacro %}
 
 
-{%  macro view_post(post, current_user) %}
+{%  macro view_post(post) %}
     <div class="container-md">
         <div class="card shadow">
             <div class="p font-heading">{{  view_post_title(post.name, post.path) }}</div>
@@ -277,13 +277,13 @@
                     <p class="text-center">created: {{ post.created.strftime("%d %B %Y") }}</p>
                 </div>
             </div>
-            {{ view_post_item_menu(post, current_user) }}
+            {{ view_post_item_menu(post) }}
         </div>
     </div>
 {% endmacro %}
 
 
-{%  macro view_post_row(post, current_user) %}
+{%  macro view_post_row(post) %}
     <div class="container-md">
         <div class="card shadow">
             <div class="score-header-row">
@@ -306,12 +306,21 @@
 {% endmacro %}
 
 
+{% macro view_favorite_control(obj_id) %}
+    {% if current_user.get_favorite(obj_id) %}
+    <a class="page-control" href="{{ url_for('users.unfavorite', id=obj_id, redirect=request.path) }}"><i class="fas fa-fw fa-star"></i></a>
+    {% else %}
+    <a class="page-control" href="{{ url_for('users.favorite', id=obj_id, redirect=request.path) }}"><i class="fas fa-fw fa-star"></i></a>
+    {% endif %}
+{% endmacro %}
+
+
 {% macro view_submit_button(icon_class) %}
     <button type="submit" class="btn page-control"><i class="fas fa-fw {{ icon_class }}"></i></button>
 {% endmacro %}
 
 
-{% macro view_score_item_menu(score, current_user) %}
+{% macro view_score_item_menu(score) %}
     <div class="btn-group dropleft item-menu">
       <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-ellipsis-v"></i>
@@ -321,7 +330,7 @@
             {% if score.measures|length > 0 %}
                     {{ view_control(url_for('scores.measure', score_path=score.path, measure_path=score.measures.0.path, autoplay='true'), "fa-play") }}
             {% endif %}
-                {{ view_control(url_for('users.favorites'), "fa-star") }}
+                {{ view_favorite_control(score.id) }}
             {% if score.composer == current_user %}
                 {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pen-fancy") }}
             {% endif %}
@@ -335,7 +344,7 @@
 {% endmacro %}
 
 
-{% macro view_measure_item_menu(measure, current_user) %}
+{% macro view_measure_item_menu(measure) %}
     <div class="btn-group dropleft item-menu">
       <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-ellipsis-v"></i>
@@ -356,7 +365,7 @@
 {% endmacro %}
 
 
-{% macro view_post_item_menu(post, current_user) %}
+{% macro view_post_item_menu(post) %}
     <div class="btn-group dropleft item-menu">
       <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-ellipsis-v"></i>
@@ -364,7 +373,7 @@
       <div class="dropdown-menu">
         <div class="page-controls mx-auto ">
                 {{ view_control(url_for('posts.post', post_path=post.path), "fa-play") }}
-                {{ view_control(url_for('users.favorites'), "fa-star") }}
+                {{ view_favorite_control(post.id) }}
             {% if post.user_id == current_user.id %}
                     {{ view_control(url_for('posts.update_post', post_path=post.path), "fa-pen-fancy") }}
                     {{ view_control(url_for('posts.delete_post', post_path=post.path), "fa-times") }}

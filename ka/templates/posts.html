@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_post_row %}
-{% from 'macros.html' import view_control %}
-{%  from 'macros.html' import view_empty_control, view_composer_name %}
+{% from 'macros.html' import view_post_row, view_control, view_empty_control, view_composer_name with context %}
 
 {% block content %}
 
@@ -17,7 +15,7 @@
     {% endif %}
 
     {% for post in result.items %}
-        {{ view_post_row(post, current_user) }}
+        {{ view_post_row(post) }}
     {% endfor %}
 
     {% if result.has_prev or result.has_next  %}

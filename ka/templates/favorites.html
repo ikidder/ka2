@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_post_row, view_score_header_row, view_control %}
-{%  from 'macros.html' import view_empty_control, view_composer_name, view_user_summary %}
+{% from 'macros.html' import view_post_row, view_score_header_row, view_control, view_empty_control, view_composer_name, view_user_summary with context %}
 
 {% block content %}
 
@@ -15,7 +14,7 @@
         {% if fav is Score %}
             {{ view_score_header_row(fav) }}
         {% elif item is Post %}
-            {{ view_post_row(fav, current_user) }}
+            {{ view_post_row(fav) }}
         {%  elif item is User %}
             {{ view_user_summary(item) }}
         {% endif %}

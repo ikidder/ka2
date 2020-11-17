@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_post %}
+{% from 'macros.html' import view_post with context%}
 
 {% block content %}
 
-{{ view_post(post, current_user) }}
+{{ view_post(post) }}
 
 {% endblock content %}

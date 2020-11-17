@@ -3,11 +3,12 @@ from flask_login import login_user, current_user, logout_user, login_required
 from ka import bcrypt
 from ka.database import get_page
 from ka import Session
-from ka.models import User, Post, Score, Visibility, KaBase
+from ka.models import User, Post, Score, Visibility, KaBase, Favorite
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    RequestResetForm, ResetPasswordForm)
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from sqlalchemy.orm import with_polymorphic
+import datetime
 
 
 
@@ -126,6 +127,54 @@ def favorites():
     )
 
 
+@users_app.route('/favorite/<int:id>/', methods=['GET'])
+@login_required
+def favorite(id):
+    favoritable = with_polymorphic(KaBase, [User, Score, Post])
+    obj = Session.query(favoritable).filter(KaBase.id == id).first()
+    if not obj:
+        abort(404)
+    existing_favorite = current_user.get_favorite(obj.id)
+    if existing_favorite:
+        existing_favorite.created = datetime.datetime.utcnow()
+        Session.add(existing_favorite)
+        Session.commit()
+    else:
+        favorite = Favorite(current_user.id, obj.id)
+        Session.add(favorite)
+        obj.count_favorites = obj.count_favorites + 1
+        Session.add(obj)
+        Session.commit()
+        flash(f'Added "{obj.name}" to Favorites')
+    redirect_path = request.args.get('redirect')
+    if redirect_path:
+        return redirect(redirect_path)
+    else:
+        redirect(url_for('users.favorites'))
+
+
+@users_app.route('/unfavorite/<int:id>/', methods=['GET'])
+@login_required
+def unfavorite(id):
+    favoritable = with_polymorphic(KaBase, [User, Score, Post])
+    obj = Session.query(favoritable).filter(KaBase.id == id).first()
+    if not obj:
+        abort(404)
+    existing_favorite = current_user.get_favorite(obj.id)
+    if not existing_favorite:
+        abort(404)
+    Session.delete(existing_favorite)
+    obj.count_favorites = obj.count_favorites - 1
+    Session.add(obj)
+    Session.commit()
+    flash(f'Removed "{obj.name}" from Favorites')
+    redirect_path = request.args.get('redirect')
+    if redirect_path:
+        return redirect(redirect_path)
+    else:
+        redirect(url_for('users.favorites'))
+
+
 @users_app.route('/user/<string:user_path>')
 def user_content(user_path):
     page = request.args.get('page', 1, type=int)
@@ -142,8 +191,7 @@ def user_content(user_path):
     return render_template(
         'user_content.html',
         filtered_on=user,
-        result=page_result,
-        current_user=current_user
+        result=page_result
     )
 
 
