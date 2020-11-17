@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_score_header %}
-{% from 'macros.html' import view_measure %}
-{% from 'macros.html' import edit_measure %}
+{% from 'macros.html' import view_score_header, view_measure, edit_measure with context%}
 
 {% block content %}
     {{ view_score_header(score) }}
