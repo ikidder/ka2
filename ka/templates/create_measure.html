@@ -5,12 +5,12 @@
 {% from 'macros.html' import edit_measure %}
 
 {% block content %}
-    {{ view_score_header(score, current_user=current_user) }}
+    {{ view_score_header(score) }}
     {% for measure in measures %}
         {% if not append and measure.id == current_measure.id %}
             {{ edit_measure(form) }}
         {% else %}
-            {{ view_measure(measure, current_user=current_user) }}
+            {{ view_measure(measure) }}
         {% endif %}
     {% endfor %}
     {% if append %}
