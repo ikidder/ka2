@@ -202,7 +202,7 @@ class User(KaBase, UserMixin):
         return f"<User -> username: {self.name}, email: {self.email}, id: {self.id}, visibility: {self.visibility}>"
 
     def __init__(self, name):
-        self._name = name
+        self._name = name.strip()
         self._path = encode(name)
 
 
@@ -228,7 +228,7 @@ class Post(KaBase):
 
     @name.setter
     def name(self, value):
-        self._name = value
+        self._name = value.strip()
 
     @hybrid_property
     def path(self):
@@ -312,7 +312,7 @@ class Measure(KaBase):
 
     @name.setter
     def name(self, value):
-        self._name = value
+        self._name = value.strip()
 
     @hybrid_property
     def path(self):
@@ -407,7 +407,7 @@ class Score(KaBase):
 
     @name.setter
     def name(self, value):
-        self._name = value
+        self._name = value.strip()
 
     @hybrid_property
     def path(self):

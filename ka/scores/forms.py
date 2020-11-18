@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, HiddenField
+from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, HiddenField, ValidationError
 from wtforms.validators import DataRequired
 from ka.models import tempos, dynamics, for_players, Score, Measure, ForPlayers
 
@@ -11,6 +11,10 @@ class ScoreForm(FlaskForm):
     name = StringField('Title', validators=[DataRequired()])
     text = TextAreaField('Description', validators=[DataRequired()])
     for_players = SelectField(u'For Players', choices=list(zip(fp_names, fp_values)), default='ManAndWoman')
+
+    def validate_name(self, field):
+        if '_' in field.data:
+            raise ValidationError('Underscores are not allowed in titles.')
 
 
 class DeleteScoreForm(FlaskForm):
@@ -38,6 +42,10 @@ class MeasureForm(FlaskForm):
     dynamic = SelectField(u'Dynamic', choices=list(zip(dynamic_values, dynamic_values)), default='Piano')
     text = TextAreaField('Description', validators=[DataRequired()])
     duration = IntegerField('Duration (in seconds)', validators=[DataRequired()], default=45)
+
+    def validate_name(self, field):
+        if '_' in field.data:
+            raise ValidationError('Underscores are not allowed in titles.')
 
 class DeleteMeasureForm(FlaskForm):
     delete = HiddenField('Delete')

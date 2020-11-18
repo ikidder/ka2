@@ -43,18 +43,18 @@ def update_post(post_path):
     p = Session.query(Post).filter_by(path=post_path).first()
     if not p:
         abort(404)
-    if p.author != current_user:
+    if p.composer != current_user:
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
-        p.title = form.title.data
+        p.name = form.name.data
         p.text = form.text.data
         Session.commit()
         flash('Your post has been updated!', 'success')
-        return redirect(url_for('posts.post', post_id=p.id))
+        return redirect(url_for('posts.post', post_path=p.path))
     elif request.method == 'GET':
-        form.name.data = p.title
-        form.text.data = p.content
+        form.name.data = p.name
+        form.text.data = p.text
     return render_template('create_post.html', title='Edit Post',
                            form=form, legend='Edit Post')
 
