@@ -1,35 +1,32 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_submit_button %}
+{% from 'macros.html' import view_submit_button, view_composer_name, view_formatting_help with context %}
 
 
 {% block content %}
     <div class="container-md">
     <div class="card p-4 mb-4 mx-auto shadow">
-      <div class="media">
-        <div class="media-body">
-          <h2 class="account-heading">{{ current_user.name }}</h2>
-          <p class="text-secondary">{{ current_user.email }}</p>
-        </div>
-      </div>
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Account Info</legend>
-                <div class="form-group">
-                    {{ form.name.label(class="form-control-label") }}
-
-                    {% if form.name.errors %}
-                        {{ form.name(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.name.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.name(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
+                <legend class="mb-4">
+                    <p>Account Info</p>
+                    <a class="composer" href="{{ url_for('users.user_content', user_path=current_user.path) }}">{{ current_user.name|e }}</a>
+                </legend>
+{#                <div class="form-group">#}
+{#                    {{ form.name.label(class="form-control-label") }}#}
+{##}
+{#                    {% if form.name.errors %}#}
+{#                        {{ form.name(class="form-control form-control-lg is-invalid") }}#}
+{#                        <div class="invalid-feedback">#}
+{#                            {% for error in form.name.errors %}#}
+{#                                <span>{{ error }}</span>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{#                    {% else %}#}
+{#                        {{ form.name(class="form-control form-control-lg", readonly=true) }}#}
+{#                    {% endif %}#}
+{#                </div>#}
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
@@ -43,6 +40,22 @@
                         {{ form.email(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+
+                <div class="form-group">
+                    {{ form.text.label(class="form-control-label") }}
+                    {% if form.text.errors %}
+                        {{ form.text(class="form-control form-control-lg is-invalid", rows="12") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.text.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {{ view_formatting_help('text-left') }}
+                    {% else %}
+                        {{ form.text(class="form-control form-control-lg", rows="12") }}
+                        {{ view_formatting_help('text-left') }}
+                    {% endif %}
+                </div>
             </fieldset>
             <div class="form-group float-right">
                 <div class="page-controls">
@@ -51,5 +64,14 @@
             </div>
         </form>
     </div>
+    </div>
+    <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+                <div class="form-group">
+                    <small class="text-muted ml-2">
+                        <a href="{{ url_for('users.reset_password_request') }}">Request Password Reset</a>
+                    </small>
+                </div>
+        </div>
     </div>
 {% endblock content %}

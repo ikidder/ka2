@@ -1,3 +1,4 @@
+import datetime
 from flask import render_template, url_for, flash, redirect, request, Blueprint, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from ka import bcrypt
@@ -5,11 +6,9 @@ from ka.database import get_page
 from ka import Session
 from ka.models import User, Post, Score, Visibility, KaBase, Favorite
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
-                                   RequestResetForm, ResetPasswordForm)
+                                   ResetPasswordRequestForm, ResetPasswordForm)
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import with_polymorphic
-import datetime
-
 
 
 users_app = Blueprint('users', __name__)
@@ -59,14 +58,12 @@ def logout():
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
-        current_user.name = form.name.data
         current_user.email = form.email.data
         current_user.text = form.text.data
         Session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
-        form.name.data = current_user.name
         form.email.data = current_user.email
         form.text.data = current_user.text
     return render_template('account.html', title='Account', form=form)
@@ -85,35 +82,35 @@ def users():
     return render_template('users.html', result=page_result)
 
 
-# @users_app.route("/reset_password", methods=['GET', 'POST'])
-# def reset_request():
-#     if current_user.is_authenticated:
-#         return redirect(url_for('main.home'))
-#     form = RequestResetForm()
-#     if form.validate_on_submit():
-#         user = User.query.filter_by(email=form.email.data).first()
-#         send_reset_email(user)
-#         flash('An email has been sent with instructions to reset your password.', 'info')
-#         return redirect(url_for('users.login'))
-#     return render_template('reset_request.html', title='Reset Password', form=form)
+@users_app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Reset Password', form=form)
 
 
-# @users_app.route("/reset_password/<token>", methods=['GET', 'POST'])
-# def reset_token(token):
-#     if current_user.is_authenticated:
-#         return redirect(url_for('main.index'))
-#     user = User.verify_reset_token(token)
-#     if user is None:
-#         flash('That is an invalid or expired token', 'warning')
-#         return redirect(url_for('users.reset_request'))
-#     form = ResetPasswordForm()
-#     if form.validate_on_submit():
-#         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-#         user.password = hashed_password
-#         db.session.commit()
-#         flash('Your password has been updated! You are now able to log in', 'success')
-#         return redirect(url_for('users.login'))
-#     return render_template('reset_token.html', title='Reset Password', form=form)
+@users_app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for('index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        Session.commit()
+        flash('Your password has been reset. Please login to continue.')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)
 
 
 @users_app.route('/favorites', methods=['GET'])
