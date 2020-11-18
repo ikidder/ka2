@@ -333,7 +333,6 @@ class Measure(KaBase):
         self._path = encode(
             f'{self._name}__number__{self._ordinal:04}__from__{self.score.name}__by__{self.score.composer.name}'
         )
-        self.score._set_duration()
 
     @property
     def formatted_duration(self):
@@ -353,6 +352,7 @@ class Measure(KaBase):
 # *************************************************
 #  ForPlayers
 # *************************************************
+
 
 class ForPlayers(Enum):
     OneMan = "for a man"

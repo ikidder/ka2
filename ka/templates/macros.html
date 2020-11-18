@@ -15,7 +15,7 @@
 {% endmacro %}
 
 
-{% macro view_measure(measure, prev_measure=None, next_measure=None) %}
+{% macro view_measure(measure, prev_measure=None, next_measure=None, show_controls=False) %}
     <div class="container-md" id="{{ measure.path }}">
     <div class="card shadow">
         <div class="p text-center">
@@ -27,26 +27,26 @@
         <div class="p content">{{ measure.text|markdown }}</div>
         {{ view_measure_item_menu(measure) }}
         <div class="p duration font-heading text-center">{{ measure.formatted_duration }}</div>
-        {% if prev_measure or next_measure %}
+        {% if prev_measure or next_measure or show_controls %}
             <hr />
             <div class="page-controls">
-                    {% if prev_measure %}
-                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=prev_measure.path, autoplay='true'), "fa-step-backward") }}
-                    {% else %}
-                        {{ view_empty_control() }}
-                    {% endif %}
-            <div id="play">
-                    {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path), "fa-play") }}
-            </div>
-                    {% if next_measure %}
-                        <div id="next-measure">
-                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=next_measure.path, autoplay='true'), "fa-step-forward") }}
-                        </div>
-                    {% else %}
-                        <div id="next-measure">
-                        {{ view_control(url_for('scores.ending', score_path=measure.score.path), "fa-step-forward") }}
-                        </div>
-                    {% endif %}
+                {% if prev_measure %}
+                    {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=prev_measure.path, autoplay='true'), "fa-step-backward") }}
+                {% else %}
+                    {{ view_empty_control() }}
+                {% endif %}
+                <div id="play">
+                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path), "fa-play") }}
+                </div>
+                {% if next_measure %}
+                    <div id="next-measure">
+                    {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=next_measure.path, autoplay='true'), "fa-step-forward") }}
+                    </div>
+                {% else %}
+                    <div id="next-measure">
+                    {{ view_control(url_for('scores.ending', score_path=measure.score.path), "fa-step-forward") }}
+                    </div>
+                {% endif %}
                 </div>
         {% endif %}
     </div>

@@ -3,7 +3,7 @@
 {% from 'macros.html' import view_measure, view_button, view_score_title, view_composer_name, view_for_players with context %}
 
 {% block content %}
-    {{ view_measure(measure, prev_measure, next_measure) }}
+    {{ view_measure(measure, prev_measure, next_measure, show_controls) }}
 
     <div class="container-md">
         <div class="card p-4 mb-4 mx-auto shadow">

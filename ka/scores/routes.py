@@ -15,7 +15,7 @@ scores_app = Blueprint('scores', __name__)
 @scores_app.route("/score/new", methods=['GET', 'POST'])
 @login_required
 def new_score():
-    form = ScoreForm()
+    form = ScoreForm(for_players=ForPlayers.ManAndWoman)
     if form.validate_on_submit():
         score = Score(
             name=form.name.data,
@@ -32,6 +32,7 @@ def new_score():
         Session.commit()
         flash('Your score has been created!', 'success')
         return redirect(url_for('scores.new_measure', score_path=score.path))
+    form.for_players.data = ForPlayers.ManAndWoman
     return render_template('create_score.html', title='New Score',
                            form=form, legend='New Score')
 
@@ -57,6 +58,7 @@ def new_measure(score_path):
             score=s
         )
         Session.add(m)
+        Session.add(s)
         Session.commit()
         flash('Your measure has been created!', 'success')
         return redirect(url_for('scores.new_measure', score_path=s.path))
@@ -171,7 +173,15 @@ def measure(score_path, measure_path):
         next_measure = matches[0]
 
     title = m.name + ' from ' + m.score.name
-    return render_template('measure.html', title=title, score=s, measure=m, prev_measure=prev_measure, next_measure=next_measure)
+    return render_template(
+        'measure.html',
+        title=title,
+        score=s,
+        measure=m,
+        prev_measure=prev_measure,
+        next_measure=next_measure,
+        show_controls=True
+    )
 
 
 @scores_app.route("/score/<string:score_path>/update", methods=['GET', 'POST'])
@@ -228,6 +238,7 @@ def update_measure(score_path, measure_path):
         m.dynamic = form.dynamic.data
         m.text = form.text.data
         m.duration = form.duration.data
+        s._set_duration()
         Session.commit()
         flash('Your measure has been updated!', 'success')
         if next_measure:
@@ -294,6 +305,7 @@ def delete_measure(score_path, measure_path):
 
     form = DeleteMeasureForm()
     if form.validate_on_submit():
+        Session.add(s)
         Session.delete(m)
         Session.commit()
         flash('Your measure has been deleted!', 'success')
@@ -408,7 +420,7 @@ def ending(score_path):
     s = Session.query(Score).filter_by(path=score_path).first()
     if not s:
         abort(404)
-    title = 'End of ' + s.title + ' by ' + s.composer.name
+    title = 'End of ' + s.name + ' by ' + s.composer.name
     return render_template('ending.html', title=title, score=s, measures=s.measures)
 
 

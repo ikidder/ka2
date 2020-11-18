@@ -1,18 +1,21 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, HiddenField
 from wtforms.validators import DataRequired
-from ka.models import tempos, dynamics, for_players, Score, Measure
+from ka.models import tempos, dynamics, for_players, Score, Measure, ForPlayers
 
 fp_names = [fp.name for fp in for_players]
 fp_values = [fp.value for fp in for_players]
 
+
 class ScoreForm(FlaskForm):
     name = StringField('Title', validators=[DataRequired()])
     text = TextAreaField('Description', validators=[DataRequired()])
-    for_players = SelectField(u'For Players', choices=list(zip(fp_names, fp_values)))
+    for_players = SelectField(u'For Players', choices=list(zip(fp_names, fp_values)), default='ManAndWoman')
+
 
 class DeleteScoreForm(FlaskForm):
     delete = HiddenField('Delete')
+
 
 duration_choices = [
     (15, '15 seconds'),
