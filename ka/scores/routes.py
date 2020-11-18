@@ -384,8 +384,9 @@ def copy_score(score_path):
     copy = Score()
     copy.name = make_copy_title(s)
     copy.composer = current_user
-    copy.text = f'Variation on the score \n [{s.title}]({url_for("scores.score", score_path=s.path)}) \nby [{s.composer.name}]({url_for("users.user_scores", username=s.composer.name)}) \n\n' + s.description
+    copy.text = s.text
     copy.for_players = s.for_players
+    copy.variation_on_id = s.id
 
     for m in s.measures:
         copy_m = Measure()
@@ -407,10 +408,10 @@ def copy_score(score_path):
 def make_copy_title(s):
     i = 1
     while True:
-        title = f'{to_ordinal_string(i)} Variation on {s.title}'
-        existing_title = Session.query(Score).filter_by(title=title).first()
-        if not existing_title:
-            return title
+        name = f'{to_ordinal_string(i)} Variation on {s.name}'
+        existing_name = Session.query(Score).filter_by(name=name).first()
+        if not existing_name:
+            return name
         i = i + 1
 
 
