@@ -89,14 +89,14 @@ def new_measure_before(score_path, measure_path):
     if s.composer != current_user:
         abort(403)
 
-    measures = s.measures
-
     above_this_measure = Session.query(Measure).filter_by(path=measure_path).first()
     if not above_this_measure:
         abort(404)
     if above_this_measure.score.id != s.id:
         abort(404)
-    index = measures.index(above_this_measure)
+    index = s.measures.index(above_this_measure)
+
+    measures = s.measures
 
     measure = Measure()
     form = MeasureForm()
@@ -108,12 +108,12 @@ def new_measure_before(score_path, measure_path):
             text=form.text.data,
             duration=form.duration.data,
             created=datetime.utcnow(),
-            _ordinal=above_this_measure.ordinal,
-            score=s
+            #_ordinal=above_this_measure.ordinal,
+            #score=s
         )
 
-        measures = measures[:index] + [measure] + measures[index:]
-        for i, m in enumerate(measures):
+        s.measures = s.measures[:index] + [measure] + s.measures[index:]
+        for i, m in enumerate(s.measures):
             m.ordinal = i
         Session.add(s)
         Session.commit()
@@ -121,7 +121,7 @@ def new_measure_before(score_path, measure_path):
         return redirect(url_for('scores.score', score_path=s.path))
     else:
         measure.id = -1
-        measures = list(s.measures)[:index] + [measure] + list(s.measures)[index:]
+        measures = list(measures)[:index] + [measure] + list(measures)[index:]
 
     return render_template('create_measure.html',
                            title='New Measure',
@@ -132,6 +132,58 @@ def new_measure_before(score_path, measure_path):
                            current_measure=measure,
                            append=False)
 
+
+@scores_app.route("/score/<string:score_path>/measure/<string:measure_path>/new-measure-after", methods=['GET', 'POST'])
+@login_required
+def new_measure_after(score_path, measure_path):
+    s = Session.query(Score).filter_by(path=score_path).first()
+    if not s:
+        abort(404)
+    if s.composer != current_user:
+        abort(403)
+
+    measures = s.measures
+
+    below_this_measure = Session.query(Measure).filter_by(path=measure_path).first()
+    if not below_this_measure:
+        abort(404)
+    if below_this_measure.score.id != s.id:
+        abort(404)
+    index = measures.index(below_this_measure)
+
+    measure = Measure()
+    form = MeasureForm()
+    if form.validate_on_submit():
+        measure = Measure(
+            _name=form.name.data,
+            tempo=form.tempo.data,
+            dynamic=form.dynamic.data,
+            text=form.text.data,
+            duration=form.duration.data,
+            created=datetime.utcnow(),
+            _ordinal=below_this_measure.ordinal,
+            score=s
+        )
+
+        measures = measures[:index+1] + [measure] + measures[index+1:]
+        for i, m in enumerate(measures):
+            m.ordinal = i
+        Session.add(s)
+        Session.commit()
+        flash('Your measure has been created!', 'success')
+        return redirect(url_for('scores.score', score_path=s.path))
+    else:
+        measure.id = -1
+        measures = list(s.measures)[:index+1] + [measure] + list(s.measures)[index+1:]
+
+    return render_template('create_measure.html',
+                           title='New Measure',
+                           form=form,
+                           legend='New Measure',
+                           score=s,
+                           measures=measures,
+                           current_measure=measure,
+                           append=False)
 
 
 @scores_app.route("/score/<string:score_path>")
@@ -305,8 +357,10 @@ def delete_measure(score_path, measure_path):
 
     form = DeleteMeasureForm()
     if form.validate_on_submit():
-        Session.add(s)
         Session.delete(m)
+        Session.commit()
+        s._set_duration()
+        Session.add(s)
         Session.commit()
         flash('Your measure has been deleted!', 'success')
         return redirect(url_for('scores.score', score_path=s.path))

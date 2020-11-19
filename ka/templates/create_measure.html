@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_score_header, view_measure, edit_measure with context%}
+{% from 'macros.html' import view_score_header, view_measure, edit_measure, view_control with context%}
 
 {% block content %}
     {{ view_score_header(score) }}
@@ -14,4 +14,7 @@
     {% if append %}
         {{ edit_measure(form) }}
     {% endif %}
+    <div class="page-controls mx-auto ">
+        {{ view_control(url_for('scores.score', score_path=score.path), "fa-check fa-lg") }}
+    </div>
 {% endblock content %}

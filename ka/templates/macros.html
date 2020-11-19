@@ -356,8 +356,9 @@
                 {{ view_control(url_for('scores.update_measure', score_path=measure.score.path, measure_path=measure.path), "fa-pen-fancy") }}
             {% endif %}
             {% if measure.score.composer == current_user %}
-                    {{ view_control(url_for('scores.new_measure_before', score_path=measure.score.path, measure_path=measure.path), "fa-arrow-left") }}
-                    {{ view_control(url_for('scores.delete_measure', score_path=measure.score.path, measure_path=measure.path), "fa-times") }}
+                {{ view_control(url_for('scores.new_measure_before', score_path=measure.score.path, measure_path=measure.path), "fas fa-directions fa-flip-horizontal fa-lg") }}
+                {{ view_control(url_for('scores.new_measure_after', score_path=measure.score.path, measure_path=measure.path), "fas fa-directions fa-flip-vertical fa-flip-horizontal fa-lg") }}
+                {{ view_control(url_for('scores.delete_measure', score_path=measure.score.path, measure_path=measure.path), "fa-times") }}
             {% endif %}
          </div>
       </div>
