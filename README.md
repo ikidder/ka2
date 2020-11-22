@@ -19,7 +19,7 @@ git remote add staging https://git.heroku.com/***-production.git
 
 #### Releases
 
-git push staging
+git push staging  
 git push production
 
 #### Maintenance Mode

@@ -3,7 +3,24 @@
 {% block content %}
 <div class="container-md ">
   <div class="container-md home-container">
-      <a class="btn" href="{{ url_for('users.login') }}"><span>kamagapē</span></a>
+      <div class="">
+          <p class="text-center"><a class="btn" href="{{ url_for('users.login') }}"><span>kamagapē</span></a></p>
+{#          <p class="slogan text-center mt-5">{{ slogan }}</p>#}
+          <div class="mt-5">
+              <p class="text-center">
+                  <span class="word">kama</span>
+                  <span class="pronunciation">/'ka.mə/ -</span>
+                  <span class="definition">desire, wish, longing</span>
+              </p>
+          </div>
+          <div class="mt-2">
+              <p class="text-center">
+                  <span class="word">agape</span>
+                  <span class="pronunciation">/ə'ga:peɪ/ -</span>
+                  <span class="definition">the highest form of love</span>
+              </p>
+          </div>
+      </div>
   </div>
 </div>
 

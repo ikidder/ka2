@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_submit_button %}
+
+{% block content %}
+{% if success %}
+    <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+            <div class="form-group">
+                <div class="text-center content">
+                    Invitation sent! Thank you.
+                </div>
+            </div>
+        </div>
+    </div>
+{% elif current_user.invites_left < 1 %}
+    <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+            <div class="form-group">
+                <div class="text-center content">
+                        Sorry, you don't have any invites left. Please request more by <a href="mailto:info@kamagape.com?subject=Requesting additional invites">emailing us</a>.
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="title text-center"><span>We'll send an email invite to this person.</span></legend>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <div class="form-group float-right">
+                    <div class="page-controls">
+                            {{ view_submit_button('fa-save') }}
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+                <div class="text-center content">
+                        You have {{ current_user.invites_left }} invites left.
+                </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock content %}

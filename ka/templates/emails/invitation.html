@@ -1,0 +1,16 @@
+<HTML>
+<BODY>
+    <p>You've been invited to kamagapē!</p>
+    <p>
+        To create your account,
+        <a href="{{ url_for('users.register', invite_token=token, _external=True) }}">
+            click here
+        </a>.
+    </p>
+    <p>Alternatively, you can paste the following link in your browser's address bar:</p>
+    <p>{{ url_for('users.register', invite_token=token, _external=True) }}</p>
+
+    <p>Sincerely,</p>
+    <p>kamagapē</p>
+</BODY>
+</HTML>

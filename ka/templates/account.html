@@ -68,10 +68,18 @@
     <div class="container-md">
         <div class="card p-4 mb-4 mx-auto shadow">
                 <div class="form-group">
-                    <small class="text-muted ml-2">
-                        <a href="{{ url_for('users.reset_password_request') }}">Request Password Reset</a>
-                    </small>
+                    <div class="content ml-2">
+                        <a href="{{ url_for('users.reset_password_request') }}">Change Password</a>
+                    </div>
                 </div>
+        </div>
+    </div>
+    <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+            <div class="content ml-2">
+                You have {{ current_user.invites_left }} invites left.
+                <a href="{{ url_for('users.send_invite') }}">Send an invite to kamagapē.</a>
+            </div>
         </div>
     </div>
 {% endblock content %}

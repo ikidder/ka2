@@ -400,6 +400,27 @@ h5, h6 {
 }
 
 
+.word, .pronunciation, .definition {
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-content);
+}
+
+.word {
+    color: var(--accent-1);
+}
+
+.pronunciation, .definition {
+    color: var(--less-white);
+}
+
+.pronunciation {
+    color: var(--even-less-white);
+}
+
+.definition {
+        /*font-style: italic;*/
+}
+
 /*********************************/
 /*  hr                           */
 /*********************************/
@@ -787,6 +808,18 @@ button.navbar-toggler:focus {
 .search-result.hover,
 .search-result:focus {
     box-shadow: 0px 1rem 6px -0.75rem var(--accent-1);
+}
+
+
+/*********************************/
+/*  slogan                        */
+/*********************************/
+
+.slogan {
+    font-family: var(--font-serif);
+    color: var(--less-white);
+    font-weight: var(--font-weight-content);
+    line-height: 1.5em;
 }
 
 

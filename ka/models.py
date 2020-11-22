@@ -11,7 +11,7 @@ from ka import Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, validates, joinedload
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Index, event, and_
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Index, event, and_
 from sqlalchemy import Enum as dbEnum
 from sqlalchemy.orm import with_polymorphic
 from flask_login import UserMixin
@@ -194,9 +194,10 @@ class User(KaBase, UserMixin):
         try:
             id = jwt.decode(token, current_app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']
-        except:
+        except Exception as ex:
+            print(ex)
             return
-        return User.query.get(id)
+        return Session.query(User).get(id)
 
     def __repr__(self):
         return f"<User -> username: {self.name}, email: {self.email}, id: {self.id}, visibility: {self.visibility}>"
@@ -465,6 +466,53 @@ class Favorite(KaBase):
         self._path = encode(self._name)
         self.user_id = user_id
         self.content_id = content_id
+
+
+
+# *************************************************
+#  Invite
+# *************************************************
+
+INVITE_GOOD_FOR = 604800  # in seconds. == 7 days
+
+
+class Invite(Base):
+    __tablename__ = 'invite'
+
+    id = Column(Integer, primary_key=True)
+    from_user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    to_email = Column(String(120), nullable=False)
+    created = Column(DateTime, nullable=False, default=datetime.utcnow)
+    responded = Column(DateTime, nullable=True)
+    user_created = Column(Integer, ForeignKey('user.id'), nullable=True)
+
+    def token(self):
+        assert self.id, "Invite.id is set."
+        assert self.from_user_id, "from_user_id is set"
+        assert len(self.to_email) > 6 and '@' in self.to_email, "to_email looks like an email"
+        return jwt.encode(
+            {'inv_id': self.id, 'exp': time() + INVITE_GOOD_FOR, 'to_email': self.to_email},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256'
+        ).decode('utf-8')
+
+    @classmethod
+    def create(cls, from_user, to_email):
+        inv = Invite(from_user_id=from_user.id, to_email=to_email, created=datetime.utcnow())
+        return inv
+
+    @staticmethod
+    def validate_token(token):
+        try:
+            id = jwt.decode(token, current_app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['inv_id']
+        except Exception as ex:
+            print(ex)
+            return
+        return Session.query(Invite).get(id)
+
+    def __repr__(self):
+        return f'<Invite -> id: {self.id}, from_user_id: {self.from_user_id}, created: {self.created}, user_created: {self.user_created}>'
 
 
 
