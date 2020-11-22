@@ -114,7 +114,7 @@ def reset_password_request():
             token = user.get_reset_password_token()
             email.send_password_reset_email(user, token)
         flash('Check your email for the instructions to reset your password')
-        return redirect(url_for('login'))
+        return redirect(url_for('users.login'))
     return render_template('reset_password_request.html',
                            title='Reset Password', form=form)
 
@@ -133,7 +133,7 @@ def reset_password(token):
         Session.commit()
         logout_user()
         flash('Your password has been set. Please login to continue.')
-        return redirect(url_for('login'))
+        return redirect(url_for('users.login'))
     return render_template('reset_password.html', form=form)
 
 

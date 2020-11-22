@@ -17,7 +17,7 @@ def send_welcome_email(user, token):
     send_email(
         user.email,
         'Welcome to kamagapē!',
-        render_template('emails/reset_password.html', user=user, token=token),
+        render_template('emails/welcome.html', user=user, token=token),
     )
 
 
