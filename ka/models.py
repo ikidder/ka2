@@ -269,7 +269,6 @@ class Tempo(Enum):
     Vivace = 'Vivace'
     Presto = 'Presto'
 
-# tempos = [Grave, Lento, Adagio, Adagietto, Andante, Moderato, Allagretto, Allegro, Vivace, Presto]
 tempos = [tempo for tempo in Tempo]
 
 
@@ -286,8 +285,7 @@ class Dynamic(Enum):
     Piano = 'Piano'
     Pianissimo = 'Pianissimo'
 
-# dynamics = [Fortissimo, Forte, Mezzo, Piano, Pianissimo]
-dynamics = [dynamic for dynamic in Dynamic]
+dynamics = reversed([dynamic for dynamic in Dynamic])
 
 
 # *************************************************
