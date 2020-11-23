@@ -109,7 +109,7 @@ def reset_password_request():
         return redirect(url_for('main.index'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = Session.query(User).filter_by(email=form.email.data).first()
         if user:
             token = user.get_reset_password_token()
             email.send_password_reset_email(user, token)

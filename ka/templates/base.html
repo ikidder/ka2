@@ -280,5 +280,27 @@
     }
 
 </script>
+<script>
+    console.log('script started');
+    $('.share-button').click( event => {
+      if (navigator.share) {
+        navigator.share({
+          title: document.title,
+          url: document.location.href
+        }).then(() => {
+          console.log('Thanks for sharing!');
+        })
+        .catch(console.error);
+      } else {
+          var $temp = $("<input>");
+          $("body").append($temp);
+          $temp.val(document.location.href).select();
+          document.execCommand("copy");
+          $temp.remove();
+          console.log('link copied');
+      }
+    });
+    console.log('script run');
+</script>
 </body>
 </html>
