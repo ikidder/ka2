@@ -200,7 +200,7 @@ def favorite(id):
     if redirect_path:
         return redirect(redirect_path)
     else:
-        redirect(url_for('users.favorites'))
+        return redirect(url_for('users.favorites'))
 
 
 @users_app.route('/unfavorite/<int:id>/', methods=['GET'])

@@ -13,29 +13,11 @@
     {% for fav in favorites %}
         {% if fav is Score %}
             {{ view_score_header_row(fav) }}
-        {% elif item is Post %}
+        {% elif fav is Post %}
             {{ view_post_row(fav) }}
-        {%  elif item is User %}
-            {{ view_user_summary(item) }}
+        {% elif fav is User %}
+            {{ view_user_summary(fav) }}
         {% endif %}
     {% endfor %}
 
-{#    {% if result.has_prev or result.has_next  %}#}
-{#        <div class="container-md">#}
-{#        <div class="card shadow">#}
-{#            <div class="page-controls">#}
-{#                    {% if result.has_prev %}#}
-{#                        {{ view_control(url_for('posts.posts', page=result.current_page - 1), "fa-step-backward") }}#}
-{#                    {% else %}#}
-{#                        {{ view_empty_control() }}#}
-{#                    {% endif %}#}
-{#                    {% if result.has_next %}#}
-{#                            {{ view_control(url_for('posts.posts', page=result.current_page + 1), "fa-step-forward") }}#}
-{#                    {% else %}#}
-{#                        {{ view_empty_control() }}#}
-{#                    {% endif %}#}
-{#            </div>#}
-{#        </div>#}
-{#        </div>#}
-{#    {% endif %}#}
 {% endblock content %}
