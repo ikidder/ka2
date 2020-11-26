@@ -24,10 +24,9 @@ from flaskext.markdown import Markdown
 # from elasticsearch import Elasticsearch
 
 from .config import Config
-#from .database import Session
 
 
-engine = create_engine(os.environ['DATABASE_URL'], echo=True)
+engine = create_engine(Config.DATABASE_URL, echo=True)
 Session = scoped_session(sessionmaker(bind=engine))
 
 

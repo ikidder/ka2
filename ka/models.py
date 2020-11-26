@@ -171,13 +171,18 @@ class User(KaBase, UserMixin):
     }
 
     def favorites(self):
-        favoritable = with_polymorphic(KaBase, [User, Score, Post], flat=True)
-        favs = Session.query(Favorite)\
-            .options(joinedload(Favorite.content.of_type(favoritable)))\
-            .filter(Favorite.user_id == self.id)\
-            .order_by(Favorite.created.desc())\
-            .all()
+        favs = Session.query(Favorite).filter(Favorite.user_id == self.id).all()
         return [fav.content for fav in favs]
+
+    # def favorites(self):
+    #     favoritable = with_polymorphic(KaBase, [User, Score, Post], flat=True)
+    #     favs = Session.query(Favorite)\
+    #         .options(joinedload(Favorite.content.of_type(favoritable)))\
+    #         .filter(Favorite.user_id == self.id)\
+    #         .order_by(Favorite.created.desc())\
+    #         .all()
+    #     return [fav.content for fav in favs]
+    #
 
     def get_favorite(self, kabase_id):
         return Session.query(Favorite) \
@@ -447,16 +452,17 @@ class Favorite(KaBase):
 
     id = Column(ForeignKey('kabase.id'), primary_key=True)
     user_id = Column(ForeignKey('user.id'), nullable=False)
-    user = relationship('User', foreign_keys=[user_id])
-    content_id = Column(ForeignKey('score.id'), nullable=False)
+    user = relationship('User', foreign_keys=[user_id], )
+    content_id = Column(ForeignKey('kabase.id'), nullable=False)
     content = relationship(
         'KaBase',
         foreign_keys=[content_id],
-        primaryjoin="and_(Favorite.content_id==KaBase.id)"
+        primaryjoin="Favorite.content_id==KaBase.id"
     )
 
     __mapper_args__ = {
         'polymorphic_identity': 'favorite',
+        'inherit_condition': id == KaBase.id
     }
 
     def __init__(self, user_id, content_id):
@@ -464,6 +470,9 @@ class Favorite(KaBase):
         self._path = encode(self._name)
         self.user_id = user_id
         self.content_id = content_id
+
+    def __repr__(self):
+        return f'<Favorite -> id: {self.id}, user_id: {self.user_id}, content_id: {self.content_id}>'
 
 
 
