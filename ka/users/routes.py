@@ -195,7 +195,7 @@ def favorite(id):
         obj.count_favorites = obj.count_favorites + 1
         Session.add(obj)
         Session.commit()
-        flash(f'Added "{obj.name}" to Favorites')
+        flash(f'Added "{obj.name}" to Favorites', 'info')
     redirect_path = request.args.get('redirect')
     if redirect_path:
         return redirect(redirect_path)
@@ -217,7 +217,7 @@ def unfavorite(id):
     obj.count_favorites = obj.count_favorites - 1
     Session.add(obj)
     Session.commit()
-    flash(f'Removed "{obj.name}" from Favorites')
+    flash(f'Removed "{obj.name}" from Favorites', 'info')
     redirect_path = request.args.get('redirect')
     if redirect_path:
         return redirect(redirect_path)
