@@ -4,17 +4,11 @@
 
 {% block content %}
 
-    {% if filtered_on %}
     <div class="container-md">
         <div class="card shadow">
-            {% if filtered_on is User %}
                 <div class="p font-sub-heading serif">Scores{{ view_composer_name(filtered_on) }}</div>
-            {% elif filtered_on is ForPlayers %}
-                <div class="p font-sub-heading  serif">Scores{{ view_for_players(filtered_on) }}</div>
-            {% endif %}
         </div>
     </div>
-    {% endif %}
 
     {% for score in result.items %}
         {{ view_score_header_row(score) }}
@@ -25,12 +19,12 @@
         <div class="card shadow">
             <div class="page-controls">
                 {% if result.has_prev %}
-                    {{ view_control(url_for('scores.scores', page=result.current_page - 1), "fa-step-backward") }}
+                    {{ view_control(url_for('scores.user_scores', user_path=filtered_on.path, page=result.current_page - 1), "fa-step-backward") }}
                 {% else %}
                     {{ view_empty_control() }}
                 {% endif %}
                 {% if result.has_next %}
-                    {{ view_control(url_for('scores.scores', page=result.current_page + 1), "fa-step-forward") }}
+                    {{ view_control(url_for('scores.user_scores', user_path=filtered_on.path, page=result.current_page + 1), "fa-step-forward") }}
                 {% else %}
                     {{ view_empty_control() }}
                 {% endif %}

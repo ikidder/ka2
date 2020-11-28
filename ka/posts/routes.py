@@ -107,7 +107,7 @@ def user_posts(user_path):
         page
     )
     return render_template(
-        'posts.html',
+        'user_posts.html',
         filtered_on=user,
         result=page_result
     )

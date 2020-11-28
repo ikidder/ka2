@@ -422,7 +422,7 @@ def user_scores(user_path):
         page
     )
     return render_template(
-        'scores.html',
+        'user_scores.html',
         filtered_on=user,
         result=page_result
     )

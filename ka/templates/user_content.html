@@ -4,11 +4,7 @@
 
 {% block content %}
 
-    {% if filtered_on %}
-            {% if filtered_on is User %}
-                {{ view_user_summary(filtered_on) }}
-            {% endif %}
-    {% endif %}
+    {{ view_user_summary(filtered_on) }}
 
     {% for item in result.items %}
         {% if item is Score %}
@@ -23,12 +19,12 @@
         <div class="card shadow">
             <div class="page-controls">
                     {% if result.has_prev %}
-                        {{ view_control(url_for('posts.posts', page=result.current_page - 1), "fa-step-backward") }}
+                        {{ view_control(url_for('users.user_content', user_path=filtered_on.path, page=result.current_page - 1), "fa-step-backward") }}
                     {% else %}
                         {{ view_empty_control() }}
                     {% endif %}
                     {% if result.has_next %}
-                            {{ view_control(url_for('posts.posts', page=result.current_page + 1), "fa-step-forward") }}
+                            {{ view_control(url_for('users.user_content', user_path=filtered_on.path, page=result.current_page + 1), "fa-step-forward") }}
                     {% else %}
                         {{ view_empty_control() }}
                     {% endif %}

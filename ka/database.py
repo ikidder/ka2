@@ -25,8 +25,8 @@ class PageResult:
 # TODO - just, in general, TODO
 def get_page(q, page):
     results = q.limit(PER_PAGE + 1).offset((page - 1) * PER_PAGE).all()
-    has_prev = True if page > 1 else False
-    has_next = True if len(results) == (PER_PAGE + 1) else False
+    has_prev = page > 1
+    has_next = len(results) == (PER_PAGE + 1)
     results = results[:PER_PAGE]
     return PageResult(results, page, has_prev, has_next)
 
