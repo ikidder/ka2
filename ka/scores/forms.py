@@ -10,7 +10,7 @@ fp_values = [fp.value for fp in for_players]
 class ScoreForm(FlaskForm):
     name = StringField('Title', validators=[DataRequired()])
     text = TextAreaField('Description', validators=[DataRequired()])
-    for_players = SelectField(u'For Players', choices=list(zip(fp_names, fp_values)), default='ManAndWoman')
+    for_players = SelectField(u'For Players', choices=list(zip(fp_names, fp_values)))
 
     def validate_name(self, field):
         if '_' in field.data:

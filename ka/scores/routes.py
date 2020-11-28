@@ -15,7 +15,7 @@ scores_app = Blueprint('scores', __name__)
 @scores_app.route("/score/new", methods=['GET', 'POST'])
 @login_required
 def new_score():
-    form = ScoreForm(for_players=ForPlayers.ManAndWoman)
+    form = ScoreForm(for_players=ForPlayers.TwoAny)
     if form.validate_on_submit():
         score = Score(
             name=form.name.data,
@@ -32,7 +32,6 @@ def new_score():
         Session.commit()
         flash('Your score has been created!', 'success')
         return redirect(url_for('scores.new_measure', score_path=score.path))
-    form.for_players.data = ForPlayers.ManAndWoman
     return render_template('create_score.html', title='New Score',
                            form=form, legend='New Score')
 
@@ -492,3 +491,4 @@ def is_user(obj):
 @scores_app.app_template_test("ForPlayers")
 def is_for_players(obj):
     return isinstance(obj, ForPlayers)
+

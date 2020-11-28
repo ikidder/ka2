@@ -141,21 +141,23 @@
     </div>
 </header>
 <main>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            <div class="container-md">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show mx-auto">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
+    <div class="container-md" id="alert-container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mx-auto">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+    {#                            <i class="fas fa-fw fa-times"></i>#}
+                            </button>
+                        </div>
+                    {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    {% block content %}
+    {% endblock %}
 </main>
 <footer></footer>
 
@@ -281,26 +283,35 @@
 
 </script>
 <script>
-    console.log('script started');
-    $('.share-button').click( event => {
-      if (navigator.share) {
-        navigator.share({
-          title: document.title,
-          url: document.location.href
-        }).then(() => {
-          console.log('Thanks for sharing!');
-        })
-        .catch(console.error);
-      } else {
-          var $temp = $("<input>");
-          $("body").append($temp);
-          $temp.val(document.location.href).select();
-          document.execCommand("copy");
-          $temp.remove();
-          console.log('link copied');
-      }
+    function show_alert(text, category) {
+        $('#alert-container').append(
+            `<div class="alert alert-${category} alert-dismissible fade show mx-auto">
+                 ${text}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>
+            </div>`
+        )
+    }
+
+    {#$('.share-button').click( event => {#}
+    {#      var $temp = $("<input>");#}
+    {#      $("body").append($temp);#}
+    {#      $temp.val(document.location.href).select();#}
+    {#      document.execCommand("copy");#}
+    {#      $temp.remove();#}
+    {#      show_alert('Link copied to your clipboard.', 'info')#}
+    {# });#}
+
+    $('.share-button').click( function() {
+        var inp = $(this).find('input');
+        inp.attr('type', 'text');
+        inp.select();
+        document.execCommand("copy");
+        inp.attr('type', 'hidden');
+        show_alert('Link copied to your clipboard.', 'info');
     });
-    console.log('script run');
+
 </script>
 </body>
 </html>

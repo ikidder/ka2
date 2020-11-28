@@ -320,8 +320,11 @@
 {% endmacro %}
 
 
-{% macro view_share_button() %}
-    <button type="button" class="btn page-control share-button"><i class="fas fa-share-alt"></i></button>
+{% macro view_share_button(url_external) %}
+    <button type="button" class="btn page-control share-button">
+        <i class="fas fa-share-alt"></i>
+        <input type="hidden" value={{ url_external }} />
+    </button>
 {% endmacro %}
 
 
@@ -336,7 +339,7 @@
                     {{ view_control(url_for('scores.measure', score_path=score.path, measure_path=score.measures.0.path, autoplay='true'), "fa-play") }}
             {% endif %}
             {{ view_favorite_control(score.id) }}
-            {{ view_share_button() }}
+            {{ view_share_button(url_for('scores.score', score_path=score.path, _external=True)) }}
             {% if score.composer == current_user %}
                 {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pen-fancy") }}
             {% endif %}
@@ -358,7 +361,7 @@
       <div class="dropdown-menu">
         <div class="page-controls mx-auto ">
             {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path, autoplay='true'), "fa-play") }}
-            {{ view_share_button() }}
+            {{ view_share_button(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path, _external=True))  }}
             {% if measure.score.composer == current_user %}
                 {{ view_control(url_for('scores.update_measure', score_path=measure.score.path, measure_path=measure.path), "fa-pen-fancy") }}
             {% endif %}
@@ -382,7 +385,7 @@
         <div class="page-controls mx-auto ">
             {{ view_control(url_for('posts.post', post_path=post.path), "fa-play") }}
             {{ view_favorite_control(post.id) }}
-            {{ view_share_button() }}
+            {{ view_share_button(url_for('posts.post', post_path=post.path, _external=True)) }}
             {% if post.user_id == current_user.id %}
                     {{ view_control(url_for('posts.update_post', post_path=post.path), "fa-pen-fancy") }}
                     {{ view_control(url_for('posts.delete_post', post_path=post.path), "fa-times") }}
