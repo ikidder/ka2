@@ -45,98 +45,103 @@
             <a class="navbar-brand" href="{{ url_for('main.index') }}"><span>kamagapē</span></a>
 
             <div class="nav-content collapse navbar-collapse" id="navbarTogglerDemo03">
-            <div class="">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item nav-primary">
-                        <a class="nav-link" href="{{ url_for('scores.scores') }}">
-                            <span>
-                                Scores
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item nav-primary">
-                        <a class="nav-link" href="{{ url_for('posts.posts') }}">
-                            <span>
-                                Posts
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item nav-primary">
-                        <a class="nav-link" href="{{ url_for('users.users') }}">
-                            <span>
-                                Composers
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item nav-primary">
-                        <a class="nav-link" href="{{ url_for('users.favorites') }}">
-                            <span>
-                                Favorites
-                            </span>
-                        </a>
-                    </li>
-                </ul>
+                <div class="">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item nav-primary">
+                            <a class="nav-link" href="{{ url_for('scores.scores') }}">
+                                <span>
+                                    Scores
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item nav-primary">
+                            <a class="nav-link" href="{{ url_for('posts.posts') }}">
+                                <span>
+                                    Posts
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item nav-primary">
+                            <a class="nav-link" href="{{ url_for('users.users') }}">
+                                <span>
+                                    Composers
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item nav-primary">
+                            <a class="nav-link" href="{{ url_for('users.favorites') }}">
+                                <span>
+                                    Favorites
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0 text-right">
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link " href="{{ url_for('search.search') }}"><span>Search</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.post', post_path='Getting-Started-on-kamagap%25C4%2593__by__m') }}"><span>Getting Started</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.post', post_path='How-To-Use-kamagap%25C4%2593__by__m') }}"><span>How To</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.post', post_path='FAQ__by__m') }}"><span>FAQ</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('scores.new_score') }}"><span>New Score</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.new_post') }}"><span>New Post</span></a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item nav-secondary">
+                                <a class="nav-link" href="{{ url_for('scores.user_scores', user_path=current_user.path) }}"><span>My Scores</span></a>
+                            </li>
+                            <li class="nav-item nav-secondary">
+                                <a class="nav-link" href="{{ url_for('posts.user_posts', user_path=current_user.path) }}"><span>My Posts</span></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0 text-right">
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.post', post_path='Privacy-Policy__by__m') }}"><span>Privacy</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.post', post_path='About-Us__by__m') }}"><span>About Us</span></a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item nav-secondary">
+                                <a class="nav-link" href="{{ url_for('users.account') }}"><span>Account</span></a>
+                            </li>
+                            <li class="nav-item nav-secondary">
+                                <a class="nav-link" href="{{ url_for('users.logout') }}"><span>Logout</span></a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item nav-secondary">
+                                <a class="nav-link" href="{{ url_for('users.login') }}"><span>Login</span></a>
+                            </li>
+    {#                        <li class="nav-item nav-secondary">#}
+    {#                            <a class="nav-link" href="{{ url_for('users.register') }}"><span>Sign Up</span></a>#}
+    {#                        </li>#}
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="navbar-slogan text-center">
+                    <span>&#119187;</span>
+                    <span>{{ slogan }}</span>
+                    <span>&#119186;</span>
+                </div>
             </div>
-            <div class="">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link " href="{{ url_for('search.search') }}"><span>Search</span></a>
-                    </li>
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link" href="{{ url_for('posts.post', post_path='Getting-Started-on-Kamagape__by__m') }}"><span>Getting Started</span></a>
-                    </li>
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link" href="{{ url_for('posts.post', post_path='How-To__by__m') }}"><span>How To</span></a>
-                    </li>
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link" href="{{ url_for('posts.post', post_path='FAQ__by__m') }}"><span>FAQ</span></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link" href="{{ url_for('scores.new_score') }}"><span>New Score</span></a>
-                    </li>
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link" href="{{ url_for('posts.new_post') }}"><span>New Post</span></a>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                        <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('scores.user_scores', user_path=current_user.path) }}"><span>My Scores</span></a>
-                        </li>
-                        <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('posts.user_posts', user_path=current_user.path) }}"><span>My Posts</span></a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link" href="{{ url_for('posts.post', post_path='Privacy-Policy__by__m') }}"><span>Privacy</span></a>
-                    </li>
-                    <li class="nav-item nav-secondary">
-                        <a class="nav-link" href="{{ url_for('posts.post', post_path='About-Us__by__m') }}"><span>About Us</span></a>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                        <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('users.account') }}"><span>Account</span></a>
-                        </li>
-                        <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('users.logout') }}"><span>Logout</span></a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('users.login') }}"><span>Login</span></a>
-                        </li>
-{#                        <li class="nav-item nav-secondary">#}
-{#                            <a class="nav-link" href="{{ url_for('users.register') }}"><span>Sign Up</span></a>#}
-{#                        </li>#}
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
         </nav>
     </div>
 </header>
@@ -159,7 +164,11 @@
     {% block content %}
     {% endblock %}
 </main>
-<footer></footer>
+<footer>
+    <div class="footer-copy">
+        <span>&#169; kamagape.com</span>
+    </div>
+</footer>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -293,15 +302,6 @@
             </div>`
         )
     }
-
-    {#$('.share-button').click( event => {#}
-    {#      var $temp = $("<input>");#}
-    {#      $("body").append($temp);#}
-    {#      $temp.val(document.location.href).select();#}
-    {#      document.execCommand("copy");#}
-    {#      $temp.remove();#}
-    {#      show_alert('Link copied to your clipboard.', 'info')#}
-    {# });#}
 
     $('.share-button').click( function() {
         var inp = $(this).find('input');

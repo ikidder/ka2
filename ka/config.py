@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-if os.environ.get('ENVIRONMENT') == 'development':
+if os.environ.get('ENVIRONMENT') in ['development', 'test']:
     load_dotenv()
 
 

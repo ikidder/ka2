@@ -5,7 +5,7 @@ from flask_login import LoginManager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
-import os
+import random
 
 # Talisman
 # for forcing https
@@ -34,6 +34,22 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
+
+
+slogans = [
+    'Wrapping paper optional.',
+    'Algorithms for the bedroom.',
+    'A user manual for the no pants dance.',
+    'Where you can shimmy all you want.',
+    'Not just a fantasy.',
+    'We take fooling around seriously.',
+    'Skip the ice cream, and have dessert.',
+    'Adding two person push ups to your workout.',
+    'Making music and making whoopee.',
+    'Easy peasy hanky panky.',
+    'Test your mattress today!',
+    'Long week? How about some horizontal refreshment?'
+]
 
 
 def create_app(config_class=Config):
@@ -82,6 +98,10 @@ def create_app(config_class=Config):
     }
     Talisman(app,
              content_security_policy=sec_policy)
+
+    @app.context_processor
+    def inject_slogan():
+        return dict(slogan=random.choice(slogans))
 
     @app.teardown_appcontext
     def cleanup(resp_or_exc):
