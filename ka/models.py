@@ -29,8 +29,14 @@ Base = declarative_base()
 
 
 def encode(s):
+    """Flask automatically escapes arguments to url_for, and automatically unescapes
+    route parameters. Therefore, we don't need to call something like:
+
+        quote(s, safe='', encoding='utf-8', errors='strict')
+
+    in this method."""
     s = s.strip().replace(' ', '-')
-    return quote(s, safe='', encoding='utf-8', errors='strict')
+    return s
 
 
 @unique
