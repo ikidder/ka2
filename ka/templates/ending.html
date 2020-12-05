@@ -23,7 +23,7 @@
                     {% if score.composer == current_user %}
                         <div class="content">Edit the score so it's even better next time:</div>
                         <div class="page-controls">
-                            {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pen-fancy") }}
+                            {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pencil-alt") }}
                         </div>
                         <div class="content">Play it all over again.</div>
                         <div class="page-controls">

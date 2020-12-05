@@ -215,7 +215,7 @@
                 {{ view_empty_control() }}
                 {% endif %}
                 {% if score.composer == current_user %}
-                    {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pen-fancy") }}
+                    {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pencil-alt") }}
                 {% else %}
                     {{ view_control(url_for('scores.copy_score', score_path=score.path), "fa-copy") }}
                 {% endif %}
@@ -341,7 +341,7 @@
             {{ view_favorite_control(score.id) }}
             {{ view_share_button(url_for('scores.score', score_path=score.path, _external=True)) }}
             {% if score.composer == current_user %}
-                {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pen-fancy") }}
+                {{ view_control(url_for('scores.update_score', score_path=score.path), "fa-pencil-alt") }}
             {% endif %}
                 {{ view_control(url_for('scores.copy_score', score_path=score.path), "fa-copy") }}
             {% if score.composer == current_user %}
@@ -363,7 +363,7 @@
             {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path, autoplay='true'), "fa-play") }}
             {{ view_share_button(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path, _external=True))  }}
             {% if measure.score.composer == current_user %}
-                {{ view_control(url_for('scores.update_measure', score_path=measure.score.path, measure_path=measure.path), "fa-pen-fancy") }}
+                {{ view_control(url_for('scores.update_measure', score_path=measure.score.path, measure_path=measure.path), "fa-pencil-alt") }}
             {% endif %}
             {% if measure.score.composer == current_user %}
                 {{ view_control(url_for('scores.new_measure_before', score_path=measure.score.path, measure_path=measure.path), "fas fa-directions fa-flip-horizontal fa-lg") }}
@@ -387,7 +387,7 @@
             {{ view_favorite_control(post.id) }}
             {{ view_share_button(url_for('posts.post', post_path=post.path, _external=True)) }}
             {% if post.user_id == current_user.id %}
-                    {{ view_control(url_for('posts.update_post', post_path=post.path), "fa-pen-fancy") }}
+                    {{ view_control(url_for('posts.update_post', post_path=post.path), "fa-pencil-alt") }}
                     {{ view_control(url_for('posts.delete_post', post_path=post.path), "fa-times") }}
             {% endif %}
          </div>
