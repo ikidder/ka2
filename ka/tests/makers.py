@@ -1,12 +1,35 @@
 from ka.models import *
 import random
+import string
 from ka import bcrypt
 from datetime import datetime, timedelta
 from string import ascii_lowercase, ascii_uppercase, digits, capwords
 
 
 #*************************************************
-#  Players
+#  Random inputs
+#*************************************************
+
+
+non_english_unicode_chars = 'ēĒæåôἀὥ㐁ぅהࢢ😍'
+chars = string.ascii_lowercase + string.ascii_uppercase + string.digits + non_english_unicode_chars
+
+
+def rname():
+    length = random.choice(range(3, 200))
+    return ''.join(random.choice(chars) for i in range(length))
+
+
+def rtitle():
+    return capwords(rname())
+
+
+def rint(start, end):
+    return random.choice(range(start, end))
+
+
+#*************************************************
+#  Users
 #*************************************************
 
 
@@ -20,7 +43,7 @@ def make_user(username):
     return user
 
 
-def make_defaults():
+def make_default_users():
     paul = make_user('Paul')
     irulan = make_user('Irulan')
     channi = make_user('Channi')
@@ -34,13 +57,6 @@ def make_defaults():
 #*************************************************
 
 
-def make_title():
-    title = ''
-    for i in range(random.choice(list(range(4,10)))):
-        title += ' ' + random.choice(title_strings)
-    return capwords(title)
-
-
 def make_timestamp():
     base_date = datetime.utcnow()
     date = base_date + timedelta(days=random.choice(range(-400,0)))
@@ -48,7 +64,7 @@ def make_timestamp():
 
 
 def make_score(composer) -> Score:
-    title = make_title()
+    title = rtitle()
     s = Score()
     s.name = title
     s.composer = composer
@@ -127,7 +143,10 @@ f = """She drew him toward her with her eyes, he inclined his face toward hers a
 
 g = """When she saw that he was dissolved with pleasure, she stopped, divining that perhaps if she deprived him now he might make a gesture towards fulfillment. At first he made no motion. His sex was quivering, and he was tormented with desire… Marianne grew desperate. She pushed his hand away, took his sex into her mouth again, and with her two hands she encircled his sexual parts, caressed him and absorbed him until he came. He leaned over with gratitude, tenderness, and murmured, ‘You are the first woman, the first woman, the first woman…'"""
 
-content_strings = [a,b,c,d,e,f,g]
+# one more, with non-english chars
+h = """😍 Lorem ipsum dolor sit amet, 㐁consectetur  ēἀぅ adipiscing elit, sed do eiusࢢmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqôuip ex ea commodo consequat. Duis aute iruære dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ExcepĒåteur sint occaecat cupidatat non proident, sunt in culpa qui officiaה deseruὥnt mollit anim id est laborum."""
+
+content_strings = [a,b,c,d,e,f,g,h]
 
 
 # Random word strings to use in generating titles
@@ -145,10 +164,10 @@ move
 daffy
 wakeful
 plot
-aggressive
 skin
 few
 van
+ēcharœ
 decorous
 shelf
 need
@@ -165,6 +184,7 @@ encourage
 nail
 repeat
 remind
+😍
 mark
 whirl
 visit
@@ -185,10 +205,8 @@ lush
 natural
 scandalous
 laughable
-rude
 versed
 short
-vacuous
 ultra
 squalid
 calculating

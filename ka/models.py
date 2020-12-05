@@ -7,12 +7,11 @@ import jwt
 from urllib.parse import quote
 from enum import Enum, unique
 from ka import login_manager
-from ka import Session
-from sqlalchemy.ext.declarative import declarative_base
+from ka import db
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, validates, joinedload
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Index, event, and_
 from sqlalchemy import Enum as dbEnum
+from sqlalchemy import and_
 from sqlalchemy.orm import with_polymorphic
 from flask_login import UserMixin
 
@@ -24,8 +23,6 @@ from flask_login import UserMixin
 # *************************************************
 #  Common
 # *************************************************
-
-Base = declarative_base()
 
 
 def encode(s):
@@ -66,7 +63,7 @@ def pp_duration(seconds: int) -> str:
 
 
 def to_ordinal_string(n: int) -> str:
-    """Converts an integer into its ordinal representation.
+    """Converts an db.Integer into its ordinal representation.
     >>> to_ordinal_string(0)
     '0th'
     >>> to_ordinal_string(3)
@@ -103,7 +100,7 @@ def get_page(q, page):
     return PageResult(results, page, has_prev, has_next)
 
 
-@event.listens_for(Session, "before_flush")
+@db.event.listens_for(db.session, "before_flush")
 def before_flush(session, flush_context, instances):
     for instance in session.dirty:
         if isinstance(instance, Post) or isinstance(instance, Score) or isinstance(instance, Measure):
@@ -121,20 +118,20 @@ def before_flush(session, flush_context, instances):
 # *************************************************
 
 
-class KaBase(Base):
+class KaBase(db.Model):
     __tablename__ = 'kabase'
-    id = Column(Integer, primary_key=True)
-    _name = Column(String(200), nullable=False)
-    _path = Column(String(650), nullable=False)  # see Measure path formatting for the reason this is long
-    type = Column(String(50))
-    created = Column(DateTime, default=datetime.utcnow)
+    id = db.Column(db.Integer, primary_key=True)
+    _name = db.Column(db.String(200), nullable=False)
+    _path = db.Column(db.String(650), nullable=False)  # see Measure path formatting for the reason this is long
+    type = db.Column(db.String(50))
+    created = db.Column(db.DateTime, default=datetime.utcnow)
 
     __mapper_args__ = {
         'polymorphic_identity': 'kabase',
         'polymorphic_on': type
     }
 
-    __table_args__ = (Index('_path_type_unique_index', _path, type, unique=True),)
+    __table_args__ = (db.Index('_path_type_unique_index', _path, type, unique=True),)
 
 
 # *************************************************
@@ -144,23 +141,23 @@ class KaBase(Base):
 
 @login_manager.user_loader
 def load_player(user_id):
-    return Session.query(User).get(int(user_id))
+    return User.query.get(int(user_id))
 
 
 class User(KaBase, UserMixin):
     __tablename__ = 'user'
 
-    id = Column(ForeignKey("kabase.id"), primary_key=True)
-    email = Column(String(120), unique=True, nullable=False)
-    confirmed = Column(DateTime, nullable=True)
-    password = Column(String(60), nullable=False)
-    visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
-    text = Column(Text, nullable=True, default='')
-    count_favorites = Column(Integer, nullable=False, default=0)
-    count_scores = Column(Integer, nullable=False, default=0)
-    count_posts = Column(Integer, nullable=False, default=0)
-    count_tours = Column(Integer, nullable=False, default=0)
-    invites_left = Column(Integer, nullable=False, default=5)
+    id = db.Column(db.ForeignKey("kabase.id"), primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    confirmed = db.Column(db.DateTime, nullable=True)
+    password = db.Column(db.String(60), nullable=False)
+    visibility = db.Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
+    text = db.Column(db.Text, nullable=True, default='')
+    count_favorites = db.Column(db.Integer, nullable=False, default=0)
+    count_scores = db.Column(db.Integer, nullable=False, default=0)
+    count_posts = db.Column(db.Integer, nullable=False, default=0)
+    count_tours = db.Column(db.Integer, nullable=False, default=0)
+    invites_left = db.Column(db.Integer, nullable=False, default=5)
 
     @hybrid_property
     def name(self):
@@ -177,12 +174,12 @@ class User(KaBase, UserMixin):
     }
 
     def favorites(self):
-        favs = Session.query(Favorite).filter(Favorite.user_id == self.id).all()
+        favs = Favorite.query.filter(Favorite.user_id == self.id).all()
         return [fav.content for fav in favs]
 
     # def favorites(self):
     #     favoritable = with_polymorphic(KaBase, [User, Score, Post], flat=True)
-    #     favs = Session.query(Favorite)\
+    #     favs = Favorite\
     #         .options(joinedload(Favorite.content.of_type(favoritable)))\
     #         .filter(Favorite.user_id == self.id)\
     #         .order_by(Favorite.created.desc())\
@@ -191,7 +188,7 @@ class User(KaBase, UserMixin):
     #
 
     def get_favorite(self, kabase_id):
-        return Session.query(Favorite) \
+        return Favorite.query \
             .filter(and_(Favorite.user_id == self.id, Favorite.content_id == kabase_id)) \
             .first()
 
@@ -208,7 +205,7 @@ class User(KaBase, UserMixin):
         except Exception as ex:
             print(ex)
             return
-        return Session.query(User).get(id)
+        return User.query.get(id)
 
     def __repr__(self):
         return f"<User -> username: {self.name}, email: {self.email}, id: {self.id}, visibility: {self.visibility}>"
@@ -226,13 +223,13 @@ class User(KaBase, UserMixin):
 class Post(KaBase):
     __tablename__ = 'post'
 
-    id = Column(ForeignKey("kabase.id"), primary_key=True)
-    text = Column(Text, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    id = db.Column(db.ForeignKey("kabase.id"), primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     composer = relationship('User', foreign_keys=user_id)
-    visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
-    count_favorites = Column(Integer, nullable=False, default=0)
-    count_plays = Column(Integer, nullable=False, default=0)
+    visibility = db.Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
+    count_favorites = db.Column(db.Integer, nullable=False, default=0)
+    count_plays = db.Column(db.Integer, nullable=False, default=0)
 
     @hybrid_property
     def name(self):
@@ -309,13 +306,13 @@ dynamics = list(reversed([dynamic for dynamic in Dynamic]))
 class Measure(KaBase):
     __tablename__ = 'measure'
 
-    id = Column(ForeignKey("kabase.id"), primary_key=True)
-    tempo = Column(dbEnum(Tempo), nullable=False, default=Tempo.Moderato)
-    dynamic = Column(dbEnum(Dynamic), nullable=False, default=Dynamic.Mezzo)
-    text = Column(Text, nullable=False)
-    duration = Column(Integer, nullable=False, default=60)
-    _ordinal = Column(Integer, nullable=False, default=0)
-    score_id = Column(Integer, ForeignKey('score.id'), nullable=False)
+    id = db.Column(db.ForeignKey("kabase.id"), primary_key=True)
+    tempo = db.Column(dbEnum(Tempo), nullable=False, default=Tempo.Moderato)
+    dynamic = db.Column(dbEnum(Dynamic), nullable=False, default=Dynamic.Mezzo)
+    text = db.Column(db.Text, nullable=False)
+    duration = db.Column(db.Integer, nullable=False, default=60)
+    _ordinal = db.Column(db.Integer, nullable=False, default=0)
+    score_id = db.Column(db.Integer, db.ForeignKey('score.id'), nullable=False)
     score = relationship('Score', back_populates='measures', foreign_keys=score_id)
 
     @hybrid_property
@@ -389,10 +386,10 @@ for_players = [fp for fp in ForPlayers]
 class Score(KaBase):
     __tablename__ = 'score'
 
-    id = Column(ForeignKey("kabase.id"), primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    id = db.Column(db.ForeignKey("kabase.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     composer = relationship('User', foreign_keys=user_id)
-    text = Column(Text, nullable=False)
+    text = db.Column(db.Text, nullable=False)
     measures = relationship(
         'Measure',
         back_populates='score',
@@ -400,12 +397,12 @@ class Score(KaBase):
         order_by='Measure.ordinal',
         lazy=True
     )
-    duration = Column(Integer, nullable=False, default=0)
-    count_plays = Column(Integer, nullable=False, default=0)
-    count_favorites = Column(Integer, nullable=False, default=0)
-    for_players = Column(dbEnum(ForPlayers), nullable=False, default=ForPlayers.TwoAny)
-    visibility = Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
-    variation_on_id = Column(Integer, ForeignKey('score.id'), nullable=True)
+    duration = db.Column(db.Integer, nullable=False, default=0)
+    count_plays = db.Column(db.Integer, nullable=False, default=0)
+    count_favorites = db.Column(db.Integer, nullable=False, default=0)
+    for_players = db.Column(dbEnum(ForPlayers), nullable=False, default=ForPlayers.TwoAny)
+    visibility = db.Column('visibility', dbEnum(Visibility), default=Visibility.PUBLIC)
+    variation_on_id = db.Column(db.Integer, db.ForeignKey('score.id'), nullable=True)
     variations = relationship(
         "Score",
         backref=backref('variation_on', remote_side=[id]),
@@ -458,10 +455,10 @@ class Score(KaBase):
 class Favorite(KaBase):
     __tablename__ = 'favorite'
 
-    id = Column(ForeignKey('kabase.id'), primary_key=True)
-    user_id = Column(ForeignKey('user.id'), nullable=False)
+    id = db.Column(db.ForeignKey('kabase.id'), primary_key=True)
+    user_id = db.Column(db.ForeignKey('user.id'), nullable=False)
     user = relationship('User', foreign_keys=[user_id], )
-    content_id = Column(ForeignKey('kabase.id'), nullable=False)
+    content_id = db.Column(db.ForeignKey('kabase.id'), nullable=False)
     content = relationship(
         'KaBase',
         foreign_keys=[content_id],
@@ -491,15 +488,15 @@ class Favorite(KaBase):
 INVITE_GOOD_FOR = 604800  # in seconds. == 7 days
 
 
-class Invite(Base):
+class Invite(db.Model):
     __tablename__ = 'invite'
 
-    id = Column(Integer, primary_key=True)
-    from_user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    to_email = Column(String(120), nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.utcnow)
-    responded = Column(DateTime, nullable=True)
-    user_created = Column(Integer, ForeignKey('user.id'), nullable=True)
+    id = db.Column(db.Integer, primary_key=True)
+    from_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    to_email = db.Column(db.String(120), nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    responded = db.Column(db.DateTime, nullable=True)
+    user_created = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
     def token(self):
         assert self.id, "Invite.id is set."
@@ -524,7 +521,7 @@ class Invite(Base):
         except Exception as ex:
             print(ex)
             return
-        return Session.query(Invite).get(id)
+        return Invite.query.get(id)
 
     def __repr__(self):
         return f'<Invite -> id: {self.id}, from_user_id: {self.from_user_id}, created: {self.created}, user_created: {self.user_created}>'

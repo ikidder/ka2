@@ -1,10 +1,8 @@
 from flask import Flask, logging
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import sessionmaker
 import random
 
 # Talisman
@@ -25,11 +23,7 @@ from flaskext.markdown import Markdown
 
 from .config import Config
 
-
-engine = create_engine(Config.DATABASE_URL, echo=True)
-Session = scoped_session(sessionmaker(bind=engine))
-
-
+db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
@@ -55,7 +49,9 @@ slogans = [
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.config['SQLALCHEMY_DATABASE_URI'] = config_class.DATABASE_URL
 
+    db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
     Markdown(app)
@@ -102,10 +98,6 @@ def create_app(config_class=Config):
     @app.context_processor
     def inject_slogan():
         return dict(slogan=random.choice(slogans))
-
-    @app.teardown_appcontext
-    def cleanup(resp_or_exc):
-        Session.remove()
 
     return app
 

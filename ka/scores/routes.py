@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from ka.database import get_page
-from ka import Session
+from ka import db
 from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User
 from ka.scores.forms import ScoreForm, MeasureForm, DeleteMeasureForm, DeleteScoreForm
 from datetime import datetime
@@ -28,8 +28,8 @@ def new_score():
             created=datetime.utcnow()
         )
         score.composer.count_scores = score.composer.count_scores + 1
-        Session.add(score)
-        Session.commit()
+        db.session.add(score)
+        db.session.commit()
         flash('Your score has been created!', 'success')
         return redirect(url_for('scores.new_measure', score_path=score.path))
     form = ScoreForm(for_players='TwoAny')  # otherwise will default to 'one man'
@@ -40,7 +40,7 @@ def new_score():
 @scores_app.route("/score/<string:score_path>/measure/new", methods=['GET', 'POST'])
 @login_required
 def new_measure(score_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.composer != current_user:
@@ -57,9 +57,9 @@ def new_measure(score_path):
             _ordinal=max((x.ordinal for x in s.measures)) + 1 if s.measures else 0,
             score=s
         )
-        Session.add(m)
-        Session.add(s)
-        Session.commit()
+        db.session.add(m)
+        db.session.add(s)
+        db.session.commit()
         flash('Your measure has been created!', 'success')
         return redirect(url_for('scores.new_measure', score_path=s.path))
     else:
@@ -83,13 +83,13 @@ def new_measure(score_path):
 @scores_app.route("/score/<string:score_path>/measure/<string:measure_path>/new-measure-before", methods=['GET', 'POST'])
 @login_required
 def new_measure_before(score_path, measure_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.composer != current_user:
         abort(403)
 
-    above_this_measure = Session.query(Measure).filter_by(path=measure_path).first()
+    above_this_measure = Measure.query.filter_by(path=measure_path).first()
     if not above_this_measure:
         abort(404)
     if above_this_measure.score.id != s.id:
@@ -115,8 +115,8 @@ def new_measure_before(score_path, measure_path):
         s.measures = s.measures[:index] + [measure] + s.measures[index:]
         for i, m in enumerate(s.measures):
             m.ordinal = i
-        Session.add(s)
-        Session.commit()
+        db.session.add(s)
+        db.session.commit()
         flash('Your measure has been created!', 'success')
         return redirect(url_for('scores.score', score_path=s.path))
     else:
@@ -136,7 +136,7 @@ def new_measure_before(score_path, measure_path):
 @scores_app.route("/score/<string:score_path>/measure/<string:measure_path>/new-measure-after", methods=['GET', 'POST'])
 @login_required
 def new_measure_after(score_path, measure_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.composer != current_user:
@@ -144,7 +144,7 @@ def new_measure_after(score_path, measure_path):
 
     measures = s.measures
 
-    below_this_measure = Session.query(Measure).filter_by(path=measure_path).first()
+    below_this_measure = Measure.query.filter_by(path=measure_path).first()
     if not below_this_measure:
         abort(404)
     if below_this_measure.score.id != s.id:
@@ -168,8 +168,8 @@ def new_measure_after(score_path, measure_path):
         measures = measures[:index+1] + [measure] + measures[index+1:]
         for i, m in enumerate(measures):
             m.ordinal = i
-        Session.add(s)
-        Session.commit()
+        db.session.add(s)
+        db.session.commit()
         flash('Your measure has been created!', 'success')
         return redirect(url_for('scores.score', score_path=s.path))
     else:
@@ -189,7 +189,7 @@ def new_measure_after(score_path, measure_path):
 @scores_app.route("/score/<string:score_path>")
 @login_required
 def score(score_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.visibility == Visibility.HIDDEN:
@@ -201,7 +201,7 @@ def score(score_path):
 @scores_app.route("/score/<string:score_path>/measure/<string:measure_path>")
 @login_required
 def measure(score_path, measure_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     matches = list(filter(lambda x: x.path == measure_path, s.measures))
@@ -239,7 +239,7 @@ def measure(score_path, measure_path):
 @scores_app.route("/score/<string:score_path>/update", methods=['GET', 'POST'])
 @login_required
 def update_score(score_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.composer != current_user:
@@ -249,7 +249,7 @@ def update_score(score_path):
         s.name = form.name.data
         s.text = form.text.data
         s.for_players = form.for_players.data
-        Session.commit()
+        db.session.commit()
         flash('Your score has been updated!', 'success')
         if s.measures:
             return redirect(url_for('scores.update_measure', score_path=s.path, measure_path=s.measures[0].path))
@@ -266,10 +266,10 @@ def update_score(score_path):
 @scores_app.route("/score/<string:score_path>/measure/<string:measure_path>/update", methods=['GET', 'POST'])
 @login_required
 def update_measure(score_path, measure_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
-    m = Session.query(Measure).filter_by(path=measure_path).first()
+    m = Measure.query.filter_by(path=measure_path).first()
     if not m:
         abort(404)
     if s.id != m.score.id:
@@ -291,7 +291,7 @@ def update_measure(score_path, measure_path):
         m.text = form.text.data
         m.duration = form.duration.data
         s._set_duration()
-        Session.commit()
+        db.session.commit()
         flash('Your measure has been updated!', 'success')
         if next_measure:
             return redirect(url_for(
@@ -321,7 +321,7 @@ def update_measure(score_path, measure_path):
 @scores_app.route("/score/<string:score_path>/delete", methods=['GET','POST'])
 @login_required
 def delete_score(score_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.user_id != current_user.id:
@@ -331,9 +331,9 @@ def delete_score(score_path):
     if form.validate_on_submit():
         s.composer.count_scores = s.composer.count_scores - 1
         for m in s.measures:
-            Session.delete(m)
-        Session.delete(s)
-        Session.commit()
+            db.session.delete(m)
+        db.session.delete(s)
+        db.session.commit()
         flash('Your score has been deleted!', 'success')
         return redirect(url_for('main.index'))
 
@@ -344,12 +344,12 @@ def delete_score(score_path):
 @scores_app.route("/score/<string:score_path>/measure/<string:measure_path>/delete", methods=['GET','POST'])
 @login_required
 def delete_measure(score_path, measure_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     if s.user_id != current_user.id:
         abort(403)
-    m = Session.query(Measure).filter_by(path=measure_path).first()
+    m = Measure.query.filter_by(path=measure_path).first()
     if not m:
         abort(404)
     if s.id != m.score.id:
@@ -357,11 +357,11 @@ def delete_measure(score_path, measure_path):
 
     form = DeleteMeasureForm()
     if form.validate_on_submit():
-        Session.delete(m)
-        Session.commit()
+        db.session.delete(m)
+        db.session.commit()
         s._set_duration()
-        Session.add(s)
-        Session.commit()
+        db.session.add(s)
+        db.session.commit()
         flash('Your measure has been deleted!', 'success')
         return redirect(url_for('scores.score', score_path=s.path))
 
@@ -373,7 +373,7 @@ def delete_measure(score_path, measure_path):
 def scores():
     page = request.args.get('page', 1, type=int)
     page_result = get_page(
-        Session.query(Score)
+        Score.query
             .filter_by(visibility=Visibility.PUBLIC)
             .order_by(Score.created.desc()),
         page
@@ -394,7 +394,7 @@ def scores_for_players(for_whom):
     except:
         abort(404)
     page_result = get_page(
-        Session.query(Score)
+        Score.query
             .filter_by(for_players=fp)
             .filter_by(visibility=Visibility.PUBLIC)
             .order_by(Score.created.desc()),
@@ -411,11 +411,11 @@ def scores_for_players(for_whom):
 @login_required
 def user_scores(user_path):
     page = request.args.get('page', 1, type=int)
-    user = Session.query(User).filter_by(path=user_path).first()
+    user = User.query.filter_by(path=user_path).first()
     if not user:
         abort(404)
     page_result = get_page(
-        Session.query(Score)
+        Score.query
             .filter(Score.user_id == user.id)
             .filter(or_(Score.visibility == Visibility.PUBLIC, Score.visibility == Visibility.PRIVATE))
             .order_by(Score.count_favorites.desc(), Score.created.desc()),
@@ -431,7 +431,7 @@ def user_scores(user_path):
 @scores_app.route("/score/<string:score_path>/copy", methods=['GET', 'POST'])
 @login_required
 def copy_score(score_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
 
@@ -452,8 +452,8 @@ def copy_score(score_path):
         copy_m.ordinal = m.ordinal
         copy.measures.append(copy_m)
 
-    Session.add(copy)
-    Session.commit()
+    db.session.add(copy)
+    db.session.commit()
 
     return redirect(url_for('scores.score', score_path=copy.path))
 
@@ -463,7 +463,7 @@ def make_copy_title(s):
     i = 1
     while True:
         name = f'{to_ordinal_string(i)} Variation on {s.name}'
-        existing_name = Session.query(Score).filter_by(name=name).first()
+        existing_name = Score.query.filter_by(name=name).first()
         if not existing_name:
             return name
         i = i + 1
@@ -472,7 +472,7 @@ def make_copy_title(s):
 @scores_app.route("/score/<string:score_path>/ending")
 @login_required
 def ending(score_path):
-    s = Session.query(Score).filter_by(path=score_path).first()
+    s = Score.query.filter_by(path=score_path).first()
     if not s:
         abort(404)
     title = 'End of ' + s.name + ' by ' + s.composer.name

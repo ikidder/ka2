@@ -5,22 +5,10 @@ import random
 
 main_app = Blueprint('main', __name__)
 
-slogans = ['Empower yourself; Empower your partner.',
-    'Be Curious',
-    'Go Back for More',
-    'Prioritize Intimacy',
-    'Love & Intimacy Within the Chaos',
-    'Every opportunity is an opportunity to connect more',
-    'Our Bodies are Magical Vessels of Pleasure',
-    'Luminous Beings Are We',
-    'Make Body & Soul Connections',
-    'Our bodies are tools with which we can grow our souls',
-    'Prioritize pleasure']
 
 @main_app.route("/")
 def index():
-    slogan = random.choice(slogans)
-    return render_template('index.html', title='kamagapē', slogan=slogan)
+    return render_template('index.html', title='kamagapē')
 
 
 @main_app.route('/scores', methods=['GET'])

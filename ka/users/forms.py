@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from flask_login import current_user
 from sqlalchemy import func
 from ka.models import User
-from ka.database import Session
+from ka import db
 
 
 class RegistrationForm(FlaskForm):
@@ -20,7 +20,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_name(self, field):
-        user = Session.query(User).filter(func.lower(User.name) == func.lower(field.data)).first()
+        user = User.query.filter(func.lower(User.name) == func.lower(field.data)).first()
         if user:
             raise ValidationError('That username is taken. Please choose a different one.')
 
@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Underscores are not allowed in names.')
 
     def validate_email(self, field):
-        user = Session.query(User).filter(func.lower(User.email) == func.lower(field.data)).first()
+        user = User.query.filter(func.lower(User.email) == func.lower(field.data)).first()
         if user:
             raise ValidationError('Unable to process that email address. Please choose a different one.')
 
@@ -55,7 +55,7 @@ class UpdateAccountForm(FlaskForm):
 
     def validate_email(self, email):
         if email.data != current_user.email:
-            user = Session.query(User).filter_by(email=email.data).first()
+            user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Please choose a different email.')
 

@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from ka.database import get_page
-from ka import Session
+from ka import db
 from ka.models import Post, Visibility, User
 from ka.posts.forms import PostForm, DeletePostForm
 from sqlalchemy import or_
@@ -18,8 +18,8 @@ def new_post():
     if form.validate_on_submit():
         post = Post(name=form.name.data, text=form.text.data, composer=current_user)
         post.composer.count_posts = post.composer.count_posts + 1
-        Session.add(post)
-        Session.commit()
+        db.session.add(post)
+        db.session.commit()
         flash('Your post has been created!', 'success')
         return redirect(url_for('posts.posts'))
     return render_template('create_post.html', title='New Post',
@@ -29,7 +29,7 @@ def new_post():
 @posts_app.route("/post/<string:post_path>")
 @login_required
 def post(post_path):
-    p = Session.query(Post).filter_by(path=post_path).first()
+    p = Post.query.filter_by(path=post_path).first()
     if not p:
         abort(404)
     if p.visibility == Visibility.HIDDEN:
@@ -40,7 +40,7 @@ def post(post_path):
 @posts_app.route("/post/<string:post_path>/update", methods=['GET', 'POST'])
 @login_required
 def update_post(post_path):
-    p = Session.query(Post).filter_by(path=post_path).first()
+    p = Post.query.filter_by(path=post_path).first()
     if not p:
         abort(404)
     if p.composer != current_user:
@@ -49,7 +49,7 @@ def update_post(post_path):
     if form.validate_on_submit():
         p.name = form.name.data
         p.text = form.text.data
-        Session.commit()
+        db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('posts.post', post_path=p.path))
     elif request.method == 'GET':
@@ -62,7 +62,7 @@ def update_post(post_path):
 @posts_app.route("/post/<string:post_path>/delete", methods=['GET','POST'])
 @login_required
 def delete_post(post_path):
-    p = Session.query(Post).filter_by(path=post_path).first()
+    p = Post.query.filter_by(path=post_path).first()
     if not p:
         abort(404)
     if p.user_id != current_user.id:
@@ -71,8 +71,8 @@ def delete_post(post_path):
     form = DeletePostForm()
     if form.validate_on_submit():
         p.composer.count_posts = p.composer.count_posts - 1
-        Session.delete(p)
-        Session.commit()
+        db.session.delete(p)
+        db.session.commit()
         flash('Your post has been deleted!', 'success')
         return redirect(url_for('posts.posts'))
 
@@ -84,7 +84,7 @@ def delete_post(post_path):
 def posts():
     page = request.args.get('page', 1, type=int)
     page_result = get_page(
-        Session.query(Post)
+        Post.query
             .filter_by(visibility=Visibility.PUBLIC)
             .order_by(Post.created.desc()),
         page
@@ -96,11 +96,11 @@ def posts():
 @login_required
 def user_posts(user_path):
     page = request.args.get('page', 1, type=int)
-    user = Session.query(User).filter_by(path=user_path).first()
+    user = User.query.filter_by(path=user_path).first()
     if not user:
         abort(404)
     page_result = get_page(
-        Session.query(Post)
+        Post.query
             .filter(Post.user_id == user.id)
             .filter(or_(Post.visibility == Visibility.PUBLIC, Post.visibility == Visibility.PRIVATE))
             .order_by(Post.count_favorites.desc(), Post.created.desc()),

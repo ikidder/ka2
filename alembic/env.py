@@ -26,8 +26,9 @@ import os
 print('pwd: ', os.getcwd())
 import sys
 sys.path.insert(1, '')
-from ka.models import Base
-target_metadata = Base.metadata
+from ka import create_app, db
+app = create_app()  # have to initialize the app, or alembic won't see any tables
+target_metadata = db.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

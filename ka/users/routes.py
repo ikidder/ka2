@@ -4,7 +4,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint,
 from flask_login import login_user, current_user, logout_user, login_required
 from ka import bcrypt
 from ka.database import get_page
-from ka import Session
+from ka import db
 from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    ResetPasswordRequestForm, ResetPasswordForm, SendInvite)
@@ -31,13 +31,13 @@ def send_invite():
         if current_user.invites_left < 1:
             flash('No invites left.', 'danger')
             render_template('invite.html', title='Invite', form=form)
-        is_existing_user = Session.query(User).filter_by(email=form.email.data).first()
+        is_existing_user = User.query.filter_by(email=form.email.data).first()
         if is_existing_user:
             render_template('invite.html', title='Invite', success=True)
         invite = Invite.create(current_user, form.email.data)
-        Session.add(invite)
+        db.session.add(invite)
         current_user.invites_left = current_user.invites_left - 1
-        Session.commit()
+        db.session.commit()
         email.send_invite_email(invite)
         return render_template('invite.html', title='Invite', success=True)
     return render_template('invite.html', title='Invite', form=form)
@@ -54,7 +54,7 @@ def register(invite_token):
         return redirect(url_for('main.index'))
     if not invite.responded:
         invite.responded = datetime.datetime.utcnow()
-        Session.commit()
+        db.session.commit()
     form = RegistrationForm()
     if form.validate_on_submit():
         password = str(os.urandom(16))
@@ -63,12 +63,12 @@ def register(invite_token):
         user = User(name=form.name.data)
         user.email = form.email.data.strip()
         user.password=hashed_password
-        Session.add(user)
-        Session.commit()
+        db.session.add(user)
+        db.session.commit()
 
         invite.user_created = user.id
-        Session.add(invite)
-        Session.commit()
+        db.session.add(invite)
+        db.session.commit()
 
         token = user.get_reset_password_token()
         email.send_welcome_email(user, token)
@@ -87,7 +87,7 @@ def login():
         return redirect(url_for('scores.scores'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = Session.query(User).filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
@@ -109,7 +109,7 @@ def reset_password_request():
         return redirect(url_for('main.index'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
-        user = Session.query(User).filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user:
             token = user.get_reset_password_token()
             email.send_password_reset_email(user, token)
@@ -129,8 +129,8 @@ def reset_password(token):
         user.password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         if not user.confirmed:
             user.confirmed = datetime.datetime.utcnow()
-        Session.add(user)
-        Session.commit()
+        db.session.add(user)
+        db.session.commit()
         logout_user()
         flash('Your password has been set. Please login to continue.')
         return redirect(url_for('users.login'))
@@ -149,7 +149,7 @@ def account():
     if form.validate_on_submit():
         current_user.email = form.email.data
         current_user.text = form.text.data
-        Session.commit()
+        db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
@@ -181,20 +181,20 @@ def favorites():
 @login_required
 def favorite(id):
     favoritable = with_polymorphic(KaBase, [User, Score, Post])
-    obj = Session.query(favoritable).filter(KaBase.id == id).first()
+    obj = db.session.query(favoritable).filter(KaBase.id == id).first()
     if not obj:
         abort(404)
     existing_favorite = current_user.get_favorite(obj.id)
     if existing_favorite:
         existing_favorite.created = datetime.datetime.utcnow()
-        Session.add(existing_favorite)
-        Session.commit()
+        db.session.add(existing_favorite)
+        db.session.commit()
     else:
         favorite = Favorite(current_user.id, obj.id)
-        Session.add(favorite)
+        db.session.add(favorite)
         obj.count_favorites = obj.count_favorites + 1
-        Session.add(obj)
-        Session.commit()
+        db.session.add(obj)
+        db.session.commit()
         flash(f'Added "{obj.name}" to Favorites', 'info')
     redirect_path = request.args.get('redirect')
     if redirect_path:
@@ -207,16 +207,16 @@ def favorite(id):
 @login_required
 def unfavorite(id):
     favoritable = with_polymorphic(KaBase, [User, Score, Post])
-    obj = Session.query(favoritable).filter(KaBase.id == id).first()
+    obj = db.session.query(favoritable).filter(KaBase.id == id).first()
     if not obj:
         abort(404)
     existing_favorite = current_user.get_favorite(obj.id)
     if not existing_favorite:
         abort(404)
-    Session.delete(existing_favorite)
+    db.session.delete(existing_favorite)
     obj.count_favorites = obj.count_favorites - 1
-    Session.add(obj)
-    Session.commit()
+    db.session.add(obj)
+    db.session.commit()
     flash(f'Removed "{obj.name}" from Favorites', 'info')
     redirect_path = request.args.get('redirect')
     if redirect_path:
@@ -235,7 +235,7 @@ def unfavorite(id):
 def users():
     page = request.args.get('page', 1, type=int)
     page_result = get_page(
-        Session.query(User)
+        User.query
             .filter_by(visibility=Visibility.PUBLIC)
             .order_by(User.count_favorites.desc(), User.created.desc()),
         page
@@ -246,12 +246,12 @@ def users():
 @users_app.route('/user/<string:user_path>')
 def user_content(user_path):
     page = request.args.get('page', 1, type=int)
-    user = Session.query(User).filter_by(path=user_path).first()
+    user = User.query.filter_by(path=user_path).first()
     if not user or user.visibility == Visibility.HIDDEN:
         abort(404)
     content = with_polymorphic(KaBase, [Score, Post])
     page_result = get_page(
-        Session.query(content)
+        db.session.query(content)
             .filter(or_(content.Score.user_id == user.id, content.Post.user_id == user.id))
             .order_by(content.created.desc()),
         page
