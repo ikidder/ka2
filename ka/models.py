@@ -158,6 +158,7 @@ class User(KaBase, UserMixin):
     count_posts = db.Column(db.Integer, nullable=False, default=0)
     count_tours = db.Column(db.Integer, nullable=False, default=0)
     invites_left = db.Column(db.Integer, nullable=False, default=5)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     @hybrid_property
     def name(self):
@@ -478,6 +479,39 @@ class Favorite(KaBase):
 
     def __repr__(self):
         return f'<Favorite -> id: {self.id}, user_id: {self.user_id}, content_id: {self.content_id}>'
+
+
+
+# *************************************************
+#  Featured
+# *************************************************
+
+
+class Feature(KaBase):
+    __tablename__ = 'feature'
+
+    id = db.Column(db.ForeignKey('kabase.id'), primary_key=True)
+    pinned = db.Column(db.Boolean, nullable=False, default=False)
+    content_id = db.Column(db.ForeignKey('kabase.id'), nullable=False)
+    content = relationship(
+        'KaBase',
+        foreign_keys=[content_id],
+        primaryjoin="Feature.content_id==KaBase.id"
+    )
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'feature',
+        'inherit_condition': id == KaBase.id
+    }
+
+    def __init__(self, content_id, pinned=False):
+        self._name = f'feature__{content_id}'
+        self._path = encode(self._name)
+        self.pinned = pinned
+        self.content_id = content_id
+
+    def __repr__(self):
+        return f'<Feature -> id: {self.id}, content_id: {self.content_id}, pinned: {self.pinned}>'
 
 
 

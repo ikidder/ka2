@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_post_row, view_score_header_row, view_control, view_empty_control, view_composer_name, view_user_summary with context %}
+
+{% block content %}
+
+    {% for item in result.items %}
+        {% if item is Score %}
+        {{ view_score_header_row(item) }}
+        {% elif item is Post %}
+        {{ view_post_row(item) }}
+        {% elif item is User %}
+        {{ view_user_summary(item) }}
+        {% endif %}
+    {% endfor %}
+
+    {% if result.has_prev or result.has_next  %}
+        <div class="container-md">
+        <div class="card shadow">
+            <div class="page-controls">
+                    {% if result.has_prev %}
+                        {{ view_control(url_for('main.featured', page=result.current_page - 1), "fa-step-backward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+                    {% if result.has_next %}
+                            {{ view_control(url_for('main.featured', page=result.current_page + 1), "fa-step-forward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+            </div>
+        </div>
+        </div>
+    {% endif %}
+{% endblock content %}

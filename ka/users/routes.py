@@ -2,9 +2,8 @@ import datetime
 import os
 from flask import render_template, url_for, flash, redirect, request, Blueprint, abort
 from flask_login import login_user, current_user, logout_user, login_required
-from ka import bcrypt
+from ka import bcrypt, db
 from ka.database import get_page
-from ka import db
 from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    ResetPasswordRequestForm, ResetPasswordForm, SendInvite)
@@ -84,14 +83,14 @@ def register(invite_token):
 @users_app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('scores.scores'))
+        return redirect(url_for('main.featured'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('scores.scores'))
+            return redirect(next_page) if next_page else redirect(url_for('main.featured'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
@@ -244,6 +243,7 @@ def users():
 
 
 @users_app.route('/user/<string:user_path>')
+@login_required
 def user_content(user_path):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(path=user_path).first()
