@@ -15,8 +15,8 @@ class ScoreForm(FlaskForm):
     def validate_name(self, field):
         if '_' in field.data:
             raise ValidationError('Underscores are not allowed in titles.')
-        if '#' in field.data:
-            raise ValidationError('Hashtags are not allowed in titles.')
+        if field.data.startswith('&'):
+            raise ValidationError("The first character of a title cannot be a '&'")
 
 
 class DeleteScoreForm(FlaskForm):
