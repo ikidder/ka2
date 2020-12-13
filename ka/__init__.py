@@ -16,6 +16,7 @@ from flask_talisman import Talisman
 # python module: https://python-markdown.github.io/
 # syntax: https://daringfireball.net/projects/markdown/syntax
 from flaskext.markdown import Markdown
+from .markdown_extensions import *
 
 # Elasticsearch
 # https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/index.html
@@ -35,11 +36,11 @@ slogans = [
     'Algorithms for the bedroom.',
     'A user manual for the no pants dance.',
     'Where you can shimmy all you want.',
-    'Not just a fantasy.',
+    'Live your fantasy.',
     'We take fooling around seriously.',
-    'Skip the ice cream, and have dessert.',
+    'Skip the ice cream and have dessert.',
     'Adding two person push ups to your workout.',
-    'Making music and making whoopee.',
+    'Humans: making music and making whoopee since time began.',
     'Easy peasy hanky panky.',
     'Test your mattress today!',
     'Long week? How about some horizontal refreshment?'
@@ -54,7 +55,8 @@ def create_app(config_class=Config):
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    Markdown(app)
+    md = Markdown(app)
+    md.register_extension(ThemeExtension)
 
     # if app.config['ELASTICSEARCH_CLOUD_ID']:
     #     # prod
@@ -72,12 +74,14 @@ def create_app(config_class=Config):
     from ka.main.routes import main_app
     from ka.errors.handlers import errors_app
     from ka.search.routes import search_app
+    from ka.theme.routes import theme_app
     app.register_blueprint(users_app)
     app.register_blueprint(posts_app)
     app.register_blueprint(scores_app)
     app.register_blueprint(main_app)
     app.register_blueprint(errors_app)
     app.register_blueprint(search_app)
+    app.register_blueprint(theme_app)
 
     sec_policy = {
         'default-src': [

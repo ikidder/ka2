@@ -10,6 +10,8 @@ class PostForm(FlaskForm):
     def validate_name(self, field):
         if '_' in field.data:
             raise ValidationError('Underscores are not allowed in titles.')
+        if '#' in field.data:
+            raise ValidationError('Hashtags are not allowed in titles.')
 
 
 class DeletePostForm(FlaskForm):

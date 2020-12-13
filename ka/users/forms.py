@@ -26,6 +26,8 @@ class RegistrationForm(FlaskForm):
 
         if '_' in field.data:
             raise ValidationError('Underscores are not allowed in names.')
+        if '#' in field.data:
+            raise ValidationError('Hashtags are not allowed in names.')
 
     def validate_email(self, field):
         user = User.query.filter(func.lower(User.email) == func.lower(field.data)).first()

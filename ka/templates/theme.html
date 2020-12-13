@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_post, view_score_header, view_control, view_empty_control, view_composer_name, view_user_summary, view_theme_name with context %}
+
+{% block content %}
+
+    <div class="container-md">
+        <div class="card shadow">
+                <div class="p font-sub-heading">tagged {{ view_theme_name(name) }}</div>
+        </div>
+    </div>
+
+    {% for item in result.items %}
+        {% if item is Score %}
+        {{ view_score_header(item) }}
+        {% elif item is Post %}
+        {{ view_post(item) }}
+        {% endif %}
+    {% endfor %}
+
+    {% if result.has_prev or result.has_next  %}
+        <div class="container-md">
+        <div class="card shadow">
+            <div class="page-controls">
+                    {% if result.has_prev %}
+                        {{ view_control(url_for('theme.theme', name=name, page=result.current_page - 1), "fa-step-backward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+                    {% if result.has_next %}
+                            {{ view_control(url_for('theme.theme', name=name, page=result.current_page + 1), "fa-step-forward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+            </div>
+        </div>
+        </div>
+    {% endif %}
+{% endblock content %}

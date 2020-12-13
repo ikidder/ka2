@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
 from time import time
+import re
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app
+from flask import current_app, url_for
 import jwt
 from urllib.parse import quote
 from enum import Enum, unique
@@ -213,6 +214,8 @@ class User(KaBase, UserMixin):
 
     def __init__(self, name):
         self._name = name.strip()
+        assert '#' not in self._name, 'no hashtags in user names'
+        assert '_' not in self._name, 'no underscores in user names'
         self._path = encode(name)
 
 
@@ -247,6 +250,8 @@ class Post(KaBase):
     def validate(self):
         assert self.composer, "composer is set in post validation"
         assert self._name, "name is set in post validation"
+        assert '#' not in self._name, 'no hashtags in post names'
+        assert '_' not in self._name, 'no underscores in score names'
         self._path = encode(self._name + '__by__' + self.composer.name)
 
     __searchable__ = ['title', 'content', 'date_posted']
@@ -339,6 +344,8 @@ class Measure(KaBase):
     def validate(self):
         assert self.score, "score is set in measure validation"
         assert self._name, "name is set in measure validation"
+        assert '#' not in self._name, 'no hashtags in measure names'
+        assert '_' not in self._name, 'no underscores in measure names'
         assert isinstance(self._ordinal, int), "ordinal is set in measure validation"
         self._path = encode(
             f'{self._name}__number__{self._ordinal:04}__from__{self.score.name}__by__{self.score.composer.name}'
@@ -426,6 +433,8 @@ class Score(KaBase):
     def validate(self):
         assert self.composer, "composer is set in score validation"
         assert self._name, "name is set in score validation"
+        assert '#' not in self._name, 'no hashtags in score names'
+        assert '_' not in self._name, 'no underscores in score names'
         self._path = encode(
             f'{self._name}__by__{self.composer.name}'
         )
@@ -559,6 +568,90 @@ class Invite(db.Model):
 
     def __repr__(self):
         return f'<Invite -> id: {self.id}, from_user_id: {self.from_user_id}, created: {self.created}, user_created: {self.user_created}>'
+
+
+# *************************************************
+#  Tag
+# *************************************************
+
+
+# TAG_REGEX = r'(?:^|[\s;,.?!])(&\w{2,30})(?=[;,.?!]*\s|$)'
+TAG_REGEX = r'(?:^|[;,.?!\s])(&[^\W_]{2,30})(?=[;,.?!\s]|$)'
+pattern = re.compile(TAG_REGEX)
+
+tag_association = db.Table(
+    'tag_association',
+    db.metadata,
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+    db.Column('tagged_id', db.Integer, db.ForeignKey('kabase.id'))
+)
+
+
+class Tag(KaBase):
+    __tablename__ = 'tag'
+
+    id = db.Column(db.ForeignKey('kabase.id'), primary_key=True)
+    tagged = relationship("KaBase",
+                    secondary=tag_association,
+                    backref="tags")
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'tag',
+        'inherit_condition': id == KaBase.id
+    }
+
+    @hybrid_property
+    def name(self):
+        return self._name
+
+    @hybrid_property
+    def path(self):
+        return self._path
+
+    def __init__(self, name):
+        self._name = name.strip()
+        assert self._name[0] == '&', 'tags must start with a #'
+        assert len(self._name) > 3, 'tags must be at least three chars long, after the #'
+        assert '#' not in self._name[1:], "no #'s after the first char in a tag"
+        assert '_' not in self._name, 'no underscores in tag names'
+        self._path = encode(self._name)
+
+    def __repr__(self):
+        return f'<Tag -> id: {self.id}, name: {self.name}>'
+
+    @staticmethod
+    def tag_counts():
+        sql = """select _name, count(*)
+from kabase 
+inner join tag 
+on kabase.id = tag.id
+inner join tag_association
+on tag.id = tag_association.tag_id
+group by _name"""
+        result_proxy = db.engine.execute(sql)
+        return [item for item in result_proxy]
+
+    @staticmethod
+    def extract_tags(text):
+        """Extracts tags that should be with the object holding the given text."""
+        # matches = []
+        # TODO put making the link into markdown processor
+        # TODO otherwise, we'll have to unmake the link when the user edits
+        # def keep_and_replace(m):
+        #     tag_name = m.group(1)
+        #     matches.append(tag_name)
+        #     return f'[{tag_name}]({url_for("tag.tag", name=tag_name)})'
+        # parsed_text = pattern.sub(keep_and_replace, obj.text)
+        matches = pattern.findall(text)
+        limited_unique_matches = list(dict.fromkeys(matches))[:4]
+        tags = []
+        for match in limited_unique_matches:
+            tag = Tag.query.filter(Tag.name == match).first()
+            if not tag:
+                tag = Tag(match)
+            tags.append(tag)
+        return tags
+
 
 
 

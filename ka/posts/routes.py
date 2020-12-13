@@ -3,7 +3,7 @@ from flask import (render_template, url_for, flash,
 from flask_login import current_user, login_required
 from ka.database import get_page
 from ka import db
-from ka.models import Post, Visibility, User
+from ka.models import Post, Visibility, User, Tag
 from ka.posts.forms import PostForm, DeletePostForm
 from sqlalchemy import or_
 
@@ -17,6 +17,7 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(name=form.name.data, text=form.text.data, composer=current_user)
+        post.tags = Tag.extract_tags(post.text)
         post.composer.count_posts = post.composer.count_posts + 1
         db.session.add(post)
         db.session.commit()
@@ -49,6 +50,7 @@ def update_post(post_path):
     if form.validate_on_submit():
         p.name = form.name.data
         p.text = form.text.data
+        p.tags = Tag.extract_tags(p.text)
         db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('posts.post', post_path=p.path))

@@ -3,7 +3,7 @@ from flask import (render_template, url_for, flash,
 from flask_login import current_user, login_required
 from ka.database import get_page
 from ka import db
-from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User
+from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User, Tag
 from ka.scores.forms import ScoreForm, MeasureForm, DeleteMeasureForm, DeleteScoreForm
 from datetime import datetime
 from sqlalchemy import or_
@@ -27,6 +27,7 @@ def new_score():
             for_players=ForPlayers[form.for_players.data],
             created=datetime.utcnow()
         )
+        score.tags = Tag.extract_tags(score.text)
         score.composer.count_scores = score.composer.count_scores + 1
         db.session.add(score)
         db.session.commit()
@@ -249,6 +250,7 @@ def update_score(score_path):
         s.name = form.name.data
         s.text = form.text.data
         s.for_players = form.for_players.data
+        s.tags = Tag.extract_tags(s.text)
         db.session.commit()
         flash('Your score has been updated!', 'success')
         if s.measures:

@@ -4,7 +4,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint,
 from flask_login import login_user, current_user, logout_user, login_required
 from ka import bcrypt, db
 from ka.database import get_page
-from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite
+from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite, Tag
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    ResetPasswordRequestForm, ResetPasswordForm, SendInvite)
 import ka.email as email
@@ -148,6 +148,7 @@ def account():
     if form.validate_on_submit():
         current_user.email = form.email.data
         current_user.text = form.text.data
+        current_user.tags = Tag.extract_tags(current_user.text)
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('users.account'))

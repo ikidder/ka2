@@ -450,3 +450,7 @@ to create a horizontal rule</td>
     </div>
 {% endmacro %}
 
+
+{% macro view_theme_name(name) %}
+    <a class="" href="{{ url_for('theme.theme', name=name) }}">{{ name }}</a>
+{% endmacro %}

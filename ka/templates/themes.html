@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_theme_name %}
+
+{% block content %}
+
+    <div class="container-md">
+        <div class="card shadow">
+            <span class="font-sub-heading">all tags</span>
+        </div>
+    </div>
+
+    <div class="container-md">
+        <div class="card shadow">
+            {% for name, count in results %}
+                <div class="content">
+                    {{ view_theme_name(name) }}
+                    <span>
+                        {{ count }}
+                    </span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock content %}

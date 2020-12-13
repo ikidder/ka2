@@ -27,6 +27,11 @@ def rtitle():
 def rint(start, end):
     return random.choice(range(start, end))
 
+def make_timestamp():
+    base_date = datetime.utcnow()
+    date = base_date + timedelta(days=random.choice(range(-400,0)))
+    return date
+
 
 #*************************************************
 #  Users
@@ -57,12 +62,6 @@ def make_default_users():
 #*************************************************
 
 
-def make_timestamp():
-    base_date = datetime.utcnow()
-    date = base_date + timedelta(days=random.choice(range(-400,0)))
-    return date
-
-
 def make_score(composer) -> Score:
     title = rtitle()
     s = Score()
@@ -75,6 +74,24 @@ def make_score(composer) -> Score:
     s.created = make_timestamp()
 
     return s
+
+
+#*************************************************
+#  Post
+#*************************************************
+
+
+def make_post(composer) -> Post:
+    title = rtitle()
+    p = Post()
+    p._name = title
+    p.composer = composer
+    p.text = random.choice(content_strings)
+    p.count_plays = random.choice(range(0, 1000))
+    p.count_favorites = random.choice(range(0, 1000))
+    p.created = make_timestamp()
+
+    return p
 
 
 #*************************************************
