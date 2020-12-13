@@ -33,7 +33,8 @@ def theme(name):
         .select_from(Tag)\
         .join(tag_association)\
         .join(content)\
-        .filter(tag_association.c.tag_id == t.id),
+        .filter(tag_association.c.tag_id == t.id)
+        .order_by(content.created.desc()),
         page
     )
     return render_template(
