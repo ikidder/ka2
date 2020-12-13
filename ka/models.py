@@ -214,7 +214,7 @@ class User(KaBase, UserMixin):
 
     def __init__(self, name):
         self._name = name.strip()
-        assert '#' not in self._name, 'no hashtags in user names'
+        assert not self._name.startswith('&'), 'titles cannot start with the theme character'
         assert '_' not in self._name, 'no underscores in user names'
         self._path = encode(name)
 
@@ -250,7 +250,7 @@ class Post(KaBase):
     def validate(self):
         assert self.composer, "composer is set in post validation"
         assert self._name, "name is set in post validation"
-        assert '#' not in self._name, 'no hashtags in post names'
+        assert not self._name.startswith('&'), 'titles cannot start with the theme character'
         assert '_' not in self._name, 'no underscores in score names'
         self._path = encode(self._name + '__by__' + self.composer.name)
 
@@ -344,7 +344,7 @@ class Measure(KaBase):
     def validate(self):
         assert self.score, "score is set in measure validation"
         assert self._name, "name is set in measure validation"
-        assert '#' not in self._name, 'no hashtags in measure names'
+        assert not self._name.startswith('&'), 'titles cannot start with the theme character'
         assert '_' not in self._name, 'no underscores in measure names'
         assert isinstance(self._ordinal, int), "ordinal is set in measure validation"
         self._path = encode(
@@ -433,7 +433,7 @@ class Score(KaBase):
     def validate(self):
         assert self.composer, "composer is set in score validation"
         assert self._name, "name is set in score validation"
-        assert '#' not in self._name, 'no hashtags in score names'
+        assert not self._name.startswith('&'), 'titles cannot start with the theme character'
         assert '_' not in self._name, 'no underscores in score names'
         self._path = encode(
             f'{self._name}__by__{self.composer.name}'
@@ -575,7 +575,6 @@ class Invite(db.Model):
 # *************************************************
 
 
-# TAG_REGEX = r'(?:^|[\s;,.?!])(&\w{2,30})(?=[;,.?!]*\s|$)'
 TAG_REGEX = r'(?:^|[;,.?!\s])(&[^\W_]{2,30})(?=[;,.?!\s]|$)'
 pattern = re.compile(TAG_REGEX)
 
@@ -610,9 +609,9 @@ class Tag(KaBase):
 
     def __init__(self, name):
         self._name = name.strip()
-        assert self._name[0] == '&', 'tags must start with a #'
-        assert len(self._name) > 3, 'tags must be at least three chars long, after the #'
-        assert '#' not in self._name[1:], "no #'s after the first char in a tag"
+        assert self._name[0] == '&', 'tags must start with a &'
+        assert len(self._name) > 2, 'tags must be at least three chars long, after the &'
+        assert '&' not in self._name[1:], "no &'s after the first char in a tag"
         assert '_' not in self._name, 'no underscores in tag names'
         self._path = encode(self._name)
 
@@ -634,7 +633,6 @@ group by _name"""
     @staticmethod
     def extract_tags(text):
         """Extracts tags that should be with the object holding the given text."""
-        # matches = []
         matches = pattern.findall(text)
         limited_unique_matches = list(dict.fromkeys(matches))[:4]
         tags = []
