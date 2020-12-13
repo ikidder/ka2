@@ -635,13 +635,6 @@ group by _name"""
     def extract_tags(text):
         """Extracts tags that should be with the object holding the given text."""
         # matches = []
-        # TODO put making the link into markdown processor
-        # TODO otherwise, we'll have to unmake the link when the user edits
-        # def keep_and_replace(m):
-        #     tag_name = m.group(1)
-        #     matches.append(tag_name)
-        #     return f'[{tag_name}]({url_for("tag.tag", name=tag_name)})'
-        # parsed_text = pattern.sub(keep_and_replace, obj.text)
         matches = pattern.findall(text)
         limited_unique_matches = list(dict.fromkeys(matches))[:4]
         tags = []
