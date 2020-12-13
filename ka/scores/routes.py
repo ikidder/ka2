@@ -260,7 +260,7 @@ def update_score(score_path):
     elif request.method == 'GET':
         form.name.data = s.name
         form.text.data = s.text
-        form.for_players.data = s.for_players.value
+        form.for_players.data = s.for_players.name
     return render_template('create_score.html', title='Edit Score',
                            form=form, legend='Edit Score')
 
@@ -306,8 +306,8 @@ def update_measure(score_path, measure_path):
             return redirect(url_for('scores.new_measure', score_path=s.path, _anchor='editing'))
     elif request.method == 'GET':
         form.name.data = m.name
-        form.tempo.data = m.tempo
-        form.dynamic.data = m.dynamic
+        form.tempo.data = m.tempo.name
+        form.dynamic.data = m.dynamic.name
         form.text.data = m.text
         form.duration.data = m.duration
     return render_template('create_measure.html',
