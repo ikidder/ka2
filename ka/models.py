@@ -286,6 +286,19 @@ class Tempo(Enum):
 
 tempos = [tempo for tempo in Tempo]
 
+tempo_alt_text = {
+    Tempo.Grave: '20 - 40 bpm. Very slow and solemn.',
+    Tempo.Lento: '40 - 60 bpm. Slowly.',
+    Tempo.Adagio: '66 - 76 bpm. At ease.',
+    Tempo.Adagietto: '70 - 80 bpm. Rather slow.',
+    Tempo.Andante: '76 - 108 bpm. A walking pace.',
+    Tempo.Moderato: '108 - 120 bpm. A moderate speed.',
+    Tempo.Allagretto: '112 - 120 bpm. Moderately fast.',
+    Tempo.Allegro: '120 - 156 bpm. Fast, quick, and bright. A heartbeat.',
+    Tempo.Vivace: '156 - 176 bpm. Lively and fast.',
+    Tempo.Presto: '176 - 200 bpm. Very, very fast.'
+}
+
 
 # *************************************************
 #  Dynamic
@@ -302,6 +315,14 @@ class Dynamic(Enum):
 
 
 dynamics = list(reversed([dynamic for dynamic in Dynamic]))
+
+dynamic_alt_text = {
+    Dynamic.Pianissimo: 'As soft as possible. Touching an ear lobe without moving it, or feeling the seeds of a strawberry.',
+    Dynamic.Piano: 'Soft, gentle. Skin barely moves under the touch. Like drawing in the icing of a cake.',
+    Dynamic.Mezzo: 'Moderate, intentional pressure. Like peeling an orange.',
+    Dynamic.Forte: 'Firm. Like testing a grapefruit for ripeness.',
+    Dynamic.Fortissimo: 'Very firm. Like kneading muscles, or dough, or squeezing juice.',
+}
 
 
 # *************************************************

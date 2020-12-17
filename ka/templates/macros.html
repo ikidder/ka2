@@ -17,39 +17,50 @@
 
 {% macro view_measure(measure, prev_measure=None, next_measure=None, show_controls=False) %}
     <div class="container-md" id="{{ measure.path }}">
-    <div class="card shadow">
-        <div class="p text-center">
-            <a href="{{ url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path) }}" class="measure-title">{{ measure.name }}</a>
-        </div>
-        <div class="p">
-            <span class="measure-tempo-and-dynamic">{{ measure.tempo.value }}, {{ measure.dynamic.value }}</span>
-        </div>
-        <div class="p content">{{ measure.text|markdown }}</div>
-        {{ view_measure_item_menu(measure) }}
-        <div class="p duration font-heading text-center">{{ measure.formatted_duration }}</div>
-        {% if prev_measure or next_measure or show_controls %}
-            <hr />
-            <div class="page-controls">
-                {% if prev_measure %}
-                    {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=prev_measure.path, autoplay='true'), "fa-step-backward") }}
-                {% else %}
-                    {{ view_empty_control() }}
-                {% endif %}
-                <div id="play">
-                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path), "fa-play") }}
+        <div class="card shadow measure">
+            <div class="measure-content">
+                <div class="font-sub-heading text-center">
+                    <a href="{{ url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path) }}" class="title">{{ measure.name }}</a>
                 </div>
-                {% if next_measure %}
-                    <div id="next-measure">
-                    {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=next_measure.path, autoplay='true'), "fa-step-forward") }}
-                    </div>
-                {% else %}
-                    <div id="next-measure">
-                    {{ view_control(url_for('scores.ending', score_path=measure.score.path), "fa-step-forward") }}
-                    </div>
-                {% endif %}
+                <div class="content measure-content">{{ measure.text|markdown }}</div>
+                <div class="measure-duration">
+                    <div class="duration font-sub-heading text-center">{{ measure.formatted_duration }}</div>
                 </div>
-        {% endif %}
-    </div>
+            </div>
+            <div class="measure-t-and-d">
+                <div class="tempo">
+                    <div class="tempo-name">{{ measure.tempo.value }}</div>
+                    <div class="tempo-description">{{ measure.tempo|tempo_description }}</div>
+                </div>
+                <div class="dynamic">
+                    <div class="dynamic-name">{{ measure.dynamic.value }}</div>
+                    <div class="dynamic-description">{{ measure.dynamic|dynamic_description }}</div>
+                </div>
+            </div>
+            {{ view_measure_item_menu(measure) }}
+            {% if prev_measure or next_measure or show_controls %}
+{#                <hr />#}
+                <div class="page-controls">
+                    {% if prev_measure %}
+                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=prev_measure.path, autoplay='true'), "fa-step-backward") }}
+                    {% else %}
+                        {{ view_empty_control() }}
+                    {% endif %}
+                    <div id="play">
+                            {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path), "fa-play") }}
+                    </div>
+                    {% if next_measure %}
+                        <div id="next-measure">
+                        {{ view_control(url_for('scores.measure', score_path=measure.score.path, measure_path=next_measure.path, autoplay='true'), "fa-step-forward") }}
+                        </div>
+                    {% else %}
+                        <div id="next-measure">
+                        {{ view_control(url_for('scores.ending', score_path=measure.score.path), "fa-step-forward") }}
+                        </div>
+                    {% endif %}
+                    </div>
+            {% endif %}
+        </div>
     </div>
 {% endmacro %}
 
@@ -157,7 +168,7 @@
                     <p class="text-center">favorites: {{ score.count_favorites|e }}</p>
                 </div>
                 <div class="col">
-                    <p class="text-center">created: {{ score.created.strftime("%d %B %Y") }}</p>
+                    <p class="text-center">{{ score.created.strftime("%d %B %Y") }}</p>
                 </div>
             </div>
         </div>
@@ -168,17 +179,18 @@
 {%  macro view_score_header_row(score) -%}
     <div class="container-md">
         <div class="card shadow">
-            <div class="p score-header-row">
-                {{  view_score_title(score.name, score.path) }}
-                {{ view_composer_name(score.composer) }}
-                {{ view_for_players(score.for_players) }}
-                <span class="duration">{{ score.formatted_duration }}</span>
-{#                <div class="metadata">#}
-{#                    plays: {{ score.count_plays|e }}#}
-{#                    favorites: {{ score.count_favorites|e }}#}
-{#                    created: {{ score.created.strftime("%d %B %Y") }}#}
-{#                </div>#}
-            </div>
+                 <div class="p score-header-row">
+                    {{ view_score_title(score.name, score.path) }}
+                    {{ view_composer_name(score.composer) }}
+                    {{ view_for_players(score.for_players) }}
+                    <span class="duration">{{ score.formatted_duration }}</span>
+    {#                <div class="metadata">#}
+    {#                    plays: {{ score.count_plays|e }}#}
+    {#                    favorites: {{ score.count_favorites|e }}#}
+    {#                    created: {{ score.created.strftime("%d %B %Y") }}#}
+    {#                </div>#}
+                </div>
+            <div class="context"><span class="content-text">SCORE</span></div>
         </div>
     </div>
 {%- endmacro %}
@@ -203,7 +215,7 @@
                     <p class="text-center">favorites: {{ score.count_favorites|e }}</p>
                 </div>
                 <div class="col">
-                    <p class="text-center">created: {{ score.created.strftime("%d %B %Y") }}</p>
+                    <p class="text-center">{{ score.created.strftime("%d %B %Y") }}</p>
                 </div>
             </div>
             <hr />
@@ -274,7 +286,7 @@
                     <p class="text-center">favorites: 0</p>
                 </div>
                 <div class="col">
-                    <p class="text-center">created: {{ post.created.strftime("%d %B %Y") }}</p>
+                    <p class="text-center">{{ post.created.strftime("%d %B %Y") }}</p>
                 </div>
             </div>
             {{ view_post_item_menu(post) }}
