@@ -278,7 +278,7 @@ class Tempo(Enum):
     Adagietto = 'Adagietto'
     Andante = 'Andante'
     Moderato = 'Moderato'
-    Allagretto = 'Allagretto'
+    Allegretto = 'Allegretto'
     Allegro = 'Allegro'
     Vivace = 'Vivace'
     Presto = 'Presto'
@@ -293,7 +293,7 @@ tempo_alt_text = {
     Tempo.Adagietto: '70 - 80 bpm. Rather slow.',
     Tempo.Andante: '76 - 108 bpm. A walking pace.',
     Tempo.Moderato: '108 - 120 bpm. A moderate speed.',
-    Tempo.Allagretto: '112 - 120 bpm. Moderately fast.',
+    Tempo.Allegretto: '112 - 120 bpm. Moderately fast.',
     Tempo.Allegro: '120 - 156 bpm. Fast, quick, and bright. A heartbeat.',
     Tempo.Vivace: '156 - 176 bpm. Lively and fast.',
     Tempo.Presto: '176 - 200 bpm. Very, very fast.'
@@ -667,57 +667,3 @@ order by _name"""
 
 
 
-
-#*************************************************
-#  Searchable
-# based on https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xvi-full-text-search
-#*************************************************
-
-
-# from ka.elasticsearch import query_index, remove_from_index, add_to_index, INDEX_PREFIX
-#
-#
-# class SearchableMixin(object):
-#     @classmethod
-#     def search(cls, expression, page, per_page):
-#         ids, total = query_index(cls.index_name(), expression, page, per_page)
-#         if total == 0:
-#             return Session.query(cls).filter_by(id=0), 0
-#         when = []
-#         for i in range(len(ids)):
-#             when.append((ids[i], i))
-#         return Session.query(cls).filter(cls.id.in_(ids)), total  # TODO removed ordering
-#
-#     @classmethod
-#     def before_commit(cls, session):
-#         session._changes = {
-#             'add': list(session.new),
-#             'update': list(session.dirty),
-#             'delete': list(session.deleted)
-#         }
-#
-#     @classmethod
-#     def after_commit(cls, session):
-#         for obj in session._changes['add']:
-#             if isinstance(obj, SearchableMixin):
-#                 add_to_index(obj.index_name(), obj)
-#         for obj in session._changes['update']:
-#             if isinstance(obj, SearchableMixin):
-#                 add_to_index(obj.index_name(), obj)
-#         for obj in session._changes['delete']:
-#             if isinstance(obj, SearchableMixin):
-#                 remove_from_index(obj.index_name(), obj)
-#         session._changes = None
-#
-#     @classmethod
-#     def reindex(cls):
-#         for obj in Session.query(cls):
-#             add_to_index(cls.index_name(), obj)
-#
-#     @classmethod
-#     def index_name(cls):
-#         return INDEX_PREFIX + cls.__tablename__
-#
-#
-# event.listen(Session, 'before_commit', SearchableMixin.before_commit)
-# event.listen(Session, 'after_commit', SearchableMixin.after_commit)
