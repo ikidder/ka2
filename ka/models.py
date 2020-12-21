@@ -293,7 +293,7 @@ tempo_alt_text = {
     Tempo.Adagietto: '70 - 80 bpm. Rather slow.',
     Tempo.Andante: '76 - 108 bpm. A walking pace.',
     Tempo.Moderato: '108 - 120 bpm. A moderate speed.',
-    Tempo.Allegretto: '112 - 120 bpm. Moderately fast.',
+    Tempo.Allagretto: '112 - 120 bpm. Moderately fast.',
     Tempo.Allegro: '120 - 156 bpm. Fast, quick, and bright. A heartbeat.',
     Tempo.Vivace: '156 - 176 bpm. Lively and fast.',
     Tempo.Presto: '176 - 200 bpm. Very, very fast.'
