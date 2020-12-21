@@ -16,7 +16,7 @@
 
     {% if result.has_prev or result.has_next  %}
         <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <div class="page-controls">
                     {% if result.has_prev %}
                         {{ view_control(url_for('users.user_content', user_path=filtered_on.path, page=result.current_page - 1), "fa-step-backward") }}

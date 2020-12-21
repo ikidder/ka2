@@ -17,7 +17,7 @@
 
 {% macro view_measure(measure, prev_measure=None, next_measure=None, show_controls=False) %}
     <div class="container-md" id="{{ measure.path }}">
-        <div class="card shadow measure">
+        <div class="card measure">
             <div class="measure-content">
                 <div class="font-sub-heading text-center">
                     <a href="{{ url_for('scores.measure', score_path=measure.score.path, measure_path=measure.path) }}" class="title">{{ measure.name }}</a>
@@ -67,7 +67,7 @@
 
 {% macro edit_measure(form) %}
 <div class="container-md" id="editing">
-<div class="card shadow">
+<div class="card">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
@@ -150,7 +150,7 @@
 
 {%  macro view_score_header(score) -%}
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <div class="p font-heading">
                 {{  view_score_title(score.name, score.path) }}
             </div>
@@ -178,7 +178,7 @@
 
 {%  macro view_score_header_row(score) -%}
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
                  <div class="p score-header-row">
                     {{ view_score_title(score.name, score.path) }}
                     {{ view_composer_name(score.composer) }}
@@ -197,7 +197,7 @@
 
 {%  macro view_score_header_with_controls(score) -%}
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <div class="p font-heading">
                 {{  view_score_title(score.name, score.path) }}
             </div>
@@ -239,7 +239,7 @@
 
 {% macro view_user_summary(user) %}
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <div class="p row justify-content-space-around">
                 <div class="col text-center user-summary">
                     <a class="composer" href="{{ url_for('users.user_content', user_path=user.path) }}">
@@ -271,7 +271,7 @@
 
 {%  macro view_post(post) %}
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <div class="p font-heading">{{  view_post_title(post.name, post.path) }}</div>
             <div class="p byline">
                 {{ view_composer_name(post.composer) }}
@@ -296,7 +296,7 @@
 
 {%  macro view_post_row(post) %}
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <div class="score-header-row">
                 {{ view_post_title(post.name, post.path) }}
                 {{ view_composer_name(post.composer) }}

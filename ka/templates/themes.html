@@ -5,13 +5,13 @@
 {% block content %}
 
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <span class="font-sub-heading">all themes</span>
         </div>
     </div>
 
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             {% for name, count in results %}
                 <div class="content">
                     {{ view_theme_name(name) }}

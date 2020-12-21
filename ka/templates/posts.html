@@ -6,7 +6,7 @@
 
     {% if filtered_on %}
     <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             {% if filtered_on is User %}
                 <div class="p font-sub-heading serif">Posts{{ view_composer_name(filtered_on) }}</div>
             {% endif %}
@@ -20,7 +20,7 @@
 
     {% if result.has_prev or result.has_next  %}
         <div class="container-md">
-        <div class="card shadow">
+        <div class="card">
             <div class="page-controls">
                     {% if result.has_prev %}
                         {{ view_control(url_for('posts.posts', page=result.current_page - 1), "fa-step-backward") }}
