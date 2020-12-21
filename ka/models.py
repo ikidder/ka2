@@ -647,7 +647,8 @@ inner join tag
 on kabase.id = tag.id
 inner join tag_association
 on tag.id = tag_association.tag_id
-group by _name"""
+group by _name
+order by _name"""
         result_proxy = db.engine.execute(sql)
         return [item for item in result_proxy]
 
