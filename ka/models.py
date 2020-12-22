@@ -27,13 +27,18 @@ from flask_login import UserMixin
 
 
 def encode(s):
-    """Flask automatically escapes arguments to url_for, and automatically unescapes
-    route parameters. Therefore, we don't need to call something like:
+    """Replaces spaces and url reserved chars.
+    Flask automatically escapes arguments to url_for, and automatically unescapes
+    route parameters. Therefore, we shouldn't need to call something like:
 
         quote(s, safe='', encoding='utf-8', errors='strict')
 
-    in this method."""
-    s = s.strip().replace(' ', '-')
+    in this method. However, two characters that are reserved in urls are overlooked
+    by url_for: '/' and ':'. """
+    s = s.strip()\
+        .replace(' ', '-')\
+        .replace('/', '%2F')\
+        .replace(':', '%3A')
     return s
 
 
