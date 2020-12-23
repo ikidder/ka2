@@ -425,7 +425,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: var(--spacing-small);
     font-family: var(--font-heading);
     font-weight: var(--font-weight-heading);
-    color: hsla(194, 81%, 63%, .75)
+    color: var(--accent-1);
 }
 
 h1, h2 {
