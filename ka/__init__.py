@@ -59,6 +59,8 @@ def create_app(config_class=Config):
     md.register_extension(ThemeExtension)
     md.register_extension(NoImagesExtension)
     md.register_extension(EscapeHtmlExtension)
+    md.register_extension(ModifiedLinkExtension)
+    md.register_extension(ModifiedAutoLinkExtension)
 
     # if app.config['ELASTICSEARCH_CLOUD_ID']:
     #     # prod

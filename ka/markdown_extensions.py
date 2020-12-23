@@ -1,4 +1,4 @@
-from markdown.inlinepatterns import InlineProcessor, IMAGE_LINK_RE, IMAGE_REFERENCE_RE, HTML_RE
+from markdown.inlinepatterns import InlineProcessor, LinkInlineProcessor, LINK_RE, AutolinkInlineProcessor, AUTOLINK_RE
 from markdown.extensions import Extension
 import xml.etree.ElementTree as etree
 from urllib.parse import quote
@@ -37,6 +37,43 @@ class EscapeHtmlExtension(Extension):
     def extendMarkdown(self, md):
         del md.preprocessors['html_block']
         del md.inlinePatterns['html']
+
+
+class ModifiedLinkInlineProcessor(LinkInlineProcessor):
+    """Open link (safely!) in new tab.
+    reference: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html#tabnabbing
+    """
+    def handleMatch(self, m, data):
+        el, start, end = super().handleMatch(m, data)
+        if el is not None:
+            el.set('target', '_blank')
+            el.set('rel', 'noopener noreferrer')
+        return el, start, end
+
+
+class ModifiedLinkExtension(Extension):
+    def extendMarkdown(self, md):
+        md.inlinePatterns.register(ModifiedLinkInlineProcessor(LINK_RE, md), 'link', 160)
+
+
+class ModifiedAutoLinkInlineProcessor(AutolinkInlineProcessor):
+    """Open link (safely!) in new tab.
+    reference: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html#tabnabbing
+    """
+    def handleMatch(self, m, data):
+        el, start, end = super().handleMatch(m, data)
+        if el is not None:
+            el.set('target', '_blank')
+            el.set('rel', 'noopener noreferrer')
+        return el, start, end
+
+
+class ModifiedAutoLinkExtension(Extension):
+    def extendMarkdown(self, md):
+        md.inlinePatterns.register(ModifiedAutoLinkInlineProcessor(AUTOLINK_RE, md), 'autolink', 120)
+
+
+
 
 
 
