@@ -61,6 +61,10 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('Please choose a different email.')
 
+    def validate_text(self, field):
+        if '<script' in field.data:
+            raise ValidationError('Please see https://youtu.be/dQw4w9WgXcQ!')
+
 
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

@@ -18,6 +18,10 @@ class ScoreForm(FlaskForm):
         if field.data.startswith('&'):
             raise ValidationError("The first character of a title cannot be a '&'")
 
+    def validate_text(self, field):
+        if '<script' in field.data:
+            raise ValidationError('Please see https://youtu.be/dQw4w9WgXcQ!')
+
 
 class DeleteScoreForm(FlaskForm):
     delete = HiddenField('Delete')
@@ -48,6 +52,10 @@ class MeasureForm(FlaskForm):
     def validate_name(self, field):
         if '_' in field.data:
             raise ValidationError('Underscores are not allowed in titles.')
+
+    def validate_text(self, field):
+        if '<script' in field.data:
+            raise ValidationError('Please see https://youtu.be/dQw4w9WgXcQ!')
 
 class DeleteMeasureForm(FlaskForm):
     delete = HiddenField('Delete')

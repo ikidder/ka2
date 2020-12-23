@@ -57,6 +57,8 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     md = Markdown(app)
     md.register_extension(ThemeExtension)
+    md.register_extension(NoImagesExtension)
+    md.register_extension(EscapeHtmlExtension)
 
     # if app.config['ELASTICSEARCH_CLOUD_ID']:
     #     # prod

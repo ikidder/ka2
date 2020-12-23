@@ -1,7 +1,6 @@
 @charset "utf-8";
 
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Mulish:ital,wght@0,300..700;1,300..700&display=swap');
-/*@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');*/
 
 /*********************************/
 /*  colors                   */
@@ -21,6 +20,15 @@
     chill violets
     --black: hsla(267, 51%, 7%, 1);
     --background: hsla(267, 30%, 12%, 1);
+
+    blue and violet (current prod)
+    --black: hsla(234, 51%, 7%, 1);
+    --background: hsla(283, 16%, 8%, 1);
+    --elevated-background: hsla(283, 22%, 12%, 1);
+    --accent-1:  hsla(204, 35%, 50%, 1);
+    --accent-2: hsla(151, 29%, 46%, 1);
+    --accent-3: hsla(273, 29%, 46%, 1);
+    --accent-4: hsla(3, 29%, 46%, 1);
 
     starting accents
     --accent-1: hsla(204, 81%, 63%, .9)
