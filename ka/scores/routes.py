@@ -95,9 +95,8 @@ def new_measure_before(score_path, measure_path):
         abort(404)
     if above_this_measure.score.id != s.id:
         abort(404)
-    index = s.measures.index(above_this_measure)
 
-    measures = s.measures
+    index = above_this_measure.ordinal
 
     measure = Measure()
     form = MeasureForm()
@@ -108,9 +107,7 @@ def new_measure_before(score_path, measure_path):
             dynamic=form.dynamic.data,
             text=form.text.data,
             duration=form.duration.data,
-            created=datetime.utcnow(),
-            #_ordinal=above_this_measure.ordinal,
-            #score=s
+            created=datetime.utcnow()
         )
 
         s.measures = s.measures[:index] + [measure] + s.measures[index:]
@@ -122,7 +119,7 @@ def new_measure_before(score_path, measure_path):
         return redirect(url_for('scores.score', score_path=s.path))
     else:
         measure.id = -1
-        measures = list(measures)[:index] + [measure] + list(measures)[index:]
+        measures = list(s.measures)[:index] + [measure] + list(s.measures)[index:]
 
     return render_template('create_measure.html',
                            title='New Measure',
@@ -143,14 +140,13 @@ def new_measure_after(score_path, measure_path):
     if s.composer != current_user:
         abort(403)
 
-    measures = s.measures
-
     below_this_measure = Measure.query.filter_by(path=measure_path).first()
     if not below_this_measure:
         abort(404)
     if below_this_measure.score.id != s.id:
         abort(404)
-    index = measures.index(below_this_measure)
+
+    index = below_this_measure.ordinal + 1
 
     measure = Measure()
     form = MeasureForm()
@@ -161,13 +157,10 @@ def new_measure_after(score_path, measure_path):
             dynamic=form.dynamic.data,
             text=form.text.data,
             duration=form.duration.data,
-            created=datetime.utcnow(),
-            _ordinal=below_this_measure.ordinal,
-            score=s
+            created=datetime.utcnow()
         )
-
-        measures = measures[:index+1] + [measure] + measures[index+1:]
-        for i, m in enumerate(measures):
+        s.measures = s.measures[:index] + [measure] + s.measures[index:]
+        for i, m in enumerate(s.measures):
             m.ordinal = i
         db.session.add(s)
         db.session.commit()
@@ -175,7 +168,7 @@ def new_measure_after(score_path, measure_path):
         return redirect(url_for('scores.score', score_path=s.path))
     else:
         measure.id = -1
-        measures = list(s.measures)[:index+1] + [measure] + list(s.measures)[index+1:]
+        measures = list(s.measures)[:index] + [measure] + list(s.measures)[index:]
 
     return render_template('create_measure.html',
                            title='New Measure',
