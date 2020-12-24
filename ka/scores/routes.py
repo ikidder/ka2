@@ -354,8 +354,10 @@ def delete_measure(score_path, measure_path):
     if form.validate_on_submit():
         db.session.delete(m)
         db.session.commit()
-        s._set_duration()
         db.session.add(s)
+        s._set_duration()
+        for i, m in enumerate(s.measures):
+            m.ordinal = i
         db.session.commit()
         flash('Your measure has been deleted!', 'success')
         return redirect(url_for('scores.score', score_path=s.path))
