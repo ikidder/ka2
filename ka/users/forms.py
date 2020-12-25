@@ -85,3 +85,9 @@ class SendInvite(FlaskForm):
     def validate_email(self, email):
         if ';' in email.data:
             raise ValidationError('Semicolons are not allowed. Please send one invitation at a time.')
+
+
+class UnsubscribeForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Unsubscribe')
+

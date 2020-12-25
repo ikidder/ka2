@@ -165,6 +165,7 @@ class User(KaBase, UserMixin):
     count_tours = db.Column(db.Integer, nullable=False, default=0)
     invites_left = db.Column(db.Integer, nullable=False, default=5)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    allow_non_transactional_emails = db.Column(db.Boolean, nullable=False, default=True)
 
     @hybrid_property
     def name(self):

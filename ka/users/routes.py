@@ -6,7 +6,7 @@ from ka import bcrypt, db
 from ka.database import get_page
 from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite, Tag
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
-                                   ResetPasswordRequestForm, ResetPasswordForm, SendInvite)
+                                   ResetPasswordRequestForm, ResetPasswordForm, SendInvite, UnsubscribeForm)
 import ka.email as email
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import with_polymorphic
@@ -158,7 +158,21 @@ def account():
     return render_template('account.html', title='Account', form=form)
 
 
-
+@users_app.route("/unsubscribe", methods=['GET', 'POST'])
+def unsubscribe():
+    form = UnsubscribeForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            user.allow_non_transactional_emails = False
+            db.session.add(user)
+            db.session.commit()
+            flash('You have been unsubscribed.', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash('We have received your request to unsubscribe.')
+            return redirect(url_for('main.index'))
+    return render_template('unsubscribe.html', title='Unsubscribe', form=form)
 
 
 # *************************************************
