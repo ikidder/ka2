@@ -18,10 +18,6 @@ from flask_talisman import Talisman
 from flaskext.markdown import Markdown
 from .markdown_extensions import *
 
-# Elasticsearch
-# https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/index.html
-# from elasticsearch import Elasticsearch
-
 from .config import Config
 
 db = SQLAlchemy()
@@ -61,16 +57,6 @@ def create_app(config_class=Config):
     md.register_extension(EscapeHtmlExtension)
     md.register_extension(ModifiedLinkExtension)
     md.register_extension(ModifiedAutoLinkExtension)
-
-    # if app.config['ELASTICSEARCH_CLOUD_ID']:
-    #     # prod
-    #     app.elasticsearch = Elasticsearch(
-    #         cloud_id=app.config['ELASTICSEARCH_CLOUD_ID'],
-    #         http_auth=(app.config['ELASTICSEARCH_USER_NAME'], app.config['ELASTICSEARCH_PASSWORD']),
-    #     )
-    # else:
-    #     # dev
-    #     app.elasticsearch = Elasticsearch()
 
     from ka.users.routes import users_app
     from ka.posts.routes import posts_app
