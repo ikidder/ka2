@@ -107,7 +107,7 @@ def reset_password_request():
     if current_user.is_authenticated:
         token = current_user.get_reset_password_token()
         email.send_password_reset_email(current_user, token)
-        flash('Please check your email.')
+        flash('We sent a link to your email address. Please use that link to set your password.')
         return redirect(url_for('users.login'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
