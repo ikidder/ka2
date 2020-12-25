@@ -107,7 +107,7 @@ def reset_password_request():
     if current_user.is_authenticated:
         token = current_user.get_reset_password_token()
         email.send_password_reset_email(current_user, token)
-        flash('We sent a link to your email address. Please use that link to set your password.')
+        flash('We sent a link to your email address. Please use that link to set your password.', 'success')
         return redirect(url_for('users.login'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
@@ -115,7 +115,7 @@ def reset_password_request():
         if user:
             token = user.get_reset_password_token()
             email.send_password_reset_email(user, token)
-        flash('We sent a link to your email address. Please use that link to set your password.')
+        flash('We sent a link to your email address. Please use that link to set your password.', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_password_request.html',
                            title='Reset Password', form=form)
@@ -134,7 +134,7 @@ def reset_password(token):
         db.session.add(user)
         db.session.commit()
         logout_user()
-        flash('Your password has been set. Please login to continue.')
+        flash('Your password has been set. Please login to continue.', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_password.html', form=form)
 
@@ -173,7 +173,7 @@ def unsubscribe():
             flash('You have been unsubscribed.', 'success')
             return redirect(url_for('main.index'))
         else:
-            flash('We have received your request to unsubscribe.')
+            flash('We have received your request to unsubscribe.', 'success')
             return redirect(url_for('main.index'))
     return render_template('unsubscribe.html', title='Unsubscribe', form=form)
 
