@@ -254,7 +254,7 @@ def users():
     page_result = get_page(
         User.query
             .filter_by(visibility=Visibility.PUBLIC)
-            .order_by(User.count_favorites.desc(), User.created.desc()),
+            .order_by(User.count_favorites.desc(), (User.count_scores + User.count_posts).desc()),
         page
     )
     return render_template('users.html', result=page_result)
