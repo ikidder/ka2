@@ -230,7 +230,7 @@ def unfavorite(id):
 # *************************************************
 
 
-@users_app.route("/users")
+@users_app.route("/composers")
 @login_required
 def users():
     page = request.args.get('page', 1, type=int)
@@ -243,7 +243,7 @@ def users():
     return render_template('users.html', result=page_result)
 
 
-@users_app.route('/user/<string:user_path>')
+@users_app.route('/composer/<string:user_path>')
 @login_required
 def user_content(user_path):
     page = request.args.get('page', 1, type=int)

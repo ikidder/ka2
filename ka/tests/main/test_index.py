@@ -33,9 +33,10 @@ class TestIndex(ClientCase):
 #     return result
 
 
-# class TestIndexLoggedIn(LoggedInUserCase):
-#
-#     def test_logged_in_gets_index(self):
-#         response = self.client.get('/scores', follow_redirects=True)
-#         self.assertEqual(response.status_code, 200, f'actual result: {response.status_code}')
-#         self.assertNotIn(b'Login', response.data)
+class TestIndexLoggedIn(ContextCase):
+
+    def test_logged_in_gets_index(self):
+
+        response = self.client.get('/scores', follow_redirects=True)
+        self.assertEqual(response.status_code, 200, f'actual result: {response.status_code}')
+        self.assertNotIn(b'Login', response.data)

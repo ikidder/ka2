@@ -36,6 +36,8 @@ TEST_USER_EMAIL = TEST_USER_NAME + '@example.com'
 TEST_USER_PW = '1234'  # haha
 
 
+
+
 # class LoggedInUserCase(ClientCase):
 #
 #     def setUp(self):
