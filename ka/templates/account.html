@@ -4,8 +4,16 @@
 
 
 {% block content %}
+
     <div class="container-md">
-        <div class="card p-4 mb-4 mx-auto shadow">
+        <div class="card">
+            <p class="text-center font-heading">
+            Account Info:  <a class="composer" href="{{ url_for('users.user_content', user_path=current_user.path) }}">{{ current_user.name|e }}</a>
+            </p>
+        </div>
+    </div>
+    <div class="container-md">
+        <div class="card">
             <div class="content ml-2">
                 You have {{ current_user.invites_left }} invites left.
                 <a href="{{ url_for('users.send_invite') }}">Send an invite to kamagapē.</a>
@@ -13,27 +21,34 @@
         </div>
     </div>
     <div class="container-md">
-    <div class="card p-4 mb-4 mx-auto shadow">
-        <form method="POST" action="" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <legend class="mb-4">
-                    <p>Account Info</p>
-                    <a class="composer" href="{{ url_for('users.user_content', user_path=current_user.path) }}">{{ current_user.name|e }}</a>
-                </legend>
-                <div class="form-group">
-                    {{ form.email.label(class="form-control-label") }}
-                    {% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.email.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
+        <div class="card">
+            <div class="content ml-2">
+                <a class="content" href="{{ url_for('users.logout') }}"><span>Logout</span></a> of your account.
+            </div>
+        </div>
+    </div>
+{#    <div class="container-md">#}
+{#    <div class="card p-4 mb-4 mx-auto shadow">#}
+{#        <form method="POST" action="" enctype="multipart/form-data">#}
+{#            {{ form.hidden_tag() }}#}
+{#            <fieldset class="form-group">#}
+{#                <legend class="mb-4">#}
+{#                    <p>Account Info</p>#}
+{#                    <a class="composer" href="{{ url_for('users.user_content', user_path=current_user.path) }}">{{ current_user.name|e }}</a>#}
+{#                </legend>#}
+{#                <div class="form-group">#}
+{#                    {{ form.email.label(class="form-control-label") }}#}
+{#                    {% if form.email.errors %}#}
+{#                        {{ form.email(class="form-control form-control-lg is-invalid") }}#}
+{#                        <div class="invalid-feedback">#}
+{#                            {% for error in form.email.errors %}#}
+{#                                <span>{{ error }}</span>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{#                    {% else %}#}
+{#                        {{ form.email(class="form-control form-control-lg") }}#}
+{#                    {% endif %}#}
+{#                </div>#}
 
 {#                <div class="form-group">#}
 {#                    {{ form.text.label(class="form-control-label") }}#}
@@ -50,17 +65,17 @@
 {#                        {{ view_formatting_help('text-left') }}#}
 {#                    {% endif %}#}
 {#                </div>#}
-            </fieldset>
-            <div class="form-group float-right">
-                <div class="page-controls">
-                        {{ view_submit_button('fa-save') }}
-                </div>
-            </div>
-        </form>
-    </div>
-    </div>
+{#            </fieldset>#}
+{#            <div class="form-group float-right">#}
+{#                <div class="page-controls">#}
+{#                        {{ view_submit_button('fa-save') }}#}
+{#                </div>#}
+{#            </div>#}
+{#        </form>#}
+{#    </div>#}
+{#    </div>#}
     <div class="container-md">
-        <div class="card p-4 mb-4 mx-auto shadow">
+        <div class="card">
                 <div class="form-group">
                     <div class="content ml-2">
                         <a href="{{ url_for('users.reset_password_request') }}">Change Password</a>

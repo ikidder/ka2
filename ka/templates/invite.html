@@ -5,7 +5,7 @@
 {% block content %}
 {% if success %}
     <div class="container-md">
-        <div class="card p-4 mb-4 mx-auto shadow">
+        <div class="card">
             <div class="form-group">
                 <div class="text-center content">
                     Invitation sent! Thank you.
@@ -15,7 +15,7 @@
     </div>
 {% elif current_user.invites_left < 1 %}
     <div class="container-md">
-        <div class="card p-4 mb-4 mx-auto shadow">
+        <div class="card">
             <div class="form-group">
                 <div class="text-center content">
                         Sorry, you don't have any invites left. Please request more by <a href="mailto:info@kamagape.com?subject=Requesting additional invites">emailing us</a>.
@@ -25,11 +25,11 @@
     </div>
 {% else %}
     <div class="container-md">
-        <div class="card p-4 mb-4 mx-auto shadow">
+        <div class="card">
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
                 <fieldset class="form-group">
-                    <legend class="title text-center"><span>We'll send an email invite to this person.</span></legend>
+                    <legend class="font-heading text-center"><span>We'll send an email invite to this person.</span></legend>
                     <div class="form-group">
                         {{ form.email.label(class="form-control-label") }}
                         {% if form.email.errors %}

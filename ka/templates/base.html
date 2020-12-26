@@ -122,19 +122,16 @@
                 </div>
                 <div class="">
                     <ul class="navbar-nav mr-auto mt-2 mt-lg-0 text-right">
-                        <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('posts.post', post_path='Privacy-Policy__by__m') }}"><span>Privacy</span></a>
-                        </li>
-                        <li class="nav-item nav-secondary">
-                            <a class="nav-link" href="{{ url_for('posts.post', post_path='About-Us__by__m') }}"><span>About Us</span></a>
-                        </li>
+
+
                         {% if current_user.is_authenticated %}
+                            <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('users.send_invite') }}"><span>Send an Invite</span></a>
+                            </li>
                             <li class="nav-item nav-secondary">
                                 <a class="nav-link" href="{{ url_for('users.account') }}"><span>Account</span></a>
                             </li>
-                            <li class="nav-item nav-secondary">
-                                <a class="nav-link" href="{{ url_for('users.logout') }}"><span>Logout</span></a>
-                            </li>
+
                         {% else %}
                             <li class="nav-item nav-secondary">
                                 <a class="nav-link" href="{{ url_for('users.login') }}"><span>Login</span></a>
@@ -143,6 +140,12 @@
     {#                            <a class="nav-link" href="{{ url_for('users.register') }}"><span>Sign Up</span></a>#}
     {#                        </li>#}
                         {% endif %}
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.post', post_path='Privacy-Policy__by__m') }}"><span>Privacy</span></a>
+                        </li>
+                        <li class="nav-item nav-secondary">
+                            <a class="nav-link" href="{{ url_for('posts.post', post_path='About-Us__by__m') }}"><span>About Us</span></a>
+                        </li>
                     </ul>
                 </div>
                 <div class="navbar-slogan text-center">
