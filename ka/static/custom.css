@@ -134,7 +134,6 @@
     font-size: var(--font-extra-large);
     font-weight: var(--font-weight-heading);
     line-height: 1.3em;
-    text-shadow: var(--heading-text-shadow);
 }
 
 /* fix line heights */
@@ -273,7 +272,6 @@ body {
 .byline {
     font-family: var(--font-heading);
     margin-top: -.8em;
-    text-shadow: var(--heading-text-shadow);
 }
 
 
@@ -436,7 +434,6 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: var(--font-weight-heading);
     color: var(--accent-1);
-    text-shadow: var(--heading-text-shadow);
 }
 
 h1, h2 {
@@ -667,8 +664,6 @@ hr {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-column-gap: var(--spacing-medium);
-    text-shadow: var(--heading-text-shadow);
-
 }
 
 .dynamic {
@@ -718,7 +713,6 @@ hr {
     grid-column: 2;
     grid-row: 1;
     margin-top: var(--spacing-medium);
-    text-shadow: var(--heading-text-shadow);
 }
 
 .measure .page-controls {
@@ -902,7 +896,6 @@ button.navbar-toggler:focus {
 .player {
     color: var(--accent-3);
     font-family: var(--font-heading);
-    text-shadow: var(--heading-text-shadow);
 }
 
 
@@ -999,7 +992,6 @@ button.navbar-toggler:focus {
     align-items: center;
     column-gap: var(--spacing-small);
     row-gap: var(--spacing-small);
-    text-shadow: var(--heading-text-shadow);
 }
 
 .score-header-row .title {
@@ -1110,7 +1102,6 @@ button.navbar-toggler:focus {
 .title {
     font-family: var(--font-heading);
     color: var(--accent-1);
-    text-shadow: var(--heading-text-shadow);
 }
 
 a.title:hover {
