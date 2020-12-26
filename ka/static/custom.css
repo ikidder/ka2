@@ -30,6 +30,13 @@
     --accent-3: hsla(273, 29%, 46%, 1);
     --accent-4: hsla(3, 29%, 46%, 1);
 
+    accents 2020-12-26
+    --accent-1:  hsla(204, 57%, 55%, 1);
+    --accent-2: hsla(151, 39%, 50%, 1);
+    --accent-3: hsla(273, 48%, 63%, 1);
+    --accent-4: hsla(3, 33%, 53%, 1);
+    --accent-5: rgba(255, 213, 98, .8);
+
     starting accents
     --accent-1: hsla(204, 81%, 63%, .9)
     --gradient-1: linear-gradient(
@@ -64,7 +71,7 @@
     --elevated-background: hsla(283, 22%, 12%, 1);
     --transparent: rgba(0,0,0,0);
     /* blue */
-    --accent-1:  hsla(204, 35%, 50%, 1);
+    --accent-1:  hsla(204, 57%, 55%, 1);
     --gradient-1: linear-gradient(
             to top,
             rgba(48,143,210,.8) 15%,
@@ -75,12 +82,12 @@
             rgba(112,238,254,.8) 70%,
             rgba(146,237,254,.8) 90%);
     /* green */
-    --accent-2: hsla(151, 29%, 46%, 1);
+    --accent-2: hsla(151, 39%, 50%, 1);
     --gradient-2: linear-gradient(to bottom,  #a8ff78, #78ffd6);
     /* purple */
-    --accent-3: hsla(273, 29%, 46%, 1);
+    --accent-3: hsla(273, 48%, 63%, 1);
     /* orange */
-    --accent-4: hsla(3, 29%, 46%, 1);
+    --accent-4: hsla(3, 33%, 53%, 1);
     /* yellowish */
     --accent-5: rgba(255, 213, 98, .8);
     --font-heading: Comfortaa, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -99,6 +106,7 @@
     --spacing-small: .5rem;
     --spacing-medium: 1rem;
     --spacing-large: 1.5rem;
+    --heading-text-shadow: 0 1px 2px black;
 }
 
 /*********************************/
@@ -126,6 +134,7 @@
     font-size: var(--font-extra-large);
     font-weight: var(--font-weight-heading);
     line-height: 1.3em;
+    text-shadow: var(--heading-text-shadow);
 }
 
 /* fix line heights */
@@ -264,6 +273,7 @@ body {
 .byline {
     font-family: var(--font-heading);
     margin-top: -.8em;
+    text-shadow: var(--heading-text-shadow);
 }
 
 
@@ -426,6 +436,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: var(--font-weight-heading);
     color: var(--accent-1);
+    text-shadow: var(--heading-text-shadow);
 }
 
 h1, h2 {
@@ -485,7 +496,7 @@ h5, h6 {
     background: var(--gradient-1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-
+    text-shadow: 0 1px 8px var(--accent-1);
 }
 
 .home-middle {
@@ -656,6 +667,8 @@ hr {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-column-gap: var(--spacing-medium);
+    text-shadow: var(--heading-text-shadow);
+
 }
 
 .dynamic {
@@ -674,6 +687,7 @@ hr {
         grid-column: 3;
         display: flex;
         flex-direction: column;
+
     }
 
     .measure .page-controls {
@@ -704,6 +718,7 @@ hr {
     grid-column: 2;
     grid-row: 1;
     margin-top: var(--spacing-medium);
+    text-shadow: var(--heading-text-shadow);
 }
 
 .measure .page-controls {
@@ -887,6 +902,7 @@ button.navbar-toggler:focus {
 .player {
     color: var(--accent-3);
     font-family: var(--font-heading);
+    text-shadow: var(--heading-text-shadow);
 }
 
 
@@ -983,6 +999,7 @@ button.navbar-toggler:focus {
     align-items: center;
     column-gap: var(--spacing-small);
     row-gap: var(--spacing-small);
+    text-shadow: var(--heading-text-shadow);
 }
 
 .score-header-row .title {
@@ -1056,6 +1073,7 @@ button.navbar-toggler:focus {
     font-family: var(--font-heading);
     font-size: var(--font-extra-extra-large);
     color: var(--accent-5);
+    text-shadow: var(--heading-text-shadow);
 }
 
 .ending-actions {
@@ -1092,6 +1110,7 @@ button.navbar-toggler:focus {
 .title {
     font-family: var(--font-heading);
     color: var(--accent-1);
+    text-shadow: var(--heading-text-shadow);
 }
 
 a.title:hover {
