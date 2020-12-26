@@ -5,6 +5,14 @@
 
 {% block content %}
     <div class="container-md">
+        <div class="card p-4 mb-4 mx-auto shadow">
+            <div class="content ml-2">
+                You have {{ current_user.invites_left }} invites left.
+                <a href="{{ url_for('users.send_invite') }}">Send an invite to kamagapē.</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-md">
     <div class="card p-4 mb-4 mx-auto shadow">
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
@@ -13,20 +21,6 @@
                     <p>Account Info</p>
                     <a class="composer" href="{{ url_for('users.user_content', user_path=current_user.path) }}">{{ current_user.name|e }}</a>
                 </legend>
-{#                <div class="form-group">#}
-{#                    {{ form.name.label(class="form-control-label") }}#}
-{##}
-{#                    {% if form.name.errors %}#}
-{#                        {{ form.name(class="form-control form-control-lg is-invalid") }}#}
-{#                        <div class="invalid-feedback">#}
-{#                            {% for error in form.name.errors %}#}
-{#                                <span>{{ error }}</span>#}
-{#                            {% endfor %}#}
-{#                        </div>#}
-{#                    {% else %}#}
-{#                        {{ form.name(class="form-control form-control-lg", readonly=true) }}#}
-{#                    {% endif %}#}
-{#                </div>#}
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
@@ -41,21 +35,21 @@
                     {% endif %}
                 </div>
 
-                <div class="form-group">
-                    {{ form.text.label(class="form-control-label") }}
-                    {% if form.text.errors %}
-                        {{ form.text(class="form-control form-control-lg is-invalid", rows="12") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.text.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                        {{ view_formatting_help('text-left') }}
-                    {% else %}
-                        {{ form.text(class="form-control form-control-lg", rows="12") }}
-                        {{ view_formatting_help('text-left') }}
-                    {% endif %}
-                </div>
+{#                <div class="form-group">#}
+{#                    {{ form.text.label(class="form-control-label") }}#}
+{#                    {% if form.text.errors %}#}
+{#                        {{ form.text(class="form-control form-control-lg is-invalid", rows="12") }}#}
+{#                        <div class="invalid-feedback">#}
+{#                            {% for error in form.text.errors %}#}
+{#                                <span>{{ error }}</span>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
+{#                        {{ view_formatting_help('text-left') }}#}
+{#                    {% else %}#}
+{#                        {{ form.text(class="form-control form-control-lg", rows="12") }}#}
+{#                        {{ view_formatting_help('text-left') }}#}
+{#                    {% endif %}#}
+{#                </div>#}
             </fieldset>
             <div class="form-group float-right">
                 <div class="page-controls">
@@ -74,12 +68,5 @@
                 </div>
         </div>
     </div>
-    <div class="container-md">
-        <div class="card p-4 mb-4 mx-auto shadow">
-            <div class="content ml-2">
-                You have {{ current_user.invites_left }} invites left.
-                <a href="{{ url_for('users.send_invite') }}">Send an invite to kamagapē.</a>
-            </div>
-        </div>
-    </div>
+
 {% endblock content %}
