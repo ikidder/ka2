@@ -65,6 +65,7 @@ def create_app(config_class=Config):
     from ka.errors.handlers import errors_app
     from ka.search.routes import search_app
     from ka.theme.routes import theme_app
+    from ka.admin.routes import admin_app
     app.register_blueprint(users_app)
     app.register_blueprint(posts_app)
     app.register_blueprint(scores_app)
@@ -72,6 +73,7 @@ def create_app(config_class=Config):
     app.register_blueprint(errors_app)
     app.register_blueprint(search_app)
     app.register_blueprint(theme_app)
+    app.register_blueprint(admin_app)
 
     sec_policy = {
         'default-src': [

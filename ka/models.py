@@ -12,7 +12,7 @@ from ka import db
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, validates, joinedload
 from sqlalchemy import Enum as dbEnum
-from sqlalchemy import and_
+from sqlalchemy import and_, or_, Index, func
 from sqlalchemy.orm import with_polymorphic
 from flask_login import UserMixin
 
@@ -670,6 +670,68 @@ order by _name"""
                 tag = Tag(match)
             tags.append(tag)
         return tags
+
+
+
+# *************************************************
+#  Event
+# *************************************************
+
+
+class HttpEvent(db.Model):
+    __tablename__ = 'event'
+
+    id = db.Column(db.Integer, primary_key=True)
+    datestamp = db.Column(db.DateTime, default=datetime.utcnow())
+    user = db.Column(db.Integer, nullable=True)
+    method = db.Column(db.String(20), nullable=True)
+    path = db.Column(db.Text, nullable=True)
+    query = db.Column(db.Text, nullable=True)
+    status_code = db.Column(db.Integer, nullable=True)
+    ellapsed_time = db.Column(db.Integer, nullable=True)
+    referrer = db.Column(db.Text, nullable=True)
+    requesting_addr = db.Column(db.Text, nullable=True)
+    responding_addr = db.Column(db.Text, nullable=True)
+    user_agent = db.Column(db.Text, nullable=True)
+
+    __table_args__ = (db.Index('_datestamp_index', datestamp),)
+
+
+mymodel_url_index = Index('http_event_datestamp_index', HttpEvent.datestamp)
+
+
+class EventAggregate(db.Model):
+    __tablename__ = 'event_aggregate'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)  # what kind of an aggregate is this, e.g. counting page hits, 404's, etc.
+    value = db.Column(db.Text, nullable=True)  # the specific value for this kind of aggregate, e.g. page hits for '/'
+    start_range = db.Column(db.DateTime)
+    end_range = db.Column(db.DateTime)
+    count = db.Column(db.Integer)
+
+    __table_args__ = (db.Index('_name_index', name),)
+
+
+def top_pages(start, end, limit=20):
+    return HttpEvent.query\
+        .with_entities(HttpEvent.path, func.count(HttpEvent.path))\
+        .filter(and_(HttpEvent.datestamp >= start, HttpEvent.datestamp <= end))\
+        .group_by(HttpEvent.path)\
+        .order_by(func.count(HttpEvent.path).desc())\
+        .limit(limit)\
+        .all()
+
+
+def objects_created(start, end, limit=20):
+    return HttpEvent.query\
+        .with_entities(HttpEvent.path, func.count(HttpEvent.path))\
+        .filter(and_(HttpEvent.datestamp >= start, HttpEvent.datestamp <= end))\
+        .filter(or_(HttpEvent.path == '/score/new', HttpEvent.path.like('/score/%/copy')))\
+        .group_by(HttpEvent.path)\
+        .order_by(func.count(HttpEvent.path).desc())\
+        .limit(limit)\
+        .all()
 
 
 
