@@ -465,6 +465,7 @@ h5, h6 {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 3rem;
 }
 
 .home-container a.btn {
@@ -475,14 +476,46 @@ h5, h6 {
     0px .5em .8em -.5em var(--accent-1), 0px 2em 1em -1em var(--accent-1), 0px -.5em .5em -.5em var(--accent-1), 0px -2em 1em -1em var(--accent-1);
 }
 
-.home-container a.btn span
+.home-label
 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    line-height: 1.2;
     background: rgb(58,177,219);
     background: var(--gradient-1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+
 }
 
+.home-middle {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.home-label span {
+    /*box-shadow:*/
+    /*0px .5em .8em -.5em var(--accent-1), 0px 2em 1em -1em var(--accent-1), 0px -.5em .5em -.5em var(--accent-1), 0px -2em 1em -1em var(--accent-1);*/
+}
+
+.home-small-card {
+    max-width: 80%;
+}
+
+@media screen and (min-width: 700px) {
+    .home-small-card {
+        max-width: 55%;
+    }
+}
+
+a.home-link {
+    color: var(--accent-5);
+}
+
+a.home-link:focus,
+a.home-link:hover {
+    color: var(--accent-5);
+}
 
 .word, .pronunciation, .definition {
     font-family: var(--font-serif);

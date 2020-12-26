@@ -1,12 +1,12 @@
-{% extends "base_no_nav.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 <div class="container-md ">
-  <div class="container-md home-container">
-      <div class="">
-          <p class="text-center"><a class="btn" href="{{ url_for('users.login') }}"><span>kamagapē</span></a></p>
+      <div class="home-middle">
+{#          <p class="text-center font-sub-heading mb-2 definition">welcome to</p>#}
+          <div class="text-center home-label"><span>kamagapē</span></div>
 {#          <p class="slogan text-center mt-5">{{ slogan }}</p>#}
-          <div class="mt-5">
+          <div class="mt-3">
               <p class="text-center">
                   <span class="word">kama</span>
                   <span class="pronunciation">/'ka.mə/ -</span>
@@ -21,7 +21,30 @@
               </p>
           </div>
       </div>
-  </div>
+</div>
+<div class="container-md">
+    <div class="card text-center">
+        <p class="content">
+            kamagapē is currently in private beta. If you already have an account, please <a class="home-link" href="{{ url_for('users.login') }}">log in</a>.
+        </p>
+        <p class="content"> If you would like to find out more, or to request an account, please email us at <a class="home-link" href="mailto:m_and_i@kamagape.com">m_and_i@kamagape.com</a>
+        </p>
+    </div>
+</div>
+
+
+    <div class="container-md">
+    <div class="card text-center home-small-card">
+        <p class="content">
+            We believe that people get better by practicing.
+        </p>
+        <p class="content">
+            We believe relationships are enhanced by physical intimacy.
+        </p>
+        <p class="content">
+            kamagapē makes it easier to practice physical intimacy. <br />To communicate. To learn. To improve. For both of you.
+        </p>
+    </div>
 </div>
 
 {% endblock content %}
