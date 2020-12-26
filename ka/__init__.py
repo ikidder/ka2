@@ -39,7 +39,10 @@ slogans = [
     'Humans: making music and making whoopee since time began.',
     'Easy peasy hanky panky.',
     'Test your mattress today!',
-    'Long week? How about some horizontal refreshment?'
+    'Long week? How about some horizontal refreshment?',
+    'Good for the heart, and more fun than jogging.',
+    'All practice counts toward ecstasy.',
+    'The stay at home musical.'
 ]
 
 
