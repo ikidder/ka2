@@ -2,12 +2,12 @@
 <p>Congratulations on taking a step toward increasing intimacy and connection in your life.</p>
 <p>Whether you're interested in getting better at something you love, loving something more, or creating more of what you love, you can do it all with kamagapē.</p>
 <p>
-    <a href="{{ url_for('reset_password', token=token, _external=True) }}">
+    <a href="{{ url_for('users.reset_password', token=token, _external=True) }}">
         Use this link to set your password, and start exploring now.
     </a>.
 </p>
 <p>Alternatively, you can paste the following link in your browser's address bar:</p>
-<p>{{ url_for('reset_password', token=token, _external=True) }}</p>
+<p>{{ url_for('users.reset_password', token=token, _external=True) }}</p>
 <p>If you have not created an account with us, simply ignore this message.</p>
 <p>Sincerely,</p>
 <p>m & i</p>
