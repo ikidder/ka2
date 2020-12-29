@@ -858,17 +858,24 @@ button.navbar-toggler svg  {
     overflow: visible;
 }
 
-button.navbar-toggler:hover svg *,
-button.navbar-toggler:focus svg * {
+/*button.navbar-toggler:hover svg *,*/
+/*button.navbar-toggler:focus svg * {*/
+/*    fill: url(#rg);*/
+/*    transition: var(--transition);*/
+/*}*/
+
+button.navbar-toggler svg *,
+button.navbar-toggler svg * {
     fill: url(#rg);
     transition: var(--transition);
 }
 
-/*button.navbar-toggler svg *,*/
-/*button.navbar-toggler svg * {*/
-/*    fill: url(#rg);*/
-/*    transition: var(--transition);*/
-/*}*/
+button.navbar-toggler:hover svg *,
+button.navbar-toggler:focus svg * {
+    fill: var(--less-white);
+    transition: var(--transition);
+}
+
 
 button.navbar-toggler:focus {
     outline: none;
