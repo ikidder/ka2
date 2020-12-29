@@ -1156,18 +1156,26 @@ a.title:hover {
 /*  user summary                 */
 /*********************************/
 
+.user-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-row-gap: var(--spacing-small);
+}
+
 .user-summary .composer {
     font-size: var(--font-large);
+    grid-row: 1;
+    grid-column: span 2;
 }
 
 .user-summary .scores {
-    font-size: var(--font-large);
+    font-size: var(--font-regular);
     font-family: var(--font-heading);
     color: var(--accent-1);
 }
 
 .user-summary .posts {
-    font-size: var(--font-large);
+    font-size: var(--font-regular);
     font-family: var(--font-heading);
     color: var(--accent-4);
 }

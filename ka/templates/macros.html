@@ -240,22 +240,16 @@
 {% macro view_user_summary(user) %}
     <div class="container-md">
         <div class="card">
-            <div class="p row justify-content-space-around">
-                <div class="col text-center user-summary">
-                    <a class="composer" href="{{ url_for('users.user_content', user_path=user.path) }}">
+            <div class="user-summary">
+                    <a class="composer text-center" href="{{ url_for('users.user_content', user_path=user.path) }}">
                         {{ user.name|e }}
                     </a>
-                </div>
-                <div class="col text-center user-summary">
-                    <a class="scores" href="{{ url_for('scores.user_scores', user_path=user.path) }}">
+                    <a class="scores text-center" href="{{ url_for('scores.user_scores', user_path=user.path) }}">
                         Scores: {{ user.count_scores }}
                     </a>
-                </div>
-                <div class="col text-center user-summary">
-                    <a class="posts" href="{{ url_for('posts.user_posts', user_path=user.path) }}">
+                    <a class="posts text-center" href="{{ url_for('posts.user_posts', user_path=user.path) }}">
                         Posts: {{ user.count_posts }}
                     </a>
-                </div>
             </div>
         </div>
     </div>
