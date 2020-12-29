@@ -297,7 +297,7 @@
 {%  macro view_post_row(post) %}
     <div class="container-md">
         <div class="card">
-            <div class="score-header-row">
+            <div class="post-header-row">
                 {{ view_post_title(post.name, post.path) }}
                 {{ view_composer_name(post.composer) }}
                 <span class="created">{{ post.created.strftime("%d %B %Y") }}</span>

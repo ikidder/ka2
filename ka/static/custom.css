@@ -981,9 +981,45 @@ button.navbar-toggler:focus {
 }
 
 
+
+/*********************************/
+/*  post-header-row             */
+/*********************************/
+
+
+.post-header-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: start;
+    align-items: center;
+    column-gap: var(--spacing-small);
+    row-gap: var(--spacing-small);
+}
+
+.post-header-row .title {
+    grid-column: span 2;
+    grid-row: 1;
+    font-size: var(--font-large);
+}
+
+.post-header-row .composer {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: var(--font-regular);
+}
+
+.post-header-row .created {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: var(--font-small);
+    color: var(--less-white);
+}
+
+
 /*********************************/
 /*  score-header-row             */
 /*********************************/
+
 
 .score-header-row {
     display: grid;
