@@ -39,7 +39,7 @@ def theme(name):
     )
     return render_template(
         'theme.html',
-        title='Theme: ' + name,
+        title=t.name + ' themed',
         name=name,
         result=page_result
     )

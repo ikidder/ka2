@@ -189,6 +189,7 @@ def favorites():
     favorites = current_user.favorites()
     return render_template(
         'favorites.html',
+        title='Favorites',
         favorites=favorites,
         current_user=current_user,
     )
@@ -257,7 +258,11 @@ def users():
             .order_by(User.count_favorites.desc(), (User.count_scores + User.count_posts).desc()),
         page
     )
-    return render_template('users.html', result=page_result)
+    return render_template(
+        'users.html',
+        title='Composers',
+        result=page_result
+    )
 
 
 @users_app.route('/composer/<string:user_path>')
@@ -276,6 +281,7 @@ def user_content(user_path):
     )
     return render_template(
         'user_content.html',
+        title='by ' + user.name,
         filtered_on=user,
         result=page_result
     )

@@ -91,7 +91,7 @@ def posts():
             .order_by(Post.created.desc()),
         page
     )
-    return render_template('posts.html', result=page_result)
+    return render_template('posts.html', title='Posts', result=page_result)
 
 
 @posts_app.route("/user/<string:user_path>/posts")
@@ -110,6 +110,7 @@ def user_posts(user_path):
     )
     return render_template(
         'user_posts.html',
+        title='Posts by ' + user.name,
         filtered_on=user,
         result=page_result
     )
