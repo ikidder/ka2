@@ -6,7 +6,7 @@ from ka import db
 from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User, Tag, tempo_alt_text, dynamic_alt_text
 from ka.scores.forms import ScoreForm, MeasureForm, DeleteMeasureForm, DeleteScoreForm
 from datetime import datetime
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 
 scores_app = Blueprint('scores', __name__)
@@ -452,6 +452,7 @@ def copy_score(score_path):
         copy_m.ordinal = m.ordinal
         copy.measures.append(copy_m)
 
+    current_user.count_scores = current_user.count_scores + 1
     db.session.add(copy)
     db.session.commit()
 
@@ -463,7 +464,9 @@ def make_copy_title(s):
     i = 1
     while True:
         name = f'{to_ordinal_string(i)} Variation on {s.name}'
-        existing_name = Score.query.filter_by(name=name).first()
+        existing_name = Score.query \
+            .filter(and_(Score.name == name, Score.user_id == current_user.id)) \
+            .first()
         if not existing_name:
             return name
         i = i + 1
