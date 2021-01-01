@@ -3,9 +3,9 @@ from flask import (render_template, url_for, flash,
 from flask_login import current_user, login_required
 from ka.database import get_page
 from ka import db
-from ka.models import Post, Visibility, User, Tag
+from ka.models import Post, Visibility, User, Tag, Feature
 from ka.posts.forms import PostForm, DeletePostForm
-from sqlalchemy import or_
+from sqlalchemy import or_, nullslast
 
 
 posts_app = Blueprint('posts', __name__)
@@ -87,8 +87,13 @@ def posts():
     page = request.args.get('page', 1, type=int)
     page_result = get_page(
         Post.query
-            .filter_by(visibility=Visibility.PUBLIC)
-            .order_by(Post.created.desc()),
+            .join(Feature, (Post.id == Feature.content_id), isouter=True)
+            .filter(Post.visibility == Visibility.PUBLIC)
+            .order_by(
+                nullslast(Feature.pinned.desc()),
+                nullslast(Feature.created.desc()),
+                Post.created.desc(),
+            ),
         page
     )
     return render_template('posts.html', title='Posts', result=page_result)

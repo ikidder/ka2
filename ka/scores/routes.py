@@ -3,10 +3,10 @@ from flask import (render_template, url_for, flash,
 from flask_login import current_user, login_required
 from ka.database import get_page
 from ka import db
-from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User, Tag, tempo_alt_text, dynamic_alt_text
+from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User, Tag, Feature, tempo_alt_text, dynamic_alt_text
 from ka.scores.forms import ScoreForm, MeasureForm, DeleteMeasureForm, DeleteScoreForm
 from datetime import datetime
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, case, nullslast
 
 
 scores_app = Blueprint('scores', __name__)
@@ -369,10 +369,17 @@ def delete_measure(score_path, measure_path):
 @login_required
 def scores():
     page = request.args.get('page', 1, type=int)
+
+    # case([(Feature.pinned == True, 1)], else_ = 0)
     page_result = get_page(
         Score.query
-            .filter_by(visibility=Visibility.PUBLIC)
-            .order_by(Score.created.desc()),
+            .join(Feature, (Score.id == Feature.content_id), isouter=True)
+            .filter(Score.visibility == Visibility.PUBLIC)
+            .order_by(
+                nullslast(Feature.pinned.desc()),
+                nullslast(Feature.created.desc()),
+                Score.created.desc(),
+            ),
         page
     )
     return render_template(
@@ -393,9 +400,14 @@ def scores_for_players(for_whom):
         abort(404)
     page_result = get_page(
         Score.query
-            .filter_by(for_players=fp)
-            .filter_by(visibility=Visibility.PUBLIC)
-            .order_by(Score.created.desc()),
+            .join(Feature, (Score.id == Feature.content_id), isouter=True)
+            .filter(Score.visibility == Visibility.PUBLIC)
+            .filter(Score.for_players == fp)
+            .order_by(
+            nullslast(Feature.pinned.desc()),
+            nullslast(Feature.created.desc()),
+            Score.created.desc(),
+        ),
         page
     )
     return render_template(
