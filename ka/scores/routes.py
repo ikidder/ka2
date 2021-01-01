@@ -456,6 +456,7 @@ def copy_score(score_path):
     db.session.add(copy)
     db.session.commit()
 
+    flash("You've created a variation! You can now edit the score to make it your own.", 'success')
     return redirect(url_for('scores.score', score_path=copy.path))
 
 
