@@ -30,6 +30,16 @@
     --accent-3: hsla(273, 29%, 46%, 1);
     --accent-4: hsla(3, 29%, 46%, 1);
 
+    pleasant blue based on str and rpl
+    --black: hsla(209, 70%, 16%, 1);
+    --background: hsla(209, 50%, 12%, 1);
+    --elevated-background: hsla(209, 70%, 22%, 1);
+    --accent-1:  hsla(208, 57%, 63%, 1);
+     box-shadow:
+             0 2em 4em -.8em hsla(209, 70%, 5%, .4),
+             0 1.2em 2em -1.2em hsla(209, 70%, 5%, .35),
+             0 -.7em 2em -.5em hsla(209, 70%, 5%, .25);
+
     accents 2020-12-26
     --accent-1:  hsla(204, 57%, 55%, 1);
     --accent-2: hsla(151, 39%, 50%, 1);
@@ -65,7 +75,7 @@
     /*--black: hsla(280, 62%, 4%, 1);*/
     /*--background: #121212;*/
     --black: hsla(234, 51%, 7%, 1);
-    --background: hsla(283, 16%, 8%, 1);
+    --background: hsla(234, 51%, 6%, 1);
     /*--background: hsla(280, 9%, 7%, 1);*/
     /*--elevated-background: #242424;*/
     --elevated-background: hsla(283, 22%, 12%, 1);
@@ -121,7 +131,7 @@
 
 .font-content {
     font-size: var(--font-regular);
-    line-height: 1.5em;
+    line-height: 1.65em;
 }
 
 .font-sub-heading {
@@ -286,9 +296,16 @@ body {
     margin: auto;
     margin-bottom: var(--spacing-large);
     padding: var(--spacing-large);
-    border: 0px;
+    border-top: solid 1px hsla(204, 57%, 55%, .2);
+    border-bottom: solid 1px hsla(204, 57%, 55%, .2);
     border-radius: 0px;
-    box-shadow: -1.5rem 0 1.5rem -2rem var(--accent-1), 1.5rem 0 1.5rem -2rem var(--accent-1);
+    box-shadow:
+            0 1rem 2rem -1.5rem hsla(204, 57%, 55%, .4),
+            0 -1rem 2rem -2rem hsla(204, 57%, 55%, .4),
+            -2em 0 2em -2.6em hsla(204, 57%, 55%, .4),
+            2em 0 2em -2.6em hsla(204, 57%, 55%, .4),
+            -4em 0 5em -4em hsla(204, 57%, 55%, .2),
+            4em 0 5em -4em hsla(204, 57%, 55%, .2);
 }
 
 
@@ -332,6 +349,7 @@ a.composer:hover {
     font-family: var(--font-content);
     color: var(--less-white);
     font-weight: var(--font-weight-content);
+    line-height: 1.65;
 }
 
 .content a {
@@ -394,16 +412,16 @@ a.for-players:hover {
 /*********************************/
 
 .form-control {
-    background-color: var(--black);
-    color: var(--white);
+    background-color: hsla(234, 51%, 3%, 1);
+    color: var(--less-white);
     border: none;
     font-size: var(--font-regular);
     font-weight: var(--font-weight-content);
-    line-height: 1.7em;
+    line-height: 1.65em;
 }
 
 .form-control:focus {
-    background-color: var(--black);
+    background-color: hsla(234, 51%, 3%, 1);
     color: var(--white);
     border: none;
     box-shadow: 0px 1rem 6px -0.75rem var(--accent-1);
@@ -733,6 +751,7 @@ hr {
     font-family: var(--font-heading);
     font-size: var(--font-small);
     color: var(--even-less-white);
+    line-height: 1.5;
 }
 
 
