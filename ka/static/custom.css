@@ -66,10 +66,10 @@
  */
 
 :root {
-    --max-width: 79ch; /* 75 for easy reading, plus 2em on each side for card padding */
+    --max-width: 70ch; /* 75 for easy reading, plus 2em on each side for card padding */
     --white: rgba(255,255,255,.80);
-    --less-white: rgba(255, 255, 255, .61);
-    --even-less-white: rgba(255, 255, 255, .45);
+    --less-white: hsla(151, 39%, 100%, .55);
+    --even-less-white: rgba(255, 255, 255, .39);
     --very-little-white: rgba(255, 255, 255, .15);
     /*--black: #000;*/
     /*--black: hsla(280, 62%, 4%, 1);*/
