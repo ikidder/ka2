@@ -23,45 +23,25 @@
       </div>
 </div>
 
-
-
     <div class="container-md">
-    <div class="card home-small-card">
+    <div class="card">
         <p class="content">
-            For couples who want to make physical intimacy part of their lifelong learning.
-        </p>
-        <p class="content">
-            For couples reintroducing physical intimacy to their relationship.
-        </p>
-        <p class="content">
-            For couples new to physical intimacy.
+            kamagapē helps couples explore, practice, and communicate about their intimacy. So that the physical side of their relationship enhances the love and connection they share.
         </p>
     </div>
     </div>
     <div class="container-md">
-    <div class="card home-small-card">
+    <div class="card">
         <p class="content">
-            Imagine you and your partner are playing a duet. Ordinarily, you can hear what they play, and you can hear what you're playing. In intimacy, often you can't hear your own notes. How do you keep in sync? How do you know if the music is good?
-        </p>
-        <p class="content">
-            That's what it's like for a couple to be physical with each other. It takes time, communication, patience, and a lot of love.
+            If this is your first time here, welcome! You might want to check out <a class="home-link" href="{{ url_for('scores.score', score_path='Getting-Started__by__i') }}"><span>Getting Started</span></a>. Or, click on the music notes at the top left, and browse around.
         </p>
     </div>
     </div>
     <div class="container-md">
-    <div class="card home-small-card">
-        <p class="content">
-            kamagapē makes this process easier by using music as a metaphor. Each act of physical intimacy is done in time, with a given tempo and dynamic. And afterwards, kamagapē makes it easy to communicate about what happened, and to iteratively improve. So the two of you can make the best music together.
-        </p>
+        <div class="card">
+            <p class="content">
+                kamagapē is currently in private beta. If you would like to request an account, or to find out more information, please email us at <a class="home-link" href="mailto:m_and_i@kamagape.com">m_and_i@kamagape.com</a>
+            </p>
+        </div>
     </div>
-</div>
-<div class="container-md">
-    <div class="card text-center">
-        <p class="content">
-            kamagapē is currently in private beta. If you already have an account, please <a class="home-link" href="{{ url_for('users.login') }}">log in</a>.
-        </p>
-        <p class="content"> If you would like to find out more, or to request an account, please email us at <a class="home-link" href="mailto:m_and_i@kamagape.com">m_and_i@kamagape.com</a>
-        </p>
-    </div>
-</div>
 {% endblock content %}

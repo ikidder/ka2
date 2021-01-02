@@ -522,15 +522,6 @@ h5, h6 {
     /*0px .5em .8em -.5em var(--accent-1), 0px 2em 1em -1em var(--accent-1), 0px -.5em .5em -.5em var(--accent-1), 0px -2em 1em -1em var(--accent-1);*/
 }
 
-.home-small-card {
-    max-width: 80%;
-}
-
-@media screen and (min-width: 700px) {
-    .home-small-card {
-        max-width: 55%;
-    }
-}
 
 a.home-link {
     color: var(--accent-5);
