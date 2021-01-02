@@ -76,9 +76,7 @@
     /*--background: #121212;*/
     --black: hsla(234, 51%, 7%, 1);
     --background: hsla(234, 51%, 6%, 1);
-    /*--background: hsla(280, 9%, 7%, 1);*/
-    /*--elevated-background: #242424;*/
-    --elevated-background: hsla(283, 22%, 12%, 1);
+    --elevated-background: hsla(234, 51%, 11%, 1);
     --transparent: rgba(0,0,0,0);
     /* blue */
     --accent-1:  hsla(204, 57%, 55%, 1);
@@ -546,6 +544,7 @@ a.home-link:hover {
 .word, .pronunciation, .definition {
     font-family: var(--font-serif);
     font-weight: var(--font-weight-content);
+    font-size: var(--font-large);
 }
 
 .word {
@@ -566,7 +565,11 @@ a.home-link:hover {
 /*********************************/
 
 hr {
-    border-top: 5px solid var(--black);
+    display: block;
+    height: .15em;
+    width: 100%;
+    background-image: linear-gradient(90deg, hsla(204, 57%, 55%, .25) 5%, hsla(204, 57%, 55%, .08) 50%, hsla(204, 57%, 55%, .25) 95%);
+    /*border-top: 5px solid hsla(204, 57%, 55%, .15);*/
 }
 
 .card hr {
@@ -843,8 +846,8 @@ nav.navbar {
     color: var(--even-less-white);
 }
 
-.navbar-brand:focus span,
-.navbar-brand:hover span,
+.navbar-brand span,
+.navbar-brand span,
 .nav-link:focus span,
 .nav-link:hover span {
     transition: var(--transition);
@@ -852,6 +855,11 @@ nav.navbar {
     background: var(--gradient-1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.navbar-brand:focus span,
+.navbar-brand:hover span {
+    text-shadow: 0 2px 3px var(--accent-1);
 }
 
 /*.navbar-brand span,*/
@@ -889,10 +897,16 @@ button.navbar-toggler svg * {
     transition: var(--transition);
 }
 
-button.navbar-toggler:hover svg *,
-button.navbar-toggler:focus svg * {
-    fill: var(--less-white);
+/*button.navbar-toggler:hover svg *,*/
+/*button.navbar-toggler:focus svg * {*/
+/*    fill: var(--less-white);*/
+/*    transition: var(--transition);*/
+/*}*/
+
+#Layer_1:hover,
+#Layer_1:focus {
     transition: var(--transition);
+    filter: drop-shadow(0 2px 3px var(--accent-1));
 }
 
 
@@ -970,6 +984,21 @@ button.navbar-toggler:focus {
     font-size: var(--font-extra-large);
 }
 
+/*.page-control:hover ,*/
+/*.page-control:focus  {*/
+/*    transition: var(--transition);*/
+/*    box-shadow:*/
+/*             0px 0px .2em .1rem var(--accent-1)*/
+/*            ,0px 0px .75em 0rem var(--accent-1);*/
+/*}*/
+
+/*.page-control:hover svg *,*/
+/*.page-control:focus svg * {*/
+/*    transition: var(--transition);*/
+/*    fill: url(#rg);*/
+/*}*/
+
+
 .page-control:hover ,
 .page-control:focus  {
     transition: var(--transition);
@@ -978,26 +1007,20 @@ button.navbar-toggler:focus {
             ,0px 0px .75em 0rem var(--accent-1);
 }
 
-.page-control:hover svg *,
-.page-control:focus svg * {
+
+.page-control,
+.page-control  {
+    transition: var(--transition);
+    box-shadow:
+            0px 0px .2em .1rem hsla(204, 57%, 55%, .3),
+            0px 0px .75em 0rem hsla(204, 57%, 55%, .3);
+}
+
+.page-control svg *,
+.page-control svg * {
     transition: var(--transition);
     fill: url(#rg);
 }
-
-
-/*.page-control,*/
-/*.page-control  {*/
-/*    transition: var(--transition);*/
-/*    box-shadow:*/
-/*             0px 0px .2em .1rem var(--accent-1)*/
-/*            ,0px 0px .75em 0rem var(--accent-1);*/
-/*}*/
-
-/*.page-control svg *,*/
-/*.page-control svg * {*/
-/*    transition: var(--transition);*/
-/*    fill: url(#rg);*/
-/*}*/
 
 
 .page-control .btn,
