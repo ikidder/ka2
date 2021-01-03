@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_post, view_score_header, view_control, view_empty_control, view_composer_name, view_user_summary, view_theme_name with context %}
+{% from 'macros.html' import view_post_row, view_score_header_row, view_control, view_empty_control, view_composer_name, view_user_summary, view_theme_name with context %}
 
 {% block content %}
 
     <div class="container-md">
         <div class="card">
-                <div class="p font-sub-heading">{{ view_theme_name(name) }} themed</div>
+                <div class="font-sub-heading text-center">{{ view_theme_name(name) }} themed</div>
         </div>
     </div>
 
     {% for item in result.items %}
         {% if item is Score %}
-        {{ view_score_header(item) }}
+        {{ view_score_header_row(item) }}
         {% elif item is Post %}
-        {{ view_post(item) }}
+        {{ view_post_row(item) }}
         {% endif %}
     {% endfor %}
 
