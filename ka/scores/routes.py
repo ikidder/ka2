@@ -188,8 +188,11 @@ def score(score_path):
         abort(404)
     if s.visibility == Visibility.HIDDEN:
         abort(404)
+    variation = None
+    if s.variation_on_id:
+        variation = Score.query.get(s.variation_on_id)
     title = s.name + ' by ' + s.composer.name
-    return render_template('score.html', title=title, score=s, measures=s.measures)
+    return render_template('score.html', title=title, score=s, variation=variation, measures=s.measures)
 
 
 @scores_app.route("/score/<string:score_path>/variations")

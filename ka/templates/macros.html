@@ -206,20 +206,6 @@
             </div>
             <div class="p content">{{ score.text|markdown }}</div>
             <div class="p duration font-heading text-center">{{ score.formatted_duration }}</div>
-{#            <div class="p metadata-row">#}
-{#                <div class="metadata ">#}
-{#                    {{ score.created.strftime("%d %b %Y") }}#}
-{#                    {% if score.variations|length == 1 %}#}
-{#                        <a class="" href="{{ url_for('scores.score_variations', score_path=score.path) }}">1 variation</a>#}
-{#                    {% else %}#}
-{#                        <a class="" href="{{ url_for('scores.score_variations', score_path=score.path) }}">{{ score.variations|length|e }} variations</a>#}
-{#                    {% endif %}#}
-{#                </div>#}
-{#                <div class="metadata ">#}
-{#                    <span>{{ score.count_plays|e }} plays</span>#}
-{#                    <span>{{ score.count_favorites|e }} favorites</span>#}
-{#                </div>#}
-{#            </div>#}
             <hr />
             <div class="p page-controls mx-auto">
                 {{ view_favorite_control(score.id) }}
@@ -249,6 +235,10 @@
                     <span>{{ score.count_favorites|e }} favorites</span>
                 </div>
             </div>
+            {% if variation %}
+                <div class="variation">
+                    A variation on {{ view_score_title(variation.name, variation.path) }} {{ view_composer_name(variation.composer) }}</div>
+            {% endif %}
             {{ view_score_item_menu(score) }}
         </div>
     </div>

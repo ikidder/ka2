@@ -1254,3 +1254,21 @@ a.title:hover {
     color: var(--accent-4);
 }
 
+
+/*********************************/
+/*  variation                    */
+/*********************************/
+
+
+.variation {
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-heading);
+    font-size: var(--font-regular);
+    margin-top: var(--font-regular);
+    text-align:  center;
+}
+
+.variation .composer,
+.variation .title {
+    color: inherit;
+}
