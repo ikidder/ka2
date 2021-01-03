@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% from 'macros.html' import view_score_header, view_score_header_row, view_control, view_empty_control, view_composer_name, view_for_players %}
+{% from 'macros.html' import view_score_header, view_score_header_row, view_control, view_empty_control, view_composer_name, view_for_players, view_score_title %}
 
 {% block content %}
 
@@ -8,9 +8,11 @@
     <div class="container-md">
         <div class="card">
             {% if filtered_on is User %}
-                <div class="p font-sub-heading serif">Scores{{ view_composer_name(filtered_on) }}</div>
+                <div class="font-context">Scores{{ view_composer_name(filtered_on) }}</div>
             {% elif filtered_on is ForPlayers %}
-                <div class="p font-sub-heading  serif">Scores{{ view_for_players(filtered_on) }}</div>
+                <div class="font-context">Scores{{ view_for_players(filtered_on) }}</div>
+            {% elif filtered_on is Score %}
+                <div class="font-context">Variations on {{ view_score_title(filtered_on.name, filtered_on.path) }}</div>
             {% endif %}
         </div>
     </div>

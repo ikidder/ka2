@@ -6,7 +6,7 @@ from ka import db
 from ka.models import Score, Measure, to_ordinal_string, ForPlayers, Visibility, User, Tag, Feature, tempo_alt_text, dynamic_alt_text
 from ka.scores.forms import ScoreForm, MeasureForm, DeleteMeasureForm, DeleteScoreForm
 from datetime import datetime
-from sqlalchemy import or_, and_, case, nullslast
+from sqlalchemy import or_, and_, case, nullslast, func, desc, text
 
 
 scores_app = Blueprint('scores', __name__)
@@ -190,6 +190,31 @@ def score(score_path):
         abort(404)
     title = s.name + ' by ' + s.composer.name
     return render_template('score.html', title=title, score=s, measures=s.measures)
+
+
+@scores_app.route("/score/<string:score_path>/variations")
+@login_required
+def score_variations(score_path):
+    s = Score.query.filter_by(path=score_path).first()
+    if not s:
+        abort(404)
+    if s.visibility == Visibility.HIDDEN:
+        abort(404)
+    page = request.args.get('page', 1, type=int)
+    page_result = get_page(
+        Score.query
+            .filter(Score.visibility == Visibility.PUBLIC)
+            .filter(Score.variation_on_id == s.id)
+            .order_by(desc(text("count_plays + count_favorites")), Score.created.desc()),
+        page
+    )
+    title = 'Variations on ' + s.name + ' by ' + s.composer.name
+    return render_template(
+        'scores.html',
+        title=title,
+        filtered_on=s,
+        result=page_result
+    )
 
 
 @scores_app.route("/score/<string:score_path>/measure/<string:measure_path>")
@@ -508,6 +533,10 @@ def is_user(obj):
 @scores_app.app_template_test("ForPlayers")
 def is_for_players(obj):
     return isinstance(obj, ForPlayers)
+
+@scores_app.app_template_test("Score")
+def is_score(obj):
+    return isinstance(obj, Score)
 
 
 # *************************************************

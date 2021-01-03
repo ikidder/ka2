@@ -160,14 +160,14 @@
             <div class="p content">{{ score.text|markdown }}</div>
             <div class="p duration font-heading text-center"><span>{{ score.formatted_duration }}</span></div>
             {{ view_score_item_menu(score) }}
-            <div class="p metadata row">
-                <div class="col">
+            <div class="metadata">
+                <div class="">
                     <p class="text-center">plays: {{ score.count_plays|e }}</p>
                 </div>
-                <div class="col">
+                <div class="">
                     <p class="text-center">favorites: {{ score.count_favorites|e }}</p>
                 </div>
-                <div class="col">
+                <div class="">
                     <p class="text-center">{{ score.created.strftime("%d %B %Y") }}</p>
                 </div>
             </div>
@@ -206,19 +206,22 @@
             </div>
             <div class="p content">{{ score.text|markdown }}</div>
             <div class="p duration font-heading text-center">{{ score.formatted_duration }}</div>
-            <div class="p metadata row">
-                <div class="col">
-                    <p class="text-center">plays: {{ score.count_plays|e }}</p>
-                </div>
-                <div class="col">
-                    <p class="text-center">favorites: {{ score.count_favorites|e }}</p>
-                </div>
-                <div class="col">
-                    <p class="text-center">{{ score.created.strftime("%d %B %Y") }}</p>
-                </div>
-            </div>
+{#            <div class="p metadata-row">#}
+{#                <div class="metadata ">#}
+{#                    {{ score.created.strftime("%d %b %Y") }}#}
+{#                    {% if score.variations|length == 1 %}#}
+{#                        <a class="" href="{{ url_for('scores.score_variations', score_path=score.path) }}">1 variation</a>#}
+{#                    {% else %}#}
+{#                        <a class="" href="{{ url_for('scores.score_variations', score_path=score.path) }}">{{ score.variations|length|e }} variations</a>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#                <div class="metadata ">#}
+{#                    <span>{{ score.count_plays|e }} plays</span>#}
+{#                    <span>{{ score.count_favorites|e }} favorites</span>#}
+{#                </div>#}
+{#            </div>#}
             <hr />
-            <div class="page-controls mx-auto">
+            <div class="p page-controls mx-auto">
                 {{ view_favorite_control(score.id) }}
                 {% if score.measures|length > 0 %}
                         {{ view_control(url_for('scores.measure', score_path=score.path, measure_path=score.measures.0.path, autoplay='true'), "fa-play") }}
@@ -230,6 +233,21 @@
                 {% else %}
                     {{ view_control(url_for('scores.copy_score', score_path=score.path), "fa-copy") }}
                 {% endif %}
+            </div>
+            <hr />
+            <div class="metadata-row">
+                <div class="metadata ">
+                    {{ score.created.strftime("%d %b %Y") }}
+                    {% if score.variations|length == 1 %}
+                        <a class="" href="{{ url_for('scores.score_variations', score_path=score.path) }}">1 variation</a>
+                    {% else %}
+                        <a class="" href="{{ url_for('scores.score_variations', score_path=score.path) }}">{{ score.variations|length|e }} variations</a>
+                    {% endif %}
+                </div>
+                <div class="metadata ">
+                    <span>{{ score.count_plays|e }} plays</span>
+                    <span>{{ score.count_favorites|e }} favorites</span>
+                </div>
             </div>
             {{ view_score_item_menu(score) }}
         </div>

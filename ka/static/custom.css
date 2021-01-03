@@ -144,6 +144,14 @@
     line-height: 1.3em;
 }
 
+.font-context {
+    font-size: var(--font-regular);
+    line-height: 1.3em;
+    font-weight: var(--font-weight-heading);
+    font-family: var(--font-heading);
+    text-align: center;
+}
+
 /* fix line heights */
 .small span,
 .regular span,
@@ -754,12 +762,38 @@ hr {
 /*  metadata                     */
 /*********************************/
 
-.metadata {
+.metadata-row {
+    display: flex;
+    flex-direction: row;
+    /*flex-wrap: wrap;*/
+    justify-content: space-around;
+    margin-top: -.2rem; /* too much space under the duration, because there are no descenders. */
     font-family: var(--font-content);
     font-size: var(--font-small);
     color: var(--even-less-white);
-    margin-top: -.2rem; /* too much space under the duration, because there are no descenders. */
 }
+
+
+.metadata {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+@media screen and (max-width: 700px) {
+  .metadata {
+    flex-direction: column;
+  }
+}
+
+
+.metadata a:hover,
+.metadata a:focus {
+    color: var(--accent-5);
+}
+
 
 
 /*********************************/
@@ -940,7 +974,7 @@ button.navbar-toggler:focus {
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    margin: auto;
+    /*margin: auto;*/
 }
 
 .page-control {
