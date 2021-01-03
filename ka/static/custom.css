@@ -589,6 +589,7 @@ hr {
 
 .item-menu .btn {
     color: var(--even-less-white);
+    font-size: var(--font-extra-large);
 }
 
 .item-menu .dropdown-toggle:before {
