@@ -205,6 +205,9 @@ ol:last-child,
     margin-bottom: var(--spacing-none);
 }
 
+b, strong {
+    font-weight: 500;
+}
 
 /*********************************/
 /*  alert                        */

@@ -11,7 +11,17 @@ main_app = Blueprint('main', __name__)
 
 @main_app.route("/")
 def index():
-    return render_template('index.html', title='kamagapē')
+    return render_template('index.html', title='')
+
+
+@main_app.route("/privacy")
+def privacy():
+    return render_template('legal/privacy.html', title='')
+
+
+@main_app.route("/terms_of_service")
+def terms():
+    return render_template('legal/terms.html', title='')
 
 
 @main_app.route('/featured', methods=['GET'])
