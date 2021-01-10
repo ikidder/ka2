@@ -9,14 +9,16 @@ from ka import db
 
 
 class RegistrationForm(FlaskForm):
-    name = StringField('Username',
-                           validators=[DataRequired(), Length(min=3, max=50)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
+    name = StringField(
+        'Username',
+        validators=[DataRequired(), Length(min=3, max=50)]
+    )
+    email = StringField(
+        'Email',
+        validators=[DataRequired(), Email()]
+    )
     over_eighteen = BooleanField("I'm over 18.")
     token = HiddenField()
-    #password = PasswordField('Password', validators=[DataRequired()])
-    #confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
     def validate_name(self, field):

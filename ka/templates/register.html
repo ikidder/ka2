@@ -11,7 +11,6 @@
                 <legend class="title text-center"><span>Sign Up</span></legend>
                 <div class="form-group">
                     {{ form.name.label(class="form-control-label") }}
-
                     {% if form.name.errors %}
                         {{ form.name(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
@@ -20,7 +19,10 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.name(class="form-control form-control-lg") }}
+                        {{ form.name(class="form-control form-control-lg", aria_describedby="nameHelpText") }}
+                        <small id=nameHelpText  class="form-text text-muted">
+                            {{ form.name.description }}
+                        </small>
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -33,11 +35,13 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
+                        {{ form.email(class="form-control form-control-lg", aria_describedby="emailHelpText") }}
+                        <small id=emailHelpText  class="form-text text-muted">
+                            {{ form.email.description }}
+                        </small>
                     {% endif %}
                 </div>
-                <div class="form-check">
-
+                <div class="form-group form-check">
                    {% if form.over_eighteen.errors %}
                         {{ form.over_eighteen(class="form-check-input is-invalid") }}
                        {{ form.over_eighteen.label(class="form-check-label") }}
@@ -77,10 +81,14 @@
 {#                        {{ form.confirm_password(class="form-control form-control-lg") }}#}
 {#                    {% endif %}#}
 {#                </div>#}
+            <div class="form-group content">
+                By signing up for kamagapē, you are agreeing to our <a href="{{ url_for('main.terms') }}" target="_blank">Terms of Service</a>
+                and acknowledging our <a href="{{ url_for('main.privacy') }}" target="_blank">Privacy Policy</a>. Please read them first.
+            </div>
             </fieldset>
             <div class="form-group float-right">
                 <div class="page-controls">
-                        {{ view_submit_button('fa-save') }}
+                        {{ view_submit_button('fa-arrow-right') }}
                 </div>
             </div>
         </form>

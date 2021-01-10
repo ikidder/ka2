@@ -427,17 +427,21 @@ a.for-players:hover {
     font-size: var(--font-regular);
     font-weight: var(--font-weight-content);
     line-height: 1.65em;
+    border-top: solid 1px hsla(204, 57%, 55%, .2);
+    border-bottom: solid 1px hsla(204, 57%, 55%, .2);
+    border-radius: 0px;
 }
 
 .form-control:focus {
     background-color: hsla(234, 51%, 3%, 1);
     color: var(--white);
-    border: none;
-    box-shadow: 0px 1rem 6px -0.75rem var(--accent-1);
+    border-top: solid 1px hsla(204, 57%, 55%, .4);
+    border-bottom: solid 1px hsla(204, 57%, 55%, .4);
+    box-shadow: 0px .6rem 1rem -0.65rem var(--accent-1);
 }
 
 .form-control-label {
-    color: var(--even-less-white);
+    color: var(--less-white);
 }
 
 select option {
@@ -448,6 +452,13 @@ select option:hover {
     background-color: var(--black);
 }
 
+.form-text {
+    text-align: right;
+}
+
+/*.form-group .title {*/
+/*    color: var(--accent-5);*/
+/*}*/
 
 /*********************************/
 /*  h1, h2, h3, h4, h5, h6       */
