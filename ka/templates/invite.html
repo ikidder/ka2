@@ -29,7 +29,7 @@
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
                 <fieldset class="form-group">
-                    <legend class="font-sub-heading text-center"><span>We'll send an email invite to this person.</span></legend>
+                    <legend class="font-sub-heading text-center"><span>We'll email an invite to this person.</span></legend>
                     <div class="form-group">
                         {{ form.email.label(class="form-control-label") }}
                         {% if form.email.errors %}
@@ -60,5 +60,14 @@
                 </div>
         </div>
     </div>
+    {% if current_user.is_admin %}
+        <div class="container-md">
+            <div class="card ">
+                <div class="text-center content">
+                        <a href="{{ url_for('users.create_open_invite') }}">Create Invite Link</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endif %}
 {% endblock content %}

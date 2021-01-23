@@ -440,6 +440,11 @@ a.for-players:hover {
     box-shadow: 0px .6rem 1rem -0.65rem var(--accent-1);
 }
 
+.form-control:disabled, .form-control[readonly] {
+    background-color: hsla(234, 51%, 3%, 1);
+    opacity: 1;
+}
+
 .form-control-label {
     color: var(--less-white);
 }

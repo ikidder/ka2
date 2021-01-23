@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from time import time
 import re
+import uuid
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, url_for
 import jwt
@@ -595,6 +596,28 @@ class Invite(db.Model):
 
     def __repr__(self):
         return f'<Invite -> id: {self.id}, from_user_id: {self.from_user_id}, created: {self.created}, user_created: {self.user_created}>'
+
+
+class OpenInvite(db.Model):
+    __tablename__ = 'open_invite'
+
+    id = db.Column(db.Integer, primary_key=True)
+    guid = db.Column(db.String)
+    from_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __init__(self, from_user_id):
+        self.from_user_id = from_user_id
+        self.guid = uuid.uuid4().hex
+        self.created = datetime.utcnow()
+
+    def is_active(self):
+        now = datetime.utcnow()
+        return (now - self.created).total_seconds() < INVITE_GOOD_FOR
+
+    def __repr__(self):
+        return f'<OpenInvite -> id: {self.id}, from_user_id: {self.from_user_id}, created: {self.created}, is_active: {self.is_active()}>'
+
 
 
 # *************************************************

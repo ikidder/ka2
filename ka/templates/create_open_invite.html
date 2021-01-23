@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% from 'macros.html' import view_share_button %}
+
+{% block content %}
+    <div class="container-md">
+        <div class="card ">
+                <form class="content">
+                    <div class="fieldset">
+                        <input class="form-control form-control-lg content" type="text" readonly="true" value="{{ url }}">
+                    </div>
+                    <div class="page-controls mt-4">
+                        {{ view_share_button(url) }}
+                    </div>
+                </form>
+        </div>
+    </div>
+{% endblock content %}

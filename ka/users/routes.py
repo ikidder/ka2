@@ -4,7 +4,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint,
 from flask_login import login_user, current_user, logout_user, login_required
 from ka import bcrypt, db
 from ka.database import get_page
-from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite, Tag
+from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite, Tag, OpenInvite
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    ResetPasswordRequestForm, ResetPasswordForm, SendInvite, UnsubscribeForm)
 import ka.email as email
@@ -45,15 +45,19 @@ def send_invite():
 @users_app.route("/register/<string:invite_token>", methods=['GET', 'POST'])
 def register(invite_token):
     invite = Invite.validate_token(invite_token)
-    if not invite:
-        print(f'Error: failed invite token validation: {invite_token}')
-        return redirect(url_for('main.index'))
-    if invite.user_created:
-        print(f'Error: invite already used. Invite.id: {invite.id}')
-        return redirect(url_for('main.index'))
-    if not invite.responded:
-        invite.responded = datetime.datetime.utcnow()
-        db.session.commit()
+    open_invite = OpenInvite.query.filter(OpenInvite.guid == invite_token).first()
+    if invite:
+        if invite.user_created:
+            print(f'Error: invite already used. Invite.id: {invite.id}')
+            return redirect(url_for('main.index'))
+        if not invite.responded:
+            invite.responded = datetime.datetime.utcnow()
+            db.session.commit()
+    elif open_invite:
+        if not open_invite.is_active():
+            abort(404)
+    else:
+        abort(404)
     form = RegistrationForm()
     if form.validate_on_submit():
         password = str(os.urandom(16))
@@ -65,14 +69,29 @@ def register(invite_token):
         db.session.add(user)
         db.session.commit()
 
-        invite.user_created = user.id
-        db.session.add(invite)
+        if invite:
+            invite.user_created = user.id
+            db.session.add(invite)
+
         db.session.commit()
 
         token = user.get_reset_password_token()
         email.send_welcome_email(user, token)
         return render_template('registered.html', title='Welcome!')
     return render_template('register.html', title='Register', form=form)
+
+
+@users_app.route("/create_open_invite/", methods=['GET'])
+@login_required
+def create_open_invite():
+    if not current_user.is_admin:
+        abort(403)
+    invite = OpenInvite(current_user.id)
+    db.session.add(invite)
+    db.session.commit()
+    url = url_for('users.register', invite_token=invite.guid, _external=True)
+    return render_template('create_open_invite.html', title='Invite', url=url)
+
 
 
 # *************************************************
