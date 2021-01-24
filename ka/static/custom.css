@@ -282,6 +282,10 @@ body {
     line-height: 1.5em;
 }
 
+main {
+    min-height: 90vh;
+    padding-bottom: 4rem;
+}
 
 
 /*********************************/
@@ -398,7 +402,11 @@ footer {
     font-family: var(--font-content);
     color: var(--very-little-white);
     font-size: var(--font-regular);
+    padding-bottom: 3rem;
+    padding-top: 3rem;
+    background-image: linear-gradient(to bottom, var(--black) 1%, hsla(304, 51%, 9%, 1));
 }
+
 
 
 /*********************************/
