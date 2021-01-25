@@ -42,7 +42,8 @@ slogans = [
     'Long week? How about some horizontal refreshment?',
     'Good for the heart, and more fun than jogging.',
     'All practice counts toward ecstasy.',
-    'The stay at home musical.'
+    'The stay at home musical.',
+    'Communicate before you copulate!'
 ]
 
 
