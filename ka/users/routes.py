@@ -8,7 +8,7 @@ from ka.models import User, Post, Score, Visibility, KaBase, Favorite, Invite, T
 from ka.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    ResetPasswordRequestForm, ResetPasswordForm, SendInvite, UnsubscribeForm)
 import ka.email as email
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 from sqlalchemy.orm import with_polymorphic
 
 
@@ -64,7 +64,7 @@ def register(invite_token):
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         user = User(name=form.name.data)
-        user.email = form.email.data.strip()
+        user.email = form.email.data.strip().lower()
         user.password=hashed_password
         db.session.add(user)
         db.session.commit()
@@ -105,7 +105,7 @@ def login():
         return redirect(url_for('main.index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter(User.email == func.lower(form.email.data)).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
@@ -130,7 +130,7 @@ def reset_password_request():
         return redirect(url_for('users.login'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter(User.email == func.lower(form.email.data)).first()
         if user:
             token = user.get_reset_password_token()
             email.send_password_reset_email(user, token)
@@ -168,7 +168,7 @@ def reset_password(token):
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
-        current_user.email = form.email.data
+        #current_user.email = form.email.data
         current_user.text = form.text.data
         current_user.tags = Tag.extract_tags(current_user.text)
         db.session.commit()
