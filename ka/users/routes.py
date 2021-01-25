@@ -30,7 +30,7 @@ def send_invite():
         if current_user.invites_left < 1:
             flash('No invites left.', 'danger')
             render_template('invite.html', title='Invite', form=form)
-        is_existing_user = User.query.filter_by(email=form.email.data).first()
+        is_existing_user = User.query.filter(User.email == func.lower(form.email.data)).first()
         if is_existing_user:
             render_template('invite.html', title='Invite', success=True)
         invite = Invite.create(current_user, form.email.data)
@@ -184,7 +184,7 @@ def account():
 def unsubscribe():
     form = UnsubscribeForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter(User.email == func.lower(form.email.data)).first()
         if user:
             user.allow_non_transactional_emails = False
             db.session.add(user)
