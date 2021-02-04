@@ -177,21 +177,26 @@
 
 
 {%  macro view_score_header_row(score) -%}
-    <div class="container-md">
-        <div class="card">
-                 <div class="p score-header-row">
-                    {{ view_score_title(score.name, score.path) }}
-                    {{ view_composer_name(score.composer) }}
-                    {{ view_for_players(score.for_players) }}
-                    <span class="duration">{{ score.formatted_duration }}</span>
+        <div class="card score-header-row">
+            {{ view_score_title(score.name, score.path) }}
+            <div class="content">
+                {{ score.text|truncate(150) }}
+            </div>
+            {{ view_composer_name(score.composer) }}
+            {{ view_for_players(score.for_players) }}
+            <span class="duration">{{ score.formatted_duration }}</span>
+            <div class="themes">
+                {% for theme in score.tags %}
+                <a href="{{ url_for('theme.theme', name=theme.name) }}">{{ theme.name }}</a>
+                {% endfor %}
+            </div>
+
     {#                <div class="metadata">#}
     {#                    plays: {{ score.count_plays|e }}#}
     {#                    favorites: {{ score.count_favorites|e }}#}
     {#                    created: {{ score.created.strftime("%d %B %Y") }}#}
     {#                </div>#}
-                </div>
         </div>
-    </div>
 {%- endmacro %}
 
 

@@ -1135,42 +1135,54 @@ button.navbar-toggler:focus {
 }
 
 .score-header-row .title {
-    grid-column: 1 / 7;
+    grid-column: span 6;
     grid-row: 1;
     font-size: var(--font-large);
 }
 
 .score-header-row .composer {
     grid-column: 1 / 3;
-    grid-row: 2;
+    grid-row: 3;
     font-size: var(--font-regular);
 }
 
 .score-header-row .for-players {
     grid-column: 3 / 6;
-    grid-row: 2;
+    grid-row: 3;
     font-size: var(--font-regular);
 }
 
 .score-header-row .duration {
     grid-column: 6;
-    grid-row: 2;
+    grid-row: 3;
     font-size: var(--font-regular);
 }
 
-.score-header-row .created {
-    grid-column: 5 / 7;
+.score-header-row .content {
+    grid-column: span 6;
     grid-row: 2;
-    font-size: var(--font-regular);
 }
 
-.context {
-    display: block;
+.score-header-row .themes {
     position: absolute;
     top: 0;
-    right: 0;
-    color: yellow;
+    font-family: var(--font-heading);
+    font-size: var(--font-small);
+    color: rgba(255, 255, 255, .28);
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    padding-right: 1rem;
+}
 
+.score-header-row .themes a {
+    margin-left: .5rem;
+}
+
+.score-header-row .themes a:hover,
+.score-header-row .themes a:focus {
+    color: var(--accent-5);
 }
 
 /*********************************/
