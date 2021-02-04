@@ -1168,8 +1168,8 @@ button.navbar-toggler:focus {
 
 .score-header-row .themes {
     position: absolute;
-    top: 0;
-    font-family: var(--font-heading);
+    bottom: 0;
+    font-family: var(--font-content);
     font-size: var(--font-small);
     color: rgba(255, 255, 255, .28);
     width: 100%;
