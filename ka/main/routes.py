@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, abort
 from flask_login import login_required
 from sqlalchemy.orm import with_polymorphic
 from ka.models import KaBase, User, Score, Post, Feature
@@ -12,6 +12,11 @@ main_app = Blueprint('main', __name__)
 @main_app.route("/")
 def index():
     return render_template('index.html', title='')
+
+
+@main_app.route("/how-it-works")
+def how_it_works():
+    return render_template('how_it_works.html', title='')
 
 
 @main_app.route("/privacy")
@@ -45,6 +50,40 @@ def featured():
 @login_required
 def not_implemented():
     return render_template('not_implemented.html')
+
+
+# *************************************************
+#  Landing
+# *************************************************
+
+
+@main_app.route('/landing', methods=['GET'])
+def landing():
+    return render_template('onboarding/landing.html')
+
+@main_app.route('/communication', methods=['GET'])
+def communication():
+    return render_template('onboarding/communication.html')
+
+@main_app.route('/spice', methods=['GET'])
+def spice():
+    return render_template('onboarding/spice.html')
+
+@main_app.route('/tenminutes', methods=['GET'])
+def tenminutes():
+    return render_template('onboarding/tenminutes.html')
+
+
+@main_app.route("/sample/<string:score_path>")
+def sample(score_path):
+    s = Score.query.filter_by(path=score_path).first()
+    if not s:
+        abort(404)
+    variation = None
+    if s.variation_on_id:
+        variation = Score.query.get(s.variation_on_id)
+    title = s.name + ' by ' + s.composer.name
+    return render_template('score.html', title=title, score=s, variation=variation, measures=s.measures)
 
 
 

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-md ">
+    <div class="home-middle">
+      <div class="">
+          <p class="text-center">
+              <span class="content white">
+                  Right. Let's get to it!
+              </span>
+          </p>
+      </div>
+    </div>
+        <div class="card purple-card">
+            <p class="text-center">
+                <span class="accent-3 home-card-title">Practice</span>
+            </p>
+            <p class="content">
+                How do you improve your physical relationship? The same way you get better at playing the piano, or skiing. Practice. Just putting the time in, and getting a little better each attempt. kamagapē gives you something to schedule, and something to reflect on.
+            </p>
+        </div>
+    <div class="card">
+        <p class="content">
+            Which would you like to do in 10 minutes?
+        </p>
+        <ul>
+            <li class="ob-li">
+                <a class="btn ob-btn ob-blue" href="{{ url_for('main.sample', score_path='5-Minute-Foot-Massage__by__i') }}">Increase Passion</a>
+            </li>
+            <li class="ob-li">
+                <a class="btn ob-btn ob-green" href="{{ url_for('main.sample', score_path='Massage-for-Relaxation-%28with-or-w%252Fo-Coconut-Oil%29__by__m') }}">Build Anticipation</a>
+            </li>
+            <li class="ob-li">
+                <a class="btn ob-btn ob-purple" href="{{ url_for('main.sample', score_path="Exploring-Wonderland----Wonderland's-Choice__by__m") }}">Live Your Fantasy</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-md ">
+    <div class="home-middle">
+      <div class="">
+          <p class="text-center">
+              <span class="home-title">
+                  Elevate Your Love Life
+              </span>
+          </p>
+          </p>
+      </div>
+    </div>
+    <div class="card">
+        <p class="content">
+            Are you interested in . . .
+        </p>
+        <ul>
+            <li class="ob-li">
+                <a class="btn ob-btn ob-blue" href="{{ url_for('main.communication') }}">Better communication with your partner?</a>
+            </li>
+            <li class="ob-li">
+                <a class="btn ob-btn ob-green" href="{{ url_for('main.spice') }}">A dose of spice?</a>
+            </li>
+            <li class="ob-li">
+                <a class="btn ob-btn ob-purple" href="{{ url_for('main.tenminutes') }}">Getting jiggy in 10 minutes?</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+{% endblock %}

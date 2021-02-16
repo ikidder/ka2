@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-md ">
-      <div class="home-middle">
-{#          <p class="text-center font-sub-heading mb-2 definition">welcome to</p>#}
-{#          <div class="text-center home-label"><span>kamagapē</span></div>#}
-{#          <p class="slogan text-center mt-5">{{ slogan }}</p>#}
-          <div class="mt-3">
+<section>
+<div class="container-md">
+    <div class="home-middle">
+          <div class="mt-1">
               <p class="text-center">
                   <span class="word">kama</span>
                   <span class="pronunciation">/'ka.mə/ -</span>
@@ -20,23 +18,108 @@
                   <span class="definition">the highest form of love</span>
               </p>
           </div>
-      </div>
+    </div>
+    <div class="card mt-5">
+        <p class="content text-center">
+          For couples who want better intimacy, and a stronger relationship.
+        </p>
+        <p class="content text-center">
+            Ask for what you want. Give what they need. Make time for each other.
+        </p>
+            <p class="content text-center">
+                kamagapē helps you and your partner <span class="accent-2">explore</span>,
+                <span class="accent-4">communicate</span>, and <span class="accent-3">practice</span>.
+            </p>
+    </div>
 </div>
-
+</section>
+<section>
     <div class="container-md">
-    <div class="card">
-        <p class="content">
-            kamagapē helps couples explore, practice, and communicate about their intimacy. So that the physical side of their relationship enhances the love and connection they share.
-        </p>
+          <div class="small-wrapper small-wrapper-left">
+                <div class="card small-card right-card green-card">
+                    <p class="">
+                        <span class="accent-2 home-card-title">Explore</span>
+                    </p>
+                    <p class="content">
+                        There's no manual for your body, or for your partner's. But learning what feels good doesn't have to be a trial-and-error process. People have been writing about sex for thousands of years: there's no shortage of ideas and techniques.
+                    </p>
+                    <p class="content accent-2">
+                        A single source for the best ideas for couples.
+                    </p>
+                </div>
+        </div>
     </div>
-    </div>
+</section>
+<section>
     <div class="container-md">
-    <div class="card">
-        <p class="content">
-            If this is your first time here, welcome! You might want to check out <a class="home-link" href="{{ url_for('scores.score', score_path='Getting-Started__by__i') }}"><span>Getting Started</span></a>. Or, click on the music notes at the top left, and browse around.
-        </p>
+        <div class="small-wrapper small-wrapper-right">
+                <div class="card small-card left-card orange-card">
+                    <p class="">
+                        <span class="accent-4 home-card-title">Communicate</span>
+                    </p>
+                    <p class="content">
+                       It's really hard to talk about sex. Whether you're afraid of being embarrassed, or offending you're partner, you are not alone. We get it. But it doesn't have to be that way.
+                    </p>
+                    <p class="content accent-4">
+                        Making sex fun to talk about, and giving partners an equal voice.
+                    </p>
+                </div>
+        </div>
     </div>
+</section>
+<section>
+    <div class="container-md">
+        <div class="small-wrapper small-wrapper-left">
+            <div class="card small-card right-card purple-card">
+                <p class="text-center">
+                    <span class="accent-3 home-card-title">Practice</span>
+                </p>
+                <p class="content">
+                    How do you improve your physical relationship? The same way you get better at throwing a ball, or playing the piano. Practice. Just putting the time in, and getting a little better each attempt.
+                </p>
+                <p class="content accent-3">
+                    Now, there's something to put on your calendar, and something to reflect on.
+                </p>
+            </div>
+        </div>
     </div>
+</section>
+<section class="section-small">
+    <div class="container-md">
+        <div class="text-center">
+            <a class="action-call" href="{{ url_for('main.how_it_works') }}">See How it Works<i class="fas fa-fw fa-angle-double-right"></i></a>
+        </div>
+    </div>
+</section>
+<section class="section-small">
+    <div class="container-md">
+        <div class="card">
+            <p class="title text-center font-heading">
+                Answers to FAQ's
+            </p>
+            <p class="content">
+                <span class="accent-4">No pictures or videos.</span> A picture may be worth a thousand words, but with these kinds of pictures, it is too often the wrong words. Text-only keeps the focus on the two of you.
+            </p>
+            <p class="content">
+                <span class="accent-3">We take your privacy seriously.</span> No social media integrations. No third-party analytics. All traffic is encrypted at rest and on the wire.
+            </p>
+            <p class="content">
+                <span class="accent-2">Free.</span> Your energy is required, but not your money. You have to put in work to see results.
+            </p>
+            <p class="content">
+                <span class="accent-1">About us</span>: We're a couple who developed and tested this idea for our own use. It helps us increase communication, keep the spark, and grow together.
+            </p>
+        </div>
+    </div>
+</section>
+<section class="section-small">
+    <div class="container-md">
+        <div class="text-center">
+            <a class="action-call" href="{{ url_for('main.landing') }}">Try it Now<i class="fas fa-fw fa-angle-double-right"></i></a>
+        </div>
+    </div>
+</section>
+<section class="section-small">
     <div class="container-md">
         <div class="card">
             <p class="content">
@@ -44,4 +127,6 @@
             </p>
         </div>
     </div>
+</section>
+
 {% endblock content %}

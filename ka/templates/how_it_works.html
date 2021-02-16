@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section>
+    <div class="container-md">
+        <div class="small-wrapper small-wrapper-left">
+            <div class="card small-card right-card green-card">
+                <p class="accent-2 home-card-title">
+                    Music as Metaphor
+                </p>
+                <p class="content">
+                    kamagapē uses music as a metaphor for physical intimacy. People have been making music and making whoopee since time began, so it's a natural fit.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container-md">
+        <div class="small-wrapper small-wrapper-right">
+            <div class="card small-card left-card blue-card">
+                <p class="accent-1 home-card-title">
+                    Measure
+                </p>
+                <p class="content">
+                    A touch. Every touch is an action in <span class="accent-2">time</span> (how long),
+                    performed with a <span class="accent-3">tempo</span> (how fast),
+                    and a <span class="accent-4">dynamic</span> (how intense).
+                    A hug at the end of the day is long, slow, and deep.
+                    A kiss on the way out the door is short, quick, and light.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container-md">
+        <div class="small-wrapper small-wrapper-left">
+            <div class="card small-card right-card purple-card">
+                <p class="accent-3 home-card-title">
+                    Score
+                </p>
+                <p class="content">
+                    A sequence of Measures. Every touch happens in context, as part of a whole experience.
+                    A back massage isn't a single kind of touch, but a variety of techniques
+                    with different timing and intensity, performed in a certain order.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container-md">
+        <div class="card">
+            <p class="title accent-1 font-heading extra-large text-center">
+                How To
+            </p>
+            <p class="content">
+                <span class="accent-1">1.</span><span class="accent-3"> Find a Score.</span> You and your partner look through the new Scores, search by theme, or pull up one of your favorites. Find one that works for you both, based on what you're in the mood for, and how much time/energy you have.
+            </p>
+            <p class="content">
+                <span class="accent-1">2.</span><span class="accent-4">  Play a Score.</span> Each measure of the Score will be shown on the screen. You and your partner play along with the Score by performing the actions described in each measure.
+            </p>
+            <p class="content">
+                <span class="accent-1">3.</span><span class="accent-2">  Talk about it.</span> After the Score, talk about it. What was your favorite part? What part could have been skipped? (If you're playing a score that is new, be sure to check in with each other during the Score.)
+            </p>
+        </div>
+    </div>
+</section>
+<section class="section-small">
+    <div class="container-md">
+        <div class="text-center">
+            <a class="action-call" href="{{ url_for('main.sample', score_path='5-Minute-Foot-Massage__by__i') }}">See an Example Score<i class="fas fa-fw fa-angle-double-right"></i></a>
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}
